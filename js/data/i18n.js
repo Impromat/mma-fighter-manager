@@ -202,7 +202,7 @@ const LANG = {
     'fight.cancelledInjury': 'Combat annulé — combattant blessé',
 
     // --- Scouting ---
-    'scout.title': 'SCOUTING',
+    'scout.title': 'ANALYSE',
     'scout.winRate': 'Win Rate',
     'scout.winStreak': 'victoires consécutives',
     'scout.recentLoss': 'Défaite récente',
@@ -844,7 +844,7 @@ const LANG = {
     'fight.cancelledInjury': 'Fight cancelled — fighter injured',
 
     // --- Scouting ---
-    'scout.title': 'SCOUTING',
+    'scout.title': 'ANALYSIS',
     'scout.winRate': 'Win Rate',
     'scout.winStreak': 'win streak',
     'scout.recentLoss': 'Recent loss',
