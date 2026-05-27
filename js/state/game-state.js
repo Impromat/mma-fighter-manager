@@ -33,6 +33,8 @@ const GameState = {
       transactions: [],
       fightOffers: [],
       declineHistory: {},
+      freeAgents: [],
+      lastMarketRefresh: 0,
       nextEventWeek: EVENT_INTERVAL,
       lastOfferWeek: 0,
       createdAt: Date.now()
@@ -48,6 +50,9 @@ const GameState = {
 
     // Generate initial fight offers instead of auto-scheduling
     LeagueEngine.generateOffers(this._state);
+
+    // Generate initial free agent pool
+    LeagueEngine.generateFreeAgents(this._state);
 
     this.save();
     this._notify('newGame');
@@ -254,7 +259,12 @@ const GameState = {
       }
     }
 
-    // 10. Build training report (stat deltas)
+    // 10. Refresh free agent market
+    if (state.week - (state.lastMarketRefresh || 0) >= MARKET_CONFIG.refreshInterval) {
+      LeagueEngine.generateFreeAgents(state);
+    }
+
+    // 11. Build training report (stat deltas)
     state.fighters.forEach(fighter => {
       const before = statsBefore[fighter.id];
       if (!before) return;
@@ -434,6 +444,71 @@ const GameState = {
   },
 
   /**
+   * Sign a free agent
+   */
+  signFreeAgent(agentId) {
+    const state = this._state;
+    if (state.fighters.length >= ROSTER_MAX) return { error: 'rosterFull' };
+
+    const agentIdx = state.freeAgents.findIndex(a => a.id === agentId);
+    if (agentIdx === -1) return null;
+
+    const agent = state.freeAgents[agentIdx];
+    const cost = agent.signingBonus;
+
+    if (state.budget < cost) return { error: 'cantAfford' };
+
+    // Pay signing bonus
+    FinanceEngine.addTransaction(state, 'expense', `Signing bonus: ${agent.fullName}`, cost);
+
+    // Convert to player fighter
+    agent.isPlayer = true;
+    agent.id = FighterGenerator._generateId('player');
+    agent.currentTraining = 'general';
+    agent.targetProfile = agent.style;
+    agent.morale = 75;
+    agent.status = 'available';
+    delete agent.signingBonus;
+    delete agent.weeklySalary;
+
+    state.fighters.push(agent);
+    state.freeAgents.splice(agentIdx, 1);
+
+    this.save();
+    this._notify('fighterSigned', { fighter: agent });
+    return { fighter: agent, cost };
+  },
+
+  /**
+   * Cut a fighter from the roster
+   */
+  cutFighter(fighterId) {
+    const state = this._state;
+    const fighterIdx = state.fighters.findIndex(f => f.id === fighterId);
+    if (fighterIdx === -1) return null;
+
+    const fighter = state.fighters[fighterIdx];
+
+    // Can't cut if fighter has a scheduled fight
+    const hasFight = state.schedule.some(s => !s.completed && s.playerFighterId === fighterId);
+    if (hasFight) return { error: 'hasFight' };
+
+    // Pay severance
+    const severance = LeagueEngine.calculateSeverancePay(fighter);
+    FinanceEngine.addTransaction(state, 'expense', `Severance: ${fighter.fullName}`, severance);
+
+    // Remove from roster
+    state.fighters.splice(fighterIdx, 1);
+
+    // Clean up any pending offers for this fighter
+    state.fightOffers = state.fightOffers.filter(o => o.fighterId !== fighterId);
+
+    this.save();
+    this._notify('fighterCut', { fighter, severance });
+    return { fighter, severance };
+  },
+
+  /**
    * Adjust fighter salary (direction: 'up' or 'down')
    */
   adjustSalary(fighterId, direction) {
@@ -522,6 +597,9 @@ const GameState = {
         if (!this._state.fightOffers) this._state.fightOffers = [];
         if (!this._state.declineHistory) this._state.declineHistory = {};
         if (!this._state.lastOfferWeek) this._state.lastOfferWeek = 0;
+        // Migration: add new fields for market system
+        if (!this._state.freeAgents) this._state.freeAgents = [];
+        if (!this._state.lastMarketRefresh) this._state.lastMarketRefresh = 0;
         this._notify('loaded');
         return true;
       }

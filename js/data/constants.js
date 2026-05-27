@@ -346,3 +346,28 @@ const CORNER_INSTRUCTIONS = {
     phaseWeights: {}
   }
 };
+
+// ========== MARKET ==========
+
+const ROSTER_MAX = 6;
+
+const MARKET_CONFIG = {
+  poolSize: 5,             // Number of free agents in the pool
+  refreshInterval: 4,     // Weeks between pool refreshes
+  severancePay: 2,        // Multiplier of weekly salary for cutting
+  signingBonusTiers: [
+    // { minOvr, maxOvr, minBonus, maxBonus }
+    { minOvr: 0,  maxOvr: 45, minBonus: 2000,  maxBonus: 4000  },
+    { minOvr: 46, maxOvr: 55, minBonus: 4000,  maxBonus: 7000  },
+    { minOvr: 56, maxOvr: 65, minBonus: 6000,  maxBonus: 10000 },
+    { minOvr: 66, maxOvr: 75, minBonus: 9000,  maxBonus: 14000 },
+    { minOvr: 76, maxOvr: 99, minBonus: 12000, maxBonus: 18000 }
+  ],
+  attractivenessThresholds: [
+    // { minScore, statRange: [min, max] }
+    { minScore: 0,  statRange: [30, 50] },
+    { minScore: 4,  statRange: [40, 60] },
+    { minScore: 7,  statRange: [50, 70] },
+    { minScore: 10, statRange: [60, 80] }
+  ]
+};

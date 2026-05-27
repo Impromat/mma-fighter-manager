@@ -59,6 +59,7 @@ const App = {
       case 'agenda': AgendaView.render(container); break;
       case 'rankings': RankingsView.render(container); break;
       case 'finances': FinancesView.render(container); break;
+      case 'market': MarketView.render(container); break;
       case 'tutorial': TutorialView.render(container); break;
       default: DashboardView.render(container); break;
     }
@@ -327,6 +328,11 @@ const App = {
             <div class="nav-item" data-view="finances">
               <span class="nav-item-icon">💰</span>
               <span>${t('sidebar.finances')}</span>
+            </div>
+            <div class="nav-item" data-view="market">
+              <span class="nav-item-icon">💱</span>
+              <span>${t('sidebar.market')}</span>
+              ${(state.freeAgents || []).length > 0 ? `<span class="nav-item-badge">${state.freeAgents.length}</span>` : ''}
             </div>
 
             <div class="nav-section-label">Help</div>
@@ -1357,6 +1363,57 @@ const App = {
     // Mobile header week
     const mobileWeek = document.querySelector('.mobile-header-week');
     if (mobileWeek) mobileWeek.textContent = t('sidebar.week', { n: state.week });
+  },
+
+  /**
+   * Show confirmation modal to cut a fighter
+   */
+  confirmCutFighter(fighterId) {
+    const state = GameState.get();
+    const fighter = state.fighters.find(f => f.id === fighterId);
+    if (!fighter) return;
+
+    const severance = LeagueEngine.calculateSeverancePay(fighter);
+    const modalRoot = document.getElementById('modal-root');
+
+    modalRoot.innerHTML = `
+      <div class="modal-overlay">
+        <div class="modal" style="max-width: 460px;">
+          <div class="modal-header">
+            <div class="modal-title">${t('market.confirmCutTitle')}</div>
+            <button class="modal-close" id="cancel-cut-x">✕</button>
+          </div>
+          <div class="modal-body">
+            <p style="color: var(--text-secondary); line-height: 1.6;">
+              ${t('market.confirmCutMsg', { name: fighter.fullName })}
+            </p>
+            <div class="market-cut-severance">
+              💸 ${t('market.severance')}: <strong>${FinanceEngine.formatMoney(severance)}</strong>
+            </div>
+          </div>
+          <div class="modal-footer" style="gap: var(--space-md);">
+            <button class="btn btn-secondary" id="cancel-cut-btn">${t('general.cancel')}</button>
+            <button class="btn btn-danger" id="confirm-cut-btn">✂️ ${t('market.confirmCutBtn')}</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const close = () => { modalRoot.innerHTML = ''; };
+    document.getElementById('cancel-cut-x').addEventListener('click', close);
+    document.getElementById('cancel-cut-btn').addEventListener('click', close);
+    document.getElementById('confirm-cut-btn').addEventListener('click', () => {
+      const result = GameState.cutFighter(fighterId);
+      if (result && result.fighter) {
+        this.showToast(t('market.cutToast', {
+          name: result.fighter.fullName,
+          cost: FinanceEngine.formatMoney(result.severance)
+        }), 'warning');
+        close();
+        this.updateSidebar();
+        this.navigateTo('market');
+      }
+    });
   },
 
   /**

@@ -461,5 +461,113 @@ const LeagueEngine = {
       state.declineHistory[fighterId].notReadyCount = 0;
       state.declineHistory[fighterId].forceFight = false;
     }
+  },
+
+  // ==============================
+  // Free Agent Market
+  // ==============================
+
+  /**
+   * Calculate the gym's attractiveness score (0-15)
+   */
+  calculateGymAttractiveness(state) {
+    let score = 0;
+
+    // Budget: +1 per 10k, max 4
+    score += Math.min(4, Math.floor(Math.max(0, state.budget) / 10000));
+
+    // Champions: +3 per title held
+    const champions = state.fighters.filter(f => {
+      const wc = f.weightClass;
+      const rankings = state.rankings[wc];
+      return rankings && rankings.champion === f.id;
+    });
+    score += champions.length * 3;
+
+    // Recent wins (last 10 fights): +1 per win, max 5
+    const recentFights = (state.fightHistory || []).slice(-10);
+    const recentWins = recentFights.filter(fh => fh.winner === 'fighter1').length;
+    score += Math.min(5, recentWins);
+
+    // Average morale: +1 if above 70, +2 if above 80
+    if (state.fighters.length > 0) {
+      const avgMorale = state.fighters.reduce((sum, f) => sum + f.morale, 0) / state.fighters.length;
+      if (avgMorale >= 80) score += 2;
+      else if (avgMorale >= 70) score += 1;
+    }
+
+    return Math.min(15, score);
+  },
+
+  /**
+   * Calculate signing bonus for a fighter based on OVR
+   */
+  calculateSigningBonus(fighter) {
+    const ovr = TrainingEngine.calculateOverall(fighter);
+    const tier = MARKET_CONFIG.signingBonusTiers.find(t => ovr >= t.minOvr && ovr <= t.maxOvr)
+      || MARKET_CONFIG.signingBonusTiers[0];
+    return tier.minBonus + Math.floor(Math.random() * (tier.maxBonus - tier.minBonus + 1));
+  },
+
+  /**
+   * Calculate severance pay for cutting a fighter
+   */
+  calculateSeverancePay(fighter) {
+    const weeklySalary = FinanceEngine.calculateWeeklySalary(fighter);
+    return Math.round(weeklySalary * MARKET_CONFIG.severancePay);
+  },
+
+  /**
+   * Generate a pool of free agents based on gym attractiveness
+   */
+  generateFreeAgents(state) {
+    const score = this.calculateGymAttractiveness(state);
+
+    // Find the stat range based on score
+    let statRange = [30, 50];
+    for (const threshold of MARKET_CONFIG.attractivenessThresholds) {
+      if (score >= threshold.minScore) {
+        statRange = threshold.statRange;
+      }
+    }
+
+    // Collect existing names to avoid duplicates
+    const existingNames = [
+      ...state.fighters.map(f => f.fullName),
+      ...state.aiFighters.map(f => f.fullName),
+      ...(state.freeAgents || []).map(f => f.fullName)
+    ];
+
+    const agents = [];
+    const activeWCs = WEIGHT_CLASSES.filter(wc => ACTIVE_WEIGHT_CLASSES.includes(wc.id));
+
+    for (let i = 0; i < MARKET_CONFIG.poolSize; i++) {
+      // Vary stat range a bit per agent for diversity
+      const variance = Math.floor(Math.random() * 10) - 5;
+      const agentStatRange = [
+        Math.max(20, statRange[0] + variance),
+        Math.min(90, statRange[1] + variance)
+      ];
+
+      const wc = activeWCs[Math.floor(Math.random() * activeWCs.length)];
+      const fighter = FighterGenerator.generateAIFighter(wc.id, agentStatRange, existingNames);
+
+      // Override to make them "free agents" — fresh record, young-ish
+      fighter.id = FighterGenerator._generateId('free');
+      fighter.isPlayer = false;
+      fighter.wins = Math.floor(Math.random() * 8);
+      fighter.losses = Math.floor(Math.random() * 4);
+
+      // Calculate and attach signing bonus
+      fighter.signingBonus = this.calculateSigningBonus(fighter);
+      fighter.weeklySalary = FinanceEngine.calculateWeeklySalary(fighter);
+
+      existingNames.push(fighter.fullName);
+      agents.push(fighter);
+    }
+
+    state.freeAgents = agents;
+    state.lastMarketRefresh = state.week;
+    return agents;
   }
 };
