@@ -217,6 +217,25 @@ const LANG = {
     'corner.recover': 'Récupère !',
     'corner.recoverDesc': 'Souffle, récupère du chin',
 
+    // --- Round Analysis ---
+    'analysis.title': 'Analyse du Round {n}',
+    'analysis.strikesLanded': 'Frappes réussies',
+    'analysis.takedowns': 'Takedowns',
+    'analysis.control': 'Contrôle',
+    'analysis.damage': 'Dégâts infligés',
+    'analysis.condition': 'Condition',
+    'analysis.stamina': 'Stamina',
+    'analysis.chin': 'Menton',
+    'analysis.dominantPhase': 'Phase dominante',
+    'analysis.striking': 'Striking',
+    'analysis.wrestling': 'Lutte',
+    'analysis.ground': 'Sol',
+    'analysis.mixed': 'Mixte',
+    'corner.tagOpportunity': 'Opportunité',
+    'corner.tagRisky': 'Risqué',
+    'corner.tagSafe': 'Sûr',
+    'corner.tagWise': 'Judicieux',
+
     // --- Weekly Summary ---
     'summary.title': 'Résumé de la semaine',
     'summary.week': 'Semaine',
@@ -815,6 +834,25 @@ const LANG = {
     'corner.workTheBodyDesc': 'Drain opponent cardio',
     'corner.recover': 'Recover!',
     'corner.recoverDesc': 'Catch your breath, recover chin',
+
+    // --- Round Analysis ---
+    'analysis.title': 'Round {n} Analysis',
+    'analysis.strikesLanded': 'Strikes landed',
+    'analysis.takedowns': 'Takedowns',
+    'analysis.control': 'Control',
+    'analysis.damage': 'Damage dealt',
+    'analysis.condition': 'Condition',
+    'analysis.stamina': 'Stamina',
+    'analysis.chin': 'Chin',
+    'analysis.dominantPhase': 'Dominant phase',
+    'analysis.striking': 'Striking',
+    'analysis.wrestling': 'Wrestling',
+    'analysis.ground': 'Ground',
+    'analysis.mixed': 'Mixed',
+    'corner.tagOpportunity': 'Opportunity',
+    'corner.tagRisky': 'Risky',
+    'corner.tagSafe': 'Safe',
+    'corner.tagWise': 'Wise',
 
     // --- Weekly Summary ---
     'summary.title': 'Weekly Summary',

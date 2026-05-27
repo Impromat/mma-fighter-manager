@@ -122,6 +122,15 @@ const CombatEngine = {
     let f1Control = 0;
     let f2Control = 0;
     let finish = null;
+    // Phase tracking for analysis
+    let strikingExchanges = 0;
+    let wrestlingExchanges = 0;
+    let groundExchanges = 0;
+    let clinchExchanges = 0;
+    let f1StrikesLanded = 0;
+    let f2StrikesLanded = 0;
+    let f1Takedowns = 0;
+    let f2Takedowns = 0;
 
     // Calculate effective stats with corner instruction bonuses
     const cornerEffects = cornerInstruction ? cornerInstruction.effects : null;
@@ -152,6 +161,9 @@ const CombatEngine = {
           f2DamageTaken += result.f2Damage;
           f1Control += result.f1Control;
           f2Control += result.f2Control;
+          strikingExchanges++;
+          if (result.f2Damage > 0) f1StrikesLanded++;
+          if (result.f1Damage > 0) f2StrikesLanded++;
 
           // KO check
           if (result.f2Damage > 0) {
@@ -184,6 +196,9 @@ const CombatEngine = {
           f2Control += result.f2Control;
           f1DamageTaken += result.f1Damage;
           f2DamageTaken += result.f2Damage;
+          wrestlingExchanges++;
+          if (result.f1Control > result.f2Control) f1Takedowns++;
+          else if (result.f2Control > result.f1Control) f2Takedowns++;
           break;
         }
 
@@ -194,7 +209,7 @@ const CombatEngine = {
           f2Control += result.f2Control;
           f1DamageTaken += result.f1Damage;
           f2DamageTaken += result.f2Damage;
-
+          groundExchanges++;
           // Submission check
           if (result.subAttempt) {
             const subCheck = this._checkSubmission(
@@ -225,6 +240,7 @@ const CombatEngine = {
         case 'clinch': {
           const clinchNarration = this._narrate(NARRATION.clinch, { a: f1.fullName, d: f2.fullName });
           events.push({ text: clinchNarration, type: 'normal' });
+          clinchExchanges++;
           // Clinch can lead to takedown or separation
           if (Math.random() < 0.3) {
             const tdResult = this._resolveWrestling(f1, f2, f1Stats, f2Stats);
@@ -261,7 +277,14 @@ const CombatEngine = {
       f2DamageTaken,
       f1Control,
       f2Control,
-      finish
+      finish,
+      // Phase analysis
+      phases: { strikingExchanges, wrestlingExchanges, groundExchanges, clinchExchanges },
+      strikes: { f1: f1StrikesLanded, f2: f2StrikesLanded },
+      takedowns: { f1: f1Takedowns, f2: f2Takedowns },
+      // Effective stats snapshot (for condition display)
+      f1EffectiveStats: { ...f1Stats },
+      f2EffectiveStats: { ...f2Stats }
     };
   },
 

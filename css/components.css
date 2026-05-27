@@ -1326,6 +1326,161 @@
   }
 }
 
+/* --- Round Analysis Panel --- */
+.round-analysis {
+  margin-bottom: var(--space-md);
+  padding: var(--space-md);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.round-analysis-title {
+  font-size: var(--font-sm);
+  font-weight: 800;
+  color: var(--accent-orange);
+  text-align: center;
+  margin-bottom: var(--space-sm);
+}
+
+.round-analysis-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: var(--space-sm);
+}
+
+.analysis-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  font-size: var(--font-xs);
+}
+
+.analysis-stat-label {
+  flex: 1;
+  text-align: center;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.analysis-stat-val {
+  width: 28px;
+  text-align: center;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-size: var(--font-sm);
+}
+
+.analysis-stat-row .analysis-stat-val:first-child {
+  color: var(--accent-orange);
+}
+
+.analysis-stat-row .analysis-stat-val:last-child {
+  color: var(--accent-red);
+}
+
+.analysis-phase {
+  text-align: center;
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+  padding: var(--space-xs) 0;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: var(--space-sm);
+}
+
+.analysis-condition {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.analysis-condition-fighter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.analysis-condition-name {
+  font-size: var(--font-xs);
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.analysis-bar-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.analysis-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.analysis-bar-label {
+  font-size: 10px;
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.analysis-bar-bg {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.analysis-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* --- Corner Recommendation Tags --- */
+.corner-tag {
+  display: inline-block;
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  vertical-align: middle;
+  margin-left: 3px;
+}
+
+.corner-tag-opportunity {
+  background: rgba(46, 204, 113, 0.15);
+  color: var(--color-success);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.corner-tag-risky {
+  background: rgba(230, 57, 70, 0.12);
+  color: var(--accent-red);
+  border: 1px solid rgba(230, 57, 70, 0.25);
+}
+
+.corner-tag-safe {
+  background: rgba(52, 152, 219, 0.12);
+  color: #3498db;
+  border: 1px solid rgba(52, 152, 219, 0.25);
+}
+
+.corner-tag-wise {
+  background: rgba(244, 162, 97, 0.12);
+  color: var(--accent-orange);
+  border: 1px solid rgba(244, 162, 97, 0.25);
+}
+
 /* --- Scouting Modal --- */
 .scout-modal {
   max-width: 680px;

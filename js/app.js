@@ -929,7 +929,8 @@ const App = {
             } else {
               // Show corner instructions picker
               setTimeout(() => {
-                this._showCornerInstructions(log, currentRound, totalRounds, playerFighter, (chosenInstruction) => {
+                const lastRound = rounds[rounds.length - 1];
+                this._showCornerInstructions(log, currentRound, totalRounds, playerFighter, opponent, lastRound, f1AccDamage, f2AccDamage, (chosenInstruction) => {
                   simulateAndShowRound(chosenInstruction);
                 });
               }, 600);
@@ -1022,23 +1023,34 @@ const App = {
   /**
    * Show corner instructions between rounds
    */
-  _showCornerInstructions(log, nextRound, totalRounds, fighter, onChoose) {
+  _showCornerInstructions(log, nextRound, totalRounds, fighter, opponent, lastRound, f1AccDamage, f2AccDamage, onChoose) {
     const cornerEl = document.createElement('div');
     cornerEl.className = 'corner-instructions-panel animate-fade-in';
 
+    // Build round analysis
+    const analysisHTML = this._buildRoundAnalysis(lastRound, fighter, opponent, f1AccDamage, f2AccDamage);
+
+    // Calculate recommendation tags for each instruction
+    const tags = this._getCornerTags(lastRound, fighter, opponent, f1AccDamage, f2AccDamage);
+
     cornerEl.innerHTML = `
+      ${analysisHTML}
       <div class="corner-header">
         <div class="corner-title">${t('corner.title', { n: nextRound })}</div>
         <div class="corner-subtitle">${t('corner.subtitle', { name: fighter.firstName })}</div>
       </div>
       <div class="corner-grid">
-        ${Object.values(CORNER_INSTRUCTIONS).map(ci => `
-          <button class="corner-btn" data-instruction="${ci.id}">
-            <span class="corner-btn-icon">${ci.icon}</span>
-            <span class="corner-btn-name">${ci.name}</span>
-            <span class="corner-btn-desc">${ci.shortDesc}</span>
-          </button>
-        `).join('')}
+        ${Object.values(CORNER_INSTRUCTIONS).map(ci => {
+          const tag = tags[ci.id];
+          const tagHTML = tag ? `<span class="corner-tag corner-tag-${tag.type}">${tag.label}</span>` : '';
+          return `
+            <button class="corner-btn" data-instruction="${ci.id}">
+              <span class="corner-btn-icon">${ci.icon}</span>
+              <span class="corner-btn-name">${ci.name} ${tagHTML}</span>
+              <span class="corner-btn-desc">${ci.shortDesc}</span>
+            </button>
+          `;
+        }).join('')}
       </div>
     `;
 
@@ -1049,13 +1061,168 @@ const App = {
       btn.addEventListener('click', () => {
         const instructionId = btn.dataset.instruction;
         const instruction = CORNER_INSTRUCTIONS[instructionId];
-
-        // Remove the panel
         cornerEl.remove();
-
         onChoose(instruction);
       });
     });
+  },
+
+  /**
+   * Build the round analysis HTML
+   */
+  _buildRoundAnalysis(lastRound, fighter, opponent, f1AccDamage, f2AccDamage) {
+    if (!lastRound) return '';
+
+    const rn = lastRound.roundNumber;
+    const phases = lastRound.phases || {};
+    const strikes = lastRound.strikes || { f1: 0, f2: 0 };
+    const takedowns = lastRound.takedowns || { f1: 0, f2: 0 };
+    const f1Stats = lastRound.f1EffectiveStats || {};
+    const f2Stats = lastRound.f2EffectiveStats || {};
+
+    // Determine dominant phase
+    const maxPhase = Math.max(phases.strikingExchanges || 0, phases.wrestlingExchanges || 0, phases.groundExchanges || 0);
+    let dominantPhase = t('analysis.mixed');
+    if ((phases.strikingExchanges || 0) === maxPhase && maxPhase > 0) dominantPhase = t('analysis.striking');
+    else if ((phases.wrestlingExchanges || 0) === maxPhase && maxPhase > 0) dominantPhase = t('analysis.wrestling');
+    else if ((phases.groundExchanges || 0) === maxPhase && maxPhase > 0) dominantPhase = t('analysis.ground');
+
+    // Stamina & chin bars (percentage based on effective stats)
+    const f1Stamina = Math.max(0, Math.min(100, f1Stats.cardio || 50));
+    const f2Stamina = Math.max(0, Math.min(100, f2Stats.cardio || 50));
+    const f1Chin = Math.max(0, Math.min(100, f1Stats.chin || 50));
+    const f2Chin = Math.max(0, Math.min(100, f2Stats.chin || 50));
+
+    const barColor = (val) => val > 60 ? 'var(--color-success)' : val > 35 ? 'var(--accent-orange)' : 'var(--accent-red)';
+
+    return `
+      <div class="round-analysis">
+        <div class="round-analysis-title">📊 ${t('analysis.title', { n: rn })}</div>
+        
+        <div class="round-analysis-stats">
+          <div class="analysis-stat-row">
+            <span class="analysis-stat-val">${strikes.f1}</span>
+            <span class="analysis-stat-label">👊 ${t('analysis.strikesLanded')}</span>
+            <span class="analysis-stat-val">${strikes.f2}</span>
+          </div>
+          <div class="analysis-stat-row">
+            <span class="analysis-stat-val">${takedowns.f1}</span>
+            <span class="analysis-stat-label">🤼 ${t('analysis.takedowns')}</span>
+            <span class="analysis-stat-val">${takedowns.f2}</span>
+          </div>
+          <div class="analysis-stat-row">
+            <span class="analysis-stat-val">${lastRound.f1Control}</span>
+            <span class="analysis-stat-label">🎯 ${t('analysis.control')}</span>
+            <span class="analysis-stat-val">${lastRound.f2Control}</span>
+          </div>
+          <div class="analysis-stat-row">
+            <span class="analysis-stat-val">${lastRound.f2DamageTaken}</span>
+            <span class="analysis-stat-label">💥 ${t('analysis.damage')}</span>
+            <span class="analysis-stat-val">${lastRound.f1DamageTaken}</span>
+          </div>
+        </div>
+
+        <div class="analysis-phase">
+          ⚡ ${t('analysis.dominantPhase')}: <strong>${dominantPhase}</strong>
+        </div>
+
+        <div class="analysis-condition">
+          <div class="analysis-condition-fighter">
+            <div class="analysis-condition-name">${fighter.firstName}</div>
+            <div class="analysis-bar-group">
+              <div class="analysis-bar-row">
+                <span class="analysis-bar-label">❤️</span>
+                <div class="analysis-bar-bg"><div class="analysis-bar-fill" style="width:${f1Stamina}%; background:${barColor(f1Stamina)}"></div></div>
+              </div>
+              <div class="analysis-bar-row">
+                <span class="analysis-bar-label">🛡️</span>
+                <div class="analysis-bar-bg"><div class="analysis-bar-fill" style="width:${f1Chin}%; background:${barColor(f1Chin)}"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="analysis-condition-fighter">
+            <div class="analysis-condition-name">${opponent.firstName}</div>
+            <div class="analysis-bar-group">
+              <div class="analysis-bar-row">
+                <span class="analysis-bar-label">❤️</span>
+                <div class="analysis-bar-bg"><div class="analysis-bar-fill" style="width:${f2Stamina}%; background:${barColor(f2Stamina)}"></div></div>
+              </div>
+              <div class="analysis-bar-row">
+                <span class="analysis-bar-label">🛡️</span>
+                <div class="analysis-bar-bg"><div class="analysis-bar-fill" style="width:${f2Chin}%; background:${barColor(f2Chin)}"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * Get contextual recommendation tags for corner instructions
+   * These are HINTS, not guarantees — the fight still has randomness
+   */
+  _getCornerTags(lastRound, fighter, opponent, f1AccDamage, f2AccDamage) {
+    const tags = {};
+    if (!lastRound) return tags;
+
+    const f1Stats = lastRound.f1EffectiveStats || fighter.stats;
+    const f2Stats = lastRound.f2EffectiveStats || opponent.stats;
+    const phases = lastRound.phases || {};
+
+    // Is opponent hurt? (chin low or accumulated damage high)
+    const oppHurt = f2Stats.chin < 40 || f2AccDamage > 15;
+    // Is our fighter gassed?
+    const weGassed = f1Stats.cardio < 40;
+    // Is our fighter hurt?
+    const weHurt = f1Stats.chin < 35 || f1AccDamage > 15;
+    // Are we winning striking?
+    const strikingDominant = (lastRound.strikes.f1 || 0) > (lastRound.strikes.f2 || 0) + 1;
+    // Are we winning wrestling?
+    const wrestlingDominant = (lastRound.takedowns.f1 || 0) > (lastRound.takedowns.f2 || 0);
+    // Fighter stats advantages
+    const goodStriker = fighter.stats.striking > opponent.stats.striking;
+    const goodGrappler = fighter.stats.grappling > opponent.stats.grappling && fighter.stats.wrestling > opponent.stats.wrestling;
+
+    // Stay Standing
+    if (strikingDominant || goodStriker) {
+      tags.stayStanding = { type: 'wise', label: t('corner.tagWise') };
+    } else if (!goodStriker && wrestlingDominant) {
+      tags.stayStanding = { type: 'risky', label: t('corner.tagRisky') };
+    }
+
+    // Takedown
+    if (goodGrappler || wrestlingDominant) {
+      tags.takedown = { type: 'wise', label: t('corner.tagWise') };
+    } else if (goodStriker && strikingDominant) {
+      tags.takedown = { type: 'risky', label: t('corner.tagRisky') };
+    }
+
+    // Go for finish
+    if (oppHurt) {
+      tags.goForFinish = { type: 'opportunity', label: t('corner.tagOpportunity') };
+    } else if (weHurt || weGassed) {
+      tags.goForFinish = { type: 'risky', label: t('corner.tagRisky') };
+    }
+
+    // Stay patient
+    if (weHurt || weGassed) {
+      tags.stayPatient = { type: 'safe', label: t('corner.tagSafe') };
+    }
+
+    // Work the body
+    if (f2Stats.cardio < 50) {
+      tags.workTheBody = { type: 'wise', label: t('corner.tagWise') };
+    }
+
+    // Recover
+    if (weGassed || weHurt) {
+      tags.recover = { type: 'wise', label: t('corner.tagWise') };
+    } else if (!weGassed && !weHurt) {
+      tags.recover = { type: 'risky', label: t('corner.tagRisky') };
+    }
+
+    return tags;
   },
 
   /**
