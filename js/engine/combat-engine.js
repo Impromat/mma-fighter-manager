@@ -315,11 +315,11 @@ const CombatEngine = {
     stats.chin = Math.max(10, stats.chin - damageImpact - permanentChinDamage);
     stats.mental = Math.max(10, stats.mental - damageImpact * 0.5);
 
-    // Apply fight camp bonuses
+    // Apply fight camp bonuses (halved for balance — camp is an edge, not a guarantee)
     if (campBonuses) {
       Object.entries(campBonuses).forEach(([stat, bonus]) => {
         if (stats[stat] !== undefined) {
-          stats[stat] = Math.min(99, stats[stat] + bonus);
+          stats[stat] = Math.min(99, stats[stat] + Math.round(bonus * 0.5));
         }
       });
     }
@@ -366,32 +366,33 @@ const CombatEngine = {
    * Resolve a striking exchange
    */
   _resolveStriking(f1, f2, f1Stats, f2Stats) {
-    const f1Advantage = (f1Stats.striking + f1Stats.athleticism * 0.3 + f1Stats.mental * 0.2) -
-                        (f2Stats.striking + f2Stats.athleticism * 0.3 + f2Stats.mental * 0.2);
+    const f1Power = f1Stats.striking + f1Stats.athleticism * 0.3 + f1Stats.mental * 0.2;
+    const f2Power = f2Stats.striking + f2Stats.athleticism * 0.3 + f2Stats.mental * 0.2;
+    const f1Advantage = (f1Power - f2Power) * 0.5; // Dampen advantage
 
-    const roll = (Math.random() - 0.5) * 40 + f1Advantage;
+    const roll = (Math.random() - 0.5) * 60 + f1Advantage; // More variance
 
-    if (roll > 5) {
+    if (roll > 8) {
       // Fighter 1 lands
-      const damage = 2 + Math.random() * 4 + Math.max(0, roll * 0.15);
+      const damage = 2 + Math.random() * 4 + Math.max(0, roll * 0.1);
       return {
         narration: this._narrate(NARRATION.strikingExchange, { a: f1.fullName, d: f2.fullName }),
         f1Damage: 0,
         f2Damage: damage,
         f1Control: 2,
         f2Control: 0,
-        highlight: roll > 15
+        highlight: roll > 20
       };
-    } else if (roll < -5) {
+    } else if (roll < -8) {
       // Fighter 2 lands
-      const damage = 2 + Math.random() * 4 + Math.max(0, -roll * 0.15);
+      const damage = 2 + Math.random() * 4 + Math.max(0, -roll * 0.1);
       return {
         narration: this._narrate(NARRATION.strikingExchange, { a: f2.fullName, d: f1.fullName }),
         f1Damage: damage,
         f2Damage: 0,
         f1Control: 0,
         f2Control: 2,
-        highlight: roll < -15
+        highlight: roll < -20
       };
     } else {
       // Defensive exchange
@@ -415,7 +416,7 @@ const CombatEngine = {
     const f1WrestlingPower = f1Stats.wrestling + f1Stats.athleticism * 0.4;
     const f2WrestlingPower = f2Stats.wrestling + f2Stats.athleticism * 0.4;
 
-    const roll = (Math.random() - 0.5) * 30 + (f1WrestlingPower - f2WrestlingPower);
+    const roll = (Math.random() - 0.5) * 50 + (f1WrestlingPower - f2WrestlingPower) * 0.5;
 
     if (roll > 0) {
       return {
@@ -445,7 +446,7 @@ const CombatEngine = {
     const f1GroundPower = f1Stats.grappling + f1Stats.submission * 0.5 + f1Stats.wrestling * 0.3;
     const f2GroundPower = f2Stats.grappling + f2Stats.submission * 0.5 + f2Stats.wrestling * 0.3;
 
-    const advantage = (Math.random() - 0.5) * 30 + (f1GroundPower - f2GroundPower);
+    const advantage = (Math.random() - 0.5) * 50 + (f1GroundPower - f2GroundPower) * 0.5;
     const subAttempt = Math.random() < 0.35;
 
     if (advantage > 0) {

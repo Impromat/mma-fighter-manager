@@ -409,13 +409,13 @@ const EventEngine = {
   ],
 
   rollEvent(state) {
-    if (Math.random() > 0.30) return null;
+    if (Math.random() > 0.45) return null;
 
     // Don't fire on fight weeks
     if (state.schedule.some(s => s.week === state.week && !s.completed)) return null;
 
     // Cooldown: no event 2 weeks in a row
-    if (state.lastEventWeek && (state.week - state.lastEventWeek) < 2) return null;
+    if (state.lastEventWeek && (state.week - state.lastEventWeek) < 1) return null;
 
     const shuffled = [...this.EVENTS].sort(() => Math.random() - 0.5);
     
