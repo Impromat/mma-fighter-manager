@@ -37,6 +37,8 @@ const GameState = {
       lastMarketRefresh: 0,
       nextEventWeek: EVENT_INTERVAL,
       lastOfferWeek: 0,
+      reputation: REPUTATION_CONFIG.initial,
+      rivalries: [],
       createdAt: Date.now()
     };
 
@@ -322,7 +324,25 @@ const GameState = {
     // 15. Roll for random event
     report.event = EventEngine.rollEvent(state);
 
-    // 16. Advance week counter
+    // 16. Aging: process every season (26 weeks)
+    if (state.week > 0 && state.week % AGING_CONFIG.weeksPerYear === 0) {
+      report.aging = AgingEngine.processAging(state);
+    }
+
+    // 17. Reputation: inactivity penalty
+    const lastFightWeekAll = state.fighters.reduce((max, f) => Math.max(max, f.lastFightWeek || 0), 0);
+    if (state.week - lastFightWeekAll >= REPUTATION_CONFIG.inactivityThreshold) {
+      state.reputation = Math.max(0, (state.reputation || 50) + REPUTATION_CONFIG.weeklyInactivityPenalty);
+    }
+
+    // 18. Rivalries: increase intensity each season
+    if (state.week > 0 && state.week % AGING_CONFIG.weeksPerYear === 0) {
+      (state.rivalries || []).forEach(r => {
+        if (!r.resolved) r.intensity = (r.intensity || 1) + 1;
+      });
+    }
+
+    // 19. Advance week counter
     state.week++;
 
     this.save();
@@ -376,6 +396,40 @@ const GameState = {
         if (injuryRoll < 0.4) {
           const severity = injuryRoll < 0.15 ? 'severe' : 'moderate';
           this._applyInjury(playerFighter, severity);
+        }
+        // Permanent chin damage from KO loss
+        playerFighter.koLosses = (playerFighter.koLosses || 0) + 1;
+        const [minDmg, maxDmg] = AGING_CONFIG.chinDamagePerKO;
+        playerFighter.chinDamage = (playerFighter.chinDamage || 0) + minDmg + Math.floor(Math.random() * (maxDmg - minDmg + 1));
+      }
+    }
+
+    // Reputation: +3 for fighting
+    state.reputation = Math.min(100, (state.reputation || 50) + REPUTATION_CONFIG.fightAccepted);
+
+    // Reputation: +8 for title win
+    if (result.winner === 'fighter1' && scheduledFight.isTitle) {
+      state.reputation = Math.min(100, (state.reputation || 50) + REPUTATION_CONFIG.titleWin);
+    }
+
+    // Rivalry: chance after KO or title fight
+    if (result.method === 'KO/TKO' || scheduledFight.isTitle) {
+      if (Math.random() < 0.6) {
+        if (!state.rivalries) state.rivalries = [];
+        // Don't duplicate
+        const exists = state.rivalries.some(r => 
+          (r.playerId === playerFighter.id && r.opponentId === opponent.id) ||
+          (r.playerId === opponent.id && r.opponentId === playerFighter.id)
+        );
+        if (!exists) {
+          state.rivalries.push({
+            playerId: result.winner === 'fighter1' ? playerFighter.id : opponent.id,
+            opponentId: result.winner === 'fighter1' ? opponent.id : playerFighter.id,
+            createdWeek: state.week,
+            origin: result.method === 'KO/TKO' ? 'ko' : 'title',
+            intensity: 1,
+            resolved: false
+          });
         }
       }
     }

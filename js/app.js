@@ -715,6 +715,18 @@ const App = {
               </div>
             ` : ''}
 
+            ${(report.aging && report.aging.length > 0) ? `
+              <div class="summary-section">
+                <div class="summary-section-title" style="color: var(--accent-orange);">🧓 Vieillissement</div>
+                ${report.aging.map(a => `
+                  <div class="summary-challenge refused animate-slide-in">
+                    ${t('event.aging.decline', { name: a.fighterName, age: a.age })}
+                    ${a.declines.map(d => `<span class="badge badge-loss" style="margin-left:4px;">${d.stat} -${d.amount}</span>`).join('')}
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
             <!-- Next event -->
             <div class="summary-next-event animate-slide-in" style="animation-delay: ${report.trainingReport.length * 80 + 200}ms;">
               📅 ${nextEventInfo}

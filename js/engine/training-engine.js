@@ -10,11 +10,8 @@ const TrainingEngine = {
     const trainingType = TRAINING_TYPES[fighter.currentTraining] || TRAINING_TYPES.general;
     const targetStyle = STYLES[fighter.targetProfile] || STYLES.wellRounded;
 
-    // Calculate age factor (younger = faster progression)
-    const ageFactor = fighter.age <= 24 ? 1.3 :
-                      fighter.age <= 27 ? 1.1 :
-                      fighter.age <= 30 ? 0.9 :
-                      fighter.age <= 33 ? 0.7 : 0.5;
+    // Age-based training efficiency from AgingEngine
+    const ageFactor = AgingEngine.getTrainingEfficiency(fighter);
 
     // Apply stat gains from training
     STAT_NAMES.forEach(stat => {
@@ -57,11 +54,7 @@ const TrainingEngine = {
       this._applyTrainingInjury(fighter);
     }
 
-    // Age-related stat decline for older fighters (small chance per week)
-    if (fighter.age >= 33 && Math.random() < 0.1) {
-      const statToDecline = STAT_NAMES[Math.floor(Math.random() * STAT_NAMES.length)];
-      fighter.stats[statToDecline.id] = Math.max(15, fighter.stats[statToDecline.id] - 1);
-    }
+
   },
 
   /**

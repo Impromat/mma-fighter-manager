@@ -256,6 +256,34 @@ const OFFER_CONFIG = {
 
 const ACTIVE_WEIGHT_CLASSES = ['lightweight', 'welterweight', 'middleweight', 'heavyweight'];
 
+const AGING_CONFIG = {
+  weeksPerYear: 26,          // 1 saison = 1 an
+  peakAgeMin: 27,
+  peakAgeMax: 31,
+  retireAgeMin: 35,
+  retireAgeMax: 38,
+  declineStatsPerYear: 2,    // number of stats that decline per year past peak
+  declineAmountMin: 1,
+  declineAmountMax: 3,
+  trainingEfficiencyPeak: 1.0,
+  trainingEfficiencyMin: 0.4,
+  retireChancePerYear: 0.4,  // 40% chance per year past retireAge
+  chinDamagePerKO: [2, 4],   // min-max permanent chin damage per KO loss
+  glassChinThreshold: 3,     // KO losses before "glass chin" warning
+};
+
+const REPUTATION_CONFIG = {
+  initial: 50,
+  fightAccepted: 3,
+  titleWin: 8,
+  declineMotivated: -1,
+  declineIgnored: -4,
+  weeklyInactivityPenalty: -1,
+  inactivityThreshold: 8,    // weeks without any fight before penalty
+  offerQualityThresholdHigh: 75,
+  offerQualityThresholdLow: 35,
+};
+
 const INJURY_DURATIONS = {
   minor: { min: 1, max: 2, label: 'Minor Injury' },
   moderate: { min: 3, max: 5, label: 'Moderate Injury' },

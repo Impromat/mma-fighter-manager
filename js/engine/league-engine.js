@@ -558,6 +558,12 @@ const LeagueEngine = {
       }
     }
 
+    // Reputation bonus: high rep attracts better talent
+    const rep = state.reputation || 50;
+    const repBonus = rep >= REPUTATION_CONFIG.offerQualityThresholdHigh ? 10 :
+                     rep <= REPUTATION_CONFIG.offerQualityThresholdLow ? -10 : 0;
+    statRange = [Math.max(20, statRange[0] + repBonus), Math.min(95, statRange[1] + repBonus)];
+
     // Collect existing names to avoid duplicates
     const existingNames = [
       ...state.fighters.map(f => f.fullName),

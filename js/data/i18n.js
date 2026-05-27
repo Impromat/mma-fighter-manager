@@ -58,6 +58,7 @@ const LANG = {
     'dash.fighters': '🥊 Combattants',
     'dash.record': '📊 Palmarès',
     'dash.nextEvent': '📅 Prochain Event',
+    'dash.reputation': 'Réputation',
     'dash.lastWeek': 'la semaine dernière',
     'dash.available': 'disponible(s)',
     'dash.injured': 'blessé(s)',
@@ -296,6 +297,29 @@ const LANG = {
     'event.foreignCamp.keep': '🏠 Garder au gym',
     'event.foreignCamp.sendResult': '{name} revient du Brésil avec de nouvelles compétences !',
     'event.foreignCamp.keepResult': '{name} continue l\'entraînement normal.',
+
+    'event.glassChin.title': 'Menton fragile',
+    'event.glassChin.desc': '{name} a subi {n} KO dans sa carrière. Les médecins recommandent d\'arrêter.',
+    'event.glassChin.retire': '🛑 Prendre sa retraite',
+    'event.glassChin.continue': '💪 Continuer (risqué)',
+    'event.glassChin.retireResult': '{name} prend sa retraite sur recommandation médicale.',
+    'event.glassChin.continueResult': '{name} décide de continuer malgré les risques. Moral en baisse.',
+
+    'event.retirement.title': 'Départ à la retraite',
+    'event.retirement.desc': '{name} a {age} ans et envisage de raccrocher les gants.',
+    'event.retirement.accept': '🌟 Retraite honorée (+réputation)',
+    'event.retirement.oneFight': '🔥 Un dernier combat (+moral)',
+    'event.retirement.acceptResult': '{name} prend une retraite méritée. Merci champion !',
+    'event.retirement.oneFightResult': '{name} veut un dernier combat avant de raccrocher !',
+
+    'event.rivalryCallout.title': 'Rivalité : Call-out !',
+    'event.rivalryCallout.desc': 'Un ancien adversaire veut sa revanche contre {name} ! La tension monte.',
+    'event.rivalryCallout.accept': '🔥 Accepter la revanche (+moral, +réputation)',
+    'event.rivalryCallout.decline': '❌ Refuser (-réputation)',
+    'event.rivalryCallout.acceptResult': '{name} accepte la revanche ! Le public est en folie.',
+    'event.rivalryCallout.declineResult': '{name} refuse la revanche. La rivalité s\'estompe.',
+
+    'event.aging.decline': '📉 {name} ({age} ans) : déclin de stats dû à l\'âge.',
 
     // --- Saisons ---
     'season.label': 'Saison {n}',
@@ -826,6 +850,7 @@ const LANG = {
     'dash.fighters': '🥊 Fighters',
     'dash.record': '📊 Record',
     'dash.nextEvent': '📅 Next Event',
+    'dash.reputation': 'Reputation',
     'dash.lastWeek': 'last week',
     'dash.available': 'available',
     'dash.injured': 'injured',
@@ -1064,6 +1089,29 @@ const LANG = {
     'event.foreignCamp.keep': '🏠 Keep at gym',
     'event.foreignCamp.sendResult': '{name} returns from Brazil with new skills!',
     'event.foreignCamp.keepResult': '{name} continues regular training.',
+
+    'event.glassChin.title': 'Glass Chin',
+    'event.glassChin.desc': '{name} has suffered {n} KOs in their career. Doctors recommend stopping.',
+    'event.glassChin.retire': '🛑 Retire',
+    'event.glassChin.continue': '💪 Continue (risky)',
+    'event.glassChin.retireResult': '{name} retires on medical advice.',
+    'event.glassChin.continueResult': '{name} decides to continue despite the risks. Morale drops.',
+
+    'event.retirement.title': 'Retirement',
+    'event.retirement.desc': '{name} is {age} years old and considering hanging up the gloves.',
+    'event.retirement.accept': '🌟 Honored retirement (+reputation)',
+    'event.retirement.oneFight': '🔥 One last fight (+morale)',
+    'event.retirement.acceptResult': '{name} takes a well-deserved retirement. Thank you champion!',
+    'event.retirement.oneFightResult': '{name} wants one last fight before hanging up!',
+
+    'event.rivalryCallout.title': 'Rivalry: Call-out!',
+    'event.rivalryCallout.desc': 'A former opponent wants their rematch against {name}! Tension is rising.',
+    'event.rivalryCallout.accept': '🔥 Accept the rematch (+morale, +reputation)',
+    'event.rivalryCallout.decline': '❌ Decline (-reputation)',
+    'event.rivalryCallout.acceptResult': '{name} accepts the rematch! The crowd goes wild.',
+    'event.rivalryCallout.declineResult': '{name} declines the rematch. The rivalry fades.',
+
+    'event.aging.decline': '📉 {name} ({age} yrs): stat decline due to age.',
 
     // --- Seasons ---
     'season.label': 'Season {n}',

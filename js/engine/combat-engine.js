@@ -310,7 +310,9 @@ const CombatEngine = {
     stats.cardio = Math.max(10, stats.cardio - (roundNum - 1) * 3);
 
     const damageImpact = accDamage * 0.3;
-    stats.chin = Math.max(10, stats.chin - damageImpact);
+    // Apply permanent chin damage from past KO losses
+    const permanentChinDamage = fighter.chinDamage || 0;
+    stats.chin = Math.max(10, stats.chin - damageImpact - permanentChinDamage);
     stats.mental = Math.max(10, stats.mental - damageImpact * 0.5);
 
     // Apply fight camp bonuses

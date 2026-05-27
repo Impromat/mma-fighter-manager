@@ -57,6 +57,18 @@ const DashboardView = {
             ${this._getNextEventWeek(state) ? t('dash.weeksAway', { n: this._getNextEventWeek(state) - state.week }) : t('dash.noEvents')}
           </div>
         </div>
+
+        <div class="card summary-card animate-fade-in-up stagger-5">
+          <div class="summary-card-label">⭐ ${t('dash.reputation')}</div>
+          <div class="summary-card-value" style="color: ${(state.reputation || 50) >= 75 ? 'var(--color-success)' : (state.reputation || 50) >= 35 ? 'var(--text-primary)' : 'var(--accent-red)'}">
+            ${state.reputation || 50}/100
+          </div>
+          <div class="summary-card-detail">
+            <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;">
+              <div style="width: ${state.reputation || 50}%; height: 100%; background: ${(state.reputation || 50) >= 75 ? 'var(--color-success)' : (state.reputation || 50) >= 35 ? 'var(--accent-orange)' : 'var(--accent-red)'}; transition: width 0.5s;"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Season Objectives (full width) -->

@@ -287,7 +287,7 @@ const EventEngine = {
             state.budget -= 4000;
             const stats = ['striking', 'grappling', 'wrestling', 'submission', 'cardio'];
             const stat = stats[Math.floor(Math.random() * stats.length)];
-            fighter[stat] = Math.min(99, fighter[stat] + 3);
+            fighter.stats[stat] = Math.min(99, fighter.stats[stat] + 3);
             fighter._skipTraining = true;
             return 'event.foreignCamp.sendResult';
           }
@@ -296,6 +296,112 @@ const EventEngine = {
           labelKey: 'event.foreignCamp.keep',
           apply(fighter, state) {
             return 'event.foreignCamp.keepResult';
+          }
+        }
+      ]
+    },
+
+    // ─── AGING & DAMAGE ───
+    {
+      id: 'glass_chin',
+      category: 'health',
+      icon: '🥊',
+      titleKey: 'event.glassChin.title',
+      descKey: 'event.glassChin.desc',
+      mandatory: true,
+      condition(state) {
+        const f = state.fighters.find(f => (f.koLosses || 0) >= AGING_CONFIG.glassChinThreshold && !f._glassChinWarned);
+        return f ? { valid: true, fighter: f } : { valid: false };
+      },
+      choices: [
+        {
+          labelKey: 'event.glassChin.retire',
+          apply(fighter, state) {
+            fighter.status = 'retired';
+            return 'event.glassChin.retireResult';
+          }
+        },
+        {
+          labelKey: 'event.glassChin.continue',
+          apply(fighter, state) {
+            fighter._glassChinWarned = true;
+            fighter.morale = Math.max(10, (fighter.morale || 50) - 10);
+            return 'event.glassChin.continueResult';
+          }
+        }
+      ]
+    },
+    {
+      id: 'retirement',
+      category: 'health',
+      icon: '🌅',
+      titleKey: 'event.retirement.title',
+      descKey: 'event.retirement.desc',
+      mandatory: true,
+      condition(state) {
+        const f = state.fighters.find(f => 
+          f.age >= (f.retireAge || 36) && 
+          f.status === 'available' && 
+          !f._retirementOffered
+        );
+        return f ? { valid: true, fighter: f } : { valid: false };
+      },
+      choices: [
+        {
+          labelKey: 'event.retirement.accept',
+          apply(fighter, state) {
+            fighter.status = 'retired';
+            state.reputation = Math.min(100, (state.reputation || 50) + 5);
+            return 'event.retirement.acceptResult';
+          }
+        },
+        {
+          labelKey: 'event.retirement.oneFight',
+          apply(fighter, state) {
+            fighter._retirementOffered = true;
+            fighter.morale = Math.min(100, (fighter.morale || 50) + 10);
+            return 'event.retirement.oneFightResult';
+          }
+        }
+      ]
+    },
+    {
+      id: 'rivalry_callout',
+      category: 'rivalry',
+      icon: '🔥',
+      titleKey: 'event.rivalryCallout.title',
+      descKey: 'event.rivalryCallout.desc',
+      mandatory: true,
+      condition(state) {
+        const rivalries = state.rivalries || [];
+        for (const r of rivalries) {
+          if (r.resolved) continue;
+          if (state.week - r.createdWeek < 12) continue; // mature after 12 weeks
+          const fighter = state.fighters.find(f => f.id === r.playerId || f.id === r.opponentId);
+          if (fighter && fighter.status === 'available') {
+            return { valid: true, fighter, rivalry: r };
+          }
+        }
+        return { valid: false };
+      },
+      choices: [
+        {
+          labelKey: 'event.rivalryCallout.accept',
+          apply(fighter, state) {
+            fighter.morale = Math.min(100, (fighter.morale || 50) + 8);
+            state.reputation = Math.min(100, (state.reputation || 50) + 3);
+            return 'event.rivalryCallout.acceptResult';
+          }
+        },
+        {
+          labelKey: 'event.rivalryCallout.decline',
+          apply(fighter, state) {
+            state.reputation = Math.max(0, (state.reputation || 50) - 5);
+            // Resolve the rivalry
+            const rivalries = state.rivalries || [];
+            const r = rivalries.find(r => !r.resolved && (r.playerId === fighter.id || r.opponentId === fighter.id));
+            if (r) r.resolved = true;
+            return 'event.rivalryCallout.declineResult';
           }
         }
       ]
