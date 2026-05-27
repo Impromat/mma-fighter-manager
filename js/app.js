@@ -488,15 +488,8 @@ const App = {
       // Fight week: show fight simulation first
       this.showFightSimulation(thisWeekFights);
     } else {
-      // Normal week: check for random event first
-      const event = EventEngine.rollForEvent(state);
-      if (event) {
-        this.showRandomEvent(event, () => {
-          this._processWeekAndShowSummary();
-        });
-      } else {
-        this._processWeekAndShowSummary();
-      }
+      // Normal week: advance and check for random event
+      this._processWeekAndShowSummary();
     }
   },
 
@@ -507,88 +500,6 @@ const App = {
     const report = GameState.advanceWeek();
     this.updateSidebar();
     this.showWeeklySummary(report);
-  },
-
-  /**
-   * Show random event decision modal
-   */
-  showRandomEvent(event, onComplete) {
-    const modalRoot = document.getElementById('modal-root');
-    const fighter = event.selectedFighter;
-
-    modalRoot.innerHTML = `
-      <div class="modal-overlay event-overlay">
-        <div class="modal event-modal animate-scale-in" style="max-width: 520px;">
-          <div class="event-modal-header">
-            <div class="event-icon-wrapper">
-              <span class="event-icon">${event.icon}</span>
-            </div>
-            <div class="event-category">${event.category.toUpperCase()}</div>
-            <h2 class="event-title">${event.title}</h2>
-          </div>
-          <div class="event-body">
-            <p class="event-text">${event.text}</p>
-            <div class="event-choices">
-              ${event.choices.map((choice, i) => `
-                <button class="event-choice-btn" data-choice="${i}">
-                  <div class="event-choice-label">${choice.label}</div>
-                  <div class="event-choice-desc">${choice.description}</div>
-                </button>
-              `).join('')}
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    // Bind choices
-    modalRoot.querySelectorAll('.event-choice-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const choiceIndex = parseInt(btn.dataset.choice);
-        const result = EventEngine.applyChoice(GameState.get(), event, choiceIndex);
-
-        // Show brief result
-        this._showEventResult(event, event.choices[choiceIndex], result, () => {
-          modalRoot.innerHTML = '';
-          onComplete();
-        });
-      });
-    });
-  },
-
-  /**
-   * Show event result briefly
-   */
-  _showEventResult(event, choice, result, onComplete) {
-    const modalRoot = document.getElementById('modal-root');
-
-    modalRoot.innerHTML = `
-      <div class="modal-overlay event-overlay">
-        <div class="modal event-modal animate-scale-in" style="max-width: 480px;">
-          <div class="event-modal-header" style="padding-bottom: var(--space-md);">
-            <div class="event-icon-wrapper">
-              <span class="event-icon">${event.icon}</span>
-            </div>
-            <h2 class="event-title" style="font-size: var(--font-lg);">${event.title}</h2>
-          </div>
-          <div class="event-body">
-            <div class="event-result-chosen">${choice.label}</div>
-            ${result.applied.length > 0 ? `
-              <div class="event-result-effects">
-                ${result.applied.map(line => `
-                  <div class="event-effect-line">${line}</div>
-                `).join('')}
-              </div>
-            ` : ''}
-            <button class="btn btn-primary btn-block mt-lg" id="event-continue">
-              Continuer →
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.getElementById('event-continue').addEventListener('click', onComplete);
   },
 
   /**
