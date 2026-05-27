@@ -713,11 +713,16 @@ const App = {
   },
 
   /**
-   * Show fight simulation overlay (pre-fight card)
+   * Show fight simulation as full page (pre-fight card)
    */
   showFightSimulation(fights) {
     const state = GameState.get();
-    const modalRoot = document.getElementById('modal-root');
+
+    // Hide sidebar, use full page
+    document.querySelector('.sidebar')?.classList.add('fight-night-active');
+    document.querySelector('.main-content')?.classList.add('fight-night-mode');
+
+    const container = document.getElementById('view-container');
 
     const fightCards = fights.map(fight => {
       const playerFighter = state.fighters.find(f => f.id === fight.playerFighterId);
@@ -725,45 +730,51 @@ const App = {
       if (!playerFighter || !opponent) return '';
 
       const isInjured = playerFighter.status === 'injured';
+      const f1Ovr = TrainingEngine.calculateOverall(playerFighter);
+      const f2Ovr = TrainingEngine.calculateOverall(opponent);
+      const wcData = WEIGHT_CLASSES.find(wc => wc.id === playerFighter.weightClass);
 
       return `
-        <div class="upcoming-fight" style="margin-bottom: var(--space-md); ${isInjured ? 'opacity: 0.5;' : ''}">
-          <div style="flex: 1; text-align: center;">
-            <div class="fighter-mini-avatar" style="background: ${playerFighter.avatarColor}; margin: 0 auto;">
+        <div class="fn-fight-card ${isInjured ? 'fn-cancelled' : ''}">
+          <div class="fn-card-fighter">
+            <div class="fn-card-avatar" style="background: ${playerFighter.avatarColor};">
               ${playerFighter.firstName[0]}${playerFighter.lastName[0]}
             </div>
-            <div class="fight-sim-fighter-name" style="margin-top: var(--space-sm);">${playerFighter.fullName}</div>
-            <div class="fight-sim-fighter-record">${playerFighter.wins}-${playerFighter.losses}</div>
-            ${isInjured ? `<span class="badge badge-injured" style="margin-top: 4px;">🤕 ${t('fighters.injured')}</span>` : ''}
+            <div class="fn-card-name">${playerFighter.fullName}</div>
+            <div class="fn-card-record">${playerFighter.wins}-${playerFighter.losses}</div>
+            <div class="fn-card-ovr">${f1Ovr} OVR</div>
+            <div class="fn-card-style">${STYLES[playerFighter.style]?.icon} ${STYLES[playerFighter.style]?.name}</div>
+            ${isInjured ? `<span class="badge badge-injured">🤕 ${t('fighters.injured')}</span>` : ''}
           </div>
-          <div class="fight-sim-vs-icon">${isInjured ? '❌' : 'VS'}</div>
-          <div style="flex: 1; text-align: center;">
-            <div class="fighter-mini-avatar" style="background: ${opponent.avatarColor}; margin: 0 auto;">
+          <div class="fn-card-center">
+            <div class="fn-card-vs">VS</div>
+            <div class="fn-card-wc">${wcData?.icon} ${wcData?.name || ''}</div>
+            ${fight.isTitle ? '<div class="fn-card-title">🏆 Title Fight</div>' : ''}
+          </div>
+          <div class="fn-card-fighter">
+            <div class="fn-card-avatar" style="background: ${opponent.avatarColor};">
               ${opponent.firstName[0]}${opponent.lastName[0]}
             </div>
-            <div class="fight-sim-fighter-name" style="margin-top: var(--space-sm);">${opponent.fullName}</div>
-            <div class="fight-sim-fighter-record">${opponent.wins}-${opponent.losses}</div>
+            <div class="fn-card-name">${opponent.fullName}</div>
+            <div class="fn-card-record">${opponent.wins}-${opponent.losses}</div>
+            <div class="fn-card-ovr">${f2Ovr} OVR</div>
+            <div class="fn-card-style">${STYLES[opponent.style]?.icon} ${STYLES[opponent.style]?.name}</div>
           </div>
-          ${isInjured ? `<div class="text-xs text-danger text-center" style="width: 100%; margin-top: var(--space-sm);">${t('fight.cancelledInjury')}</div>` : ''}
         </div>
       `;
     }).join('');
 
-    modalRoot.innerHTML = `
-      <div class="fight-sim-overlay">
-        <div class="fight-sim-container">
-          <div class="fight-sim-header">
-            <h2 style="text-align: center; margin-bottom: var(--space-sm);">
-              🏟️ ${fights[0]?.eventName || 'AFC Fight Night'}
-            </h2>
-            <div class="text-secondary text-center mb-lg">${t('sidebar.week', { n: state.week })} — ${t('fight.fightNight')}</div>
-          </div>
-          ${fightCards}
-          <div style="text-align: center; margin-top: var(--space-xl);">
-            <button class="btn btn-primary btn-lg" id="simulate-fights-btn">
-              ${t('fight.simulate')}
-            </button>
-          </div>
+    container.innerHTML = `
+      <div class="fn-page">
+        <div class="fn-header">
+          <h1 class="fn-event-title">🏟️ ${fights[0]?.eventName || 'AFC Fight Night'}</h1>
+          <div class="fn-event-sub">${t('sidebar.week', { n: state.week })} — ${t('fight.fightNight')}</div>
+        </div>
+        ${fightCards}
+        <div class="fn-start-area">
+          <button class="btn btn-primary btn-lg fn-start-btn" id="simulate-fights-btn">
+            ⚔️ ${t('fight.simulate')}
+          </button>
         </div>
       </div>
     `;
@@ -772,7 +783,6 @@ const App = {
       const state = GameState.get();
       const thisWeekFights = state.schedule.filter(s => s.week === state.week && !s.completed);
 
-      // Prepare fight data for interactive simulation
       const fightData = [];
       const cancelledFights = [];
 
@@ -781,7 +791,6 @@ const App = {
         const opponent = state.aiFighters.find(f => f.id === sf.opponentId);
         if (!playerFighter || !opponent) return;
 
-        // Check if fighter is injured — cancel the fight
         if (playerFighter.status === 'injured') {
           sf.completed = true;
           cancelledFights.push(playerFighter.fullName);
@@ -793,30 +802,37 @@ const App = {
         fightData.push({ scheduledFight: sf, playerFighter, opponent, campBonuses });
       });
 
-      // Notify cancelled fights
       cancelledFights.forEach(name => {
         this.showToast(`${name} — ${t('fight.cancelledInjury')}`, 'warning');
       });
 
       if (fightData.length === 0) {
+        this._exitFightNight();
         const report = GameState.advanceWeek();
-        modalRoot.innerHTML = '';
         this.updateSidebar();
         this.showWeeklySummary(report);
         return;
       }
 
-      // Start interactive fight chain
       this._interactiveFightResults = [];
       this._playFightInteractive(fightData, 0);
     });
   },
 
   /**
+   * Exit fight night mode — restore sidebar and main layout
+   */
+  _exitFightNight() {
+    document.querySelector('.sidebar')?.classList.remove('fight-night-active');
+    document.querySelector('.main-content')?.classList.remove('fight-night-mode');
+    document.getElementById('modal-root').innerHTML = '';
+  },
+
+  /**
    * Play a fight interactively (round by round with corner instructions)
    */
   _playFightInteractive(fightData, fightIndex) {
-    const modalRoot = document.getElementById('modal-root');
+    const container = document.getElementById('view-container');
     const { scheduledFight, playerFighter, opponent, campBonuses } = fightData[fightIndex];
     const isTitle = scheduledFight.isTitle;
     const totalRounds = isTitle ? 5 : 3;
@@ -852,7 +868,7 @@ const App = {
       if (roundResult.finish) fightFinished = true;
 
       // Render the live fight UI
-      this._renderLiveFight(modalRoot, playerFighter, opponent, scheduledFight, currentRound, totalRounds);
+      this._renderLiveFight(container, playerFighter, opponent, scheduledFight, currentRound, totalRounds);
 
       // Animate events
       const log = document.getElementById('live-event-log');
@@ -965,60 +981,72 @@ const App = {
   },
 
   /**
-   * Render the live fight shell (fighters, scoring bars)
+   * Render the full-page fight UI (FM-style 3 columns)
    */
-  _renderLiveFight(modalRoot, f1, f2, scheduledFight, currentRound, totalRounds) {
-    modalRoot.innerHTML = `
-      <div class="live-fight-overlay">
-        <div class="live-fight-container">
-          <div class="live-fight-topbar">
-            <div class="live-event-name">🏟️ ${scheduledFight.eventName || 'AFC Fight Night'}</div>
-            <div class="live-round-indicator" id="live-round">${t('fight.round')} <strong>${currentRound}</strong> / ${totalRounds}</div>
+  _renderLiveFight(container, f1, f2, scheduledFight, currentRound, totalRounds) {
+    const f1Ovr = TrainingEngine.calculateOverall(f1);
+    const f2Ovr = TrainingEngine.calculateOverall(f2);
+
+    container.innerHTML = `
+      <div class="fn-page fn-live">
+        <div class="fn-live-topbar">
+          <div class="fn-live-event">🏟️ ${scheduledFight.eventName || 'AFC Fight Night'}</div>
+          <div class="fn-live-round" id="live-round">${t('fight.round')} <strong>${currentRound}</strong> / ${totalRounds}</div>
+          ${scheduledFight.isTitle ? '<div class="fn-live-title">🏆 Title Fight</div>' : ''}
+        </div>
+
+        <div class="fn-live-main">
+          <!-- Left: Your fighter -->
+          <div class="fn-live-panel fn-panel-f1">
+            <div class="fn-panel-avatar" style="background: ${f1.avatarColor};">
+              ${f1.firstName[0]}${f1.lastName[0]}
+            </div>
+            <div class="fn-panel-name">${f1.fullName}</div>
+            <div class="fn-panel-record">${f1.wins}-${f1.losses}</div>
+            <div class="fn-panel-ovr">${f1Ovr}</div>
+            <div class="fn-panel-ovr-label">OVR</div>
+            <div class="fn-panel-style">${STYLES[f1.style]?.icon} ${STYLES[f1.style]?.name}</div>
           </div>
 
-          <div class="live-fight-fighters">
-            <div class="live-fighter live-f1">
-              <div class="live-fighter-avatar" style="background: ${f1.avatarColor};">
-                ${f1.firstName[0]}${f1.lastName[0]}
-              </div>
-              <div class="live-fighter-name">${f1.fullName}</div>
-              <div class="live-fighter-record">${f1.wins}-${f1.losses}</div>
-            </div>
-
-            <div class="live-fight-scoring">
-              <div class="live-score-section">
-                <div class="live-score-label">${t('fight.damageDealt')}</div>
-                <div class="live-dual-bar">
-                  <div class="live-bar-f1" id="live-damage-f1" style="width: 0%;"></div>
-                  <div class="live-bar-f2" id="live-damage-f2" style="width: 0%;"></div>
-                </div>
-              </div>
-              <div class="live-score-section">
-                <div class="live-score-label">${t('fight.control')}</div>
-                <div class="live-dual-bar">
-                  <div class="live-bar-f1" id="live-control-f1" style="width: 0%;"></div>
-                  <div class="live-bar-f2" id="live-control-f2" style="width: 0%;"></div>
-                </div>
-              </div>
-              <div class="live-round-scores" id="live-round-scores"></div>
-            </div>
-
-            <div class="live-fighter live-f2">
-              <div class="live-fighter-avatar" style="background: ${f2.avatarColor};">
-                ${f2.firstName[0]}${f2.lastName[0]}
-              </div>
-              <div class="live-fighter-name">${f2.fullName}</div>
-              <div class="live-fighter-record">${f2.wins}-${f2.losses}</div>
-            </div>
+          <!-- Center: Commentary -->
+          <div class="fn-live-center">
+            <div class="live-event-log" id="live-event-log"></div>
           </div>
 
-          <div class="live-event-log" id="live-event-log"></div>
-
-          <div class="live-controls" id="live-controls" style="display: none;">
-            <button class="btn btn-primary btn-lg" id="live-continue">
-              ${t('fight.continue')}
-            </button>
+          <!-- Right: Opponent -->
+          <div class="fn-live-panel fn-panel-f2">
+            <div class="fn-panel-avatar" style="background: ${f2.avatarColor};">
+              ${f2.firstName[0]}${f2.lastName[0]}
+            </div>
+            <div class="fn-panel-name">${f2.fullName}</div>
+            <div class="fn-panel-record">${f2.wins}-${f2.losses}</div>
+            <div class="fn-panel-ovr">${f2Ovr}</div>
+            <div class="fn-panel-ovr-label">OVR</div>
+            <div class="fn-panel-style">${STYLES[f2.style]?.icon} ${STYLES[f2.style]?.name}</div>
           </div>
+        </div>
+
+        <!-- Bottom: Stats bars -->
+        <div class="fn-live-stats">
+          <div class="fn-stat-row">
+            <div class="fn-stat-bar-wrap">
+              <div class="fn-stat-label">👊 ${t('analysis.strikesLanded')}</div>
+              <div class="live-dual-bar">
+                <div class="live-bar-f1" id="live-damage-f1" style="width: 0%;"></div>
+                <div class="live-bar-f2" id="live-damage-f2" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="fn-stat-row">
+            <div class="fn-stat-bar-wrap">
+              <div class="fn-stat-label">🎯 ${t('analysis.control')}</div>
+              <div class="live-dual-bar">
+                <div class="live-bar-f1" id="live-control-f1" style="width: 0%;"></div>
+                <div class="live-bar-f2" id="live-control-f2" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="live-round-scores" id="live-round-scores"></div>
         </div>
       </div>
     `;
@@ -1250,27 +1278,21 @@ const App = {
       <div class="live-result-method">
         ${result.method}${result.finishRound ? ` — ${t('fight.round')} ${result.finishRound}` : ''}
       </div>
+      <button class="btn btn-primary btn-lg fn-continue-btn" id="live-continue" style="margin-top: var(--space-lg); width: 100%;">
+        ${fightIndex + 1 < fightData.length ? '⚔️ ' + t('fight.continue') : '→ ' + t('summary.continueBtn')}
+      </button>
     `;
     log.appendChild(resultEl);
     log.scrollTop = log.scrollHeight;
 
-    // Store result
     this._interactiveFightResults.push(result);
-
-    // Show continue button
-    const controls = document.getElementById('live-controls');
-    controls.style.display = 'flex';
-    controls.classList.add('animate-fade-in');
 
     document.getElementById('live-continue').addEventListener('click', () => {
       if (fightIndex + 1 < fightData.length) {
-        // Next fight
         this._playFightInteractive(fightData, fightIndex + 1);
       } else {
-        // All fights done — advance week with pre-simulated results
-        const modalRoot = document.getElementById('modal-root');
+        this._exitFightNight();
         const report = GameState.advanceWeek(this._interactiveFightResults);
-        modalRoot.innerHTML = '';
         this.updateSidebar();
         this.showWeeklySummary(report);
       }

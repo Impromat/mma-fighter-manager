@@ -953,6 +953,344 @@
   border-radius: var(--radius-md);
 }
 
+/* --- Fight Night Full Page --- */
+.fight-night-active {
+  display: none !important;
+}
+
+.fight-night-mode {
+  margin-left: 0 !important;
+  width: 100% !important;
+}
+
+.fn-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-lg);
+  animation: fadeIn 0.4s ease;
+}
+
+.fn-header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.fn-event-title {
+  font-size: var(--font-2xl);
+  font-weight: 900;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.fn-event-sub {
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+}
+
+/* Pre-fight cards */
+.fn-fight-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xl);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-lg);
+  background: var(--glass-bg);
+  border: var(--glass-border);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(12px);
+}
+
+.fn-fight-card.fn-cancelled {
+  opacity: 0.4;
+}
+
+.fn-card-fighter {
+  flex: 1;
+  text-align: center;
+}
+
+.fn-card-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: var(--font-lg);
+  color: white;
+  margin: 0 auto var(--space-sm);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.fn-card-name {
+  font-weight: 800;
+  font-size: var(--font-lg);
+  color: var(--text-primary);
+}
+
+.fn-card-record {
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.fn-card-ovr {
+  font-size: var(--font-xl);
+  font-weight: 900;
+  color: var(--accent-orange);
+  margin-top: var(--space-sm);
+}
+
+.fn-card-style {
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.fn-card-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+.fn-card-vs {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--accent-red);
+  letter-spacing: 2px;
+}
+
+.fn-card-wc {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+}
+
+.fn-card-title {
+  font-size: var(--font-sm);
+  font-weight: 700;
+  color: #ffd700;
+  background: rgba(255, 215, 0, 0.1);
+  padding: 2px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.fn-start-area {
+  text-align: center;
+  padding: var(--space-xl) 0;
+}
+
+.fn-start-btn {
+  font-size: var(--font-lg) !important;
+  padding: var(--space-md) var(--space-2xl) !important;
+}
+
+/* Live fight — 3 column layout */
+.fn-live {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 20px);
+}
+
+.fn-live-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+  padding: var(--space-md) var(--space-xl);
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.06), rgba(244, 162, 97, 0.06));
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.fn-live-event {
+  font-size: var(--font-sm);
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.fn-live-round {
+  font-size: var(--font-sm);
+  color: var(--accent-orange);
+  font-weight: 600;
+  padding: 4px 14px;
+  background: rgba(244, 162, 97, 0.1);
+  border-radius: var(--radius-md);
+}
+
+.fn-live-title {
+  font-size: var(--font-xs);
+  font-weight: 700;
+  color: #ffd700;
+  background: rgba(255, 215, 0, 0.1);
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.fn-live-main {
+  display: grid;
+  grid-template-columns: 200px 1fr 200px;
+  gap: 0;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Fighter side panels */
+.fn-live-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg) var(--space-md);
+  text-align: center;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.fn-panel-f2 {
+  border-right: none;
+  border-left: 1px solid var(--border-subtle);
+}
+
+.fn-panel-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: var(--font-base);
+  color: white;
+  margin-bottom: var(--space-sm);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.fn-panel-name {
+  font-weight: 700;
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+.fn-panel-record {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.fn-panel-ovr {
+  font-size: var(--font-2xl);
+  font-weight: 900;
+  line-height: 1;
+  margin-top: var(--space-md);
+}
+
+.fn-panel-f1 .fn-panel-ovr { color: var(--accent-orange); }
+.fn-panel-f2 .fn-panel-ovr { color: var(--accent-red); }
+
+.fn-panel-ovr-label {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.fn-panel-style {
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+  margin-top: var(--space-sm);
+}
+
+/* Center commentary */
+.fn-live-center {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.fn-live-center .live-event-log {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-lg);
+  max-height: none;
+  min-height: 0;
+}
+
+/* Bottom stats */
+.fn-live-stats {
+  flex-shrink: 0;
+  padding: var(--space-md) var(--space-xl);
+  border-top: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.fn-stat-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.fn-stat-bar-wrap {
+  flex: 1;
+}
+
+.fn-stat-label {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 2px;
+}
+
+/* Mobile fight night */
+@media (max-width: 768px) {
+  .fn-fight-card {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .fn-live-main {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .fn-live-panel {
+    flex-direction: row;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .fn-panel-f2 {
+    border-left: none;
+    border-top: 1px solid var(--border-subtle);
+    border-bottom: none;
+  }
+
+  .fn-panel-avatar {
+    width: 44px;
+    height: 44px;
+    font-size: var(--font-xs);
+    margin-bottom: 0;
+  }
+
+  .fn-panel-ovr {
+    font-size: var(--font-lg);
+    margin-top: 0;
+  }
+
+  .fn-live-center .live-event-log {
+    max-height: 45vh;
+  }
+}
+
 /* --- Live Fight Replay --- */
 .live-fight-overlay {
   position: fixed;
