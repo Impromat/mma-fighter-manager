@@ -39,9 +39,13 @@ const CombatEngine = {
 
   /**
    * Simulate one round (public API for interactive fights)
+   * AI gets random corner instructions for balance
    */
   simulateOneRound(f1, f2, roundNum, totalRounds, campBonuses, cornerInstruction, prevF1Damage, prevF2Damage) {
-    return this._simulateRound(f1, f2, roundNum, totalRounds, campBonuses, cornerInstruction, null, prevF1Damage, prevF2Damage);
+    // AI picks a corner instruction based on situation
+    const aiCorner = this._pickAICorner(f2, f1, prevF2Damage, prevF1Damage, roundNum);
+    const oppEffects = aiCorner ? aiCorner.effects : null;
+    return this._simulateRound(f1, f2, roundNum, totalRounds, campBonuses, cornerInstruction, oppEffects, prevF1Damage, prevF2Damage);
   },
 
   /**
@@ -495,10 +499,10 @@ const CombatEngine = {
   _checkKO(defenderStats, totalDamage, roundNum) {
     const chinFactor = (100 - defenderStats.chin) / 100;
     const mentalFactor = (100 - defenderStats.mental) / 150;
-    const damageFactor = totalDamage / 30;
-    const roundFactor = roundNum * 0.05;
+    const damageFactor = totalDamage / 25;
+    const roundFactor = roundNum * 0.06;
 
-    const koChance = (chinFactor * 0.4 + damageFactor * 0.35 + mentalFactor * 0.15 + roundFactor) * 0.25;
+    const koChance = (chinFactor * 0.4 + damageFactor * 0.35 + mentalFactor * 0.15 + roundFactor) * 0.35;
     return Math.random() < koChance;
   },
 
@@ -510,8 +514,39 @@ const CombatEngine = {
     const defensePower = defenderStats.submission * 0.5 + defenderStats.grappling * 0.3 + defenderStats.mental * 0.3;
 
     const advantage = (attackPower - defensePower) / 100;
-    const subChance = 0.12 + advantage * 0.3;
-    return Math.random() < Math.max(0.03, Math.min(0.35, subChance));
+    const subChance = 0.15 + advantage * 0.35;
+    return Math.random() < Math.max(0.05, Math.min(0.40, subChance));
+  },
+
+  /**
+   * AI picks a corner instruction based on situation
+   */
+  _pickAICorner(aiFighter, opponent, aiDamage, oppDamage, roundNum) {
+    if (roundNum === 1) return null; // No corner for round 1
+
+    const instructions = Object.values(CORNER_INSTRUCTIONS);
+    
+    // AI is hurt — recover
+    if (aiDamage > 12) {
+      return instructions.find(i => i.id === 'recover') || null;
+    }
+    
+    // Opponent is hurt — go for finish
+    if (oppDamage > 12) {
+      return instructions.find(i => i.id === 'goForFinish') || null;
+    }
+    
+    // Based on fighter style
+    const styleChoices = {
+      striker: ['stayStanding', 'workTheBody', 'goForFinish'],
+      grappler: ['takedown', 'stayPatient'],
+      wrestler: ['takedown', 'workTheBody'],
+      wellRounded: ['stayStanding', 'takedown', 'stayPatient', 'workTheBody']
+    };
+    
+    const choices = styleChoices[aiFighter.style] || styleChoices.wellRounded;
+    const choiceId = choices[Math.floor(Math.random() * choices.length)];
+    return instructions.find(i => i.id === choiceId) || null;
   },
 
   /**
