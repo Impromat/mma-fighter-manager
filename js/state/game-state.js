@@ -298,7 +298,13 @@ const GameState = {
     report.budgetAfter = state.budget;
     report.budgetDelta = state.budget - report.budgetBefore;
 
-    // 12. Season tracking
+    // 12. Track lastFightWeek for cooldown
+    report.fightResults.forEach(result => {
+      const pf = state.fighters.find(f => f.id === result.fighter1?.id);
+      if (pf) pf.lastFightWeek = state.week;
+    });
+
+    // 13. Season tracking
     report.fightResults.forEach(result => {
       SeasonEngine.recordFight(state, result);
     });
@@ -310,7 +316,10 @@ const GameState = {
       report.seasonEnd = SeasonEngine.getSeasonSummary(state);
     }
 
-    // 13. Advance week counter
+    // 14. Process outgoing challenges
+    report.challengeResults = LeagueEngine.processOutgoingChallenges(state);
+
+    // 15. Advance week counter
     state.week++;
 
     this.save();

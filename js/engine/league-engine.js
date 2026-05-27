@@ -250,8 +250,10 @@ const LeagueEngine = {
     state.fighters.forEach(fighter => {
       // Skip if injured, already has a pending offer, or already has a scheduled fight
       if (fighter.status !== 'available') return;
+      if (this.isFighterOnCooldown(fighter, state)) return;
       if (state.fightOffers.some(o => o.fighterId === fighter.id && o.status === 'pending')) return;
       if (state.schedule.some(s => !s.completed && s.playerFighterId === fighter.id)) return;
+      if ((state.outgoingChallenges || []).some(c => c.status === 'pending' && c.fighterId === fighter.id)) return;
 
       // Find opponent adjusted by decline history
       const opponent = this._findAdjustedOpponent(fighter, state);
@@ -259,7 +261,10 @@ const LeagueEngine = {
 
       const isTitle = this.isTitleShot(fighter, state);
       const prepWeeks = isTitle ? OFFER_CONFIG.prepWeeksTitle : OFFER_CONFIG.prepWeeksNormal;
-      const fightWeek = state.week + OFFER_CONFIG.decisionWindow + prepWeeks;
+      const fightWeek = Math.max(
+        state.week + OFFER_CONFIG.decisionWindow + prepWeeks,
+        (fighter.lastFightWeek || 0) + OFFER_CONFIG.fightCooldown + prepWeeks
+      );
       const expiresWeek = state.week + OFFER_CONFIG.decisionWindow;
 
       // Calculate purse adjusted by decline history
@@ -267,6 +272,12 @@ const LeagueEngine = {
       const purse = this._adjustPurse(basePurse, fighter.id, state);
 
       const opponentRank = this.getFighterRanking(opponent.id, state);
+
+      // Determine reason for context
+      let reason = 'ranking';
+      if (isTitle) reason = 'title';
+      else if (fighter.wins + fighter.losses === 0) reason = 'debut';
+      else if (fightWeek - state.week <= OFFER_CONFIG.prepWeeksShort + 1) reason = 'shortNotice';
 
       newOffers.push({
         id: `offer_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
@@ -282,6 +293,7 @@ const LeagueEngine = {
         status: 'pending',
         declineReason: null,
         createdWeek: state.week,
+        reason,
       });
     });
 
@@ -569,5 +581,165 @@ const LeagueEngine = {
     state.freeAgents = agents;
     state.lastMarketRefresh = state.week;
     return agents;
+  },
+
+  /**
+   * Check if a fighter is on cooldown (too soon since last fight)
+   */
+  isFighterOnCooldown(fighter, state) {
+    if (fighter.status === 'injured') return true;
+    const lastFight = fighter.lastFightWeek || 0;
+    return (state.week - lastFight) < OFFER_CONFIG.fightCooldown;
+  },
+
+  /**
+   * Get earliest week a fighter can fight
+   */
+  getEarliestFightWeek(fighter, state) {
+    const lastFight = fighter.lastFightWeek || 0;
+    const cooldownEnd = lastFight + OFFER_CONFIG.fightCooldown;
+    // Also account for prep time
+    const earliest = Math.max(state.week + OFFER_CONFIG.prepWeeksNormal + 1, cooldownEnd + OFFER_CONFIG.prepWeeksNormal);
+    return earliest;
+  },
+
+  /**
+   * Check if a fighter can be proposed for a fight
+   */
+  canProposeFight(fighter, state) {
+    if (fighter.status !== 'available') return { ok: false, reason: 'injured' };
+    if (this.isFighterOnCooldown(fighter, state)) {
+      const earliest = this.getEarliestFightWeek(fighter, state);
+      return { ok: false, reason: 'cooldown', earliestWeek: earliest };
+    }
+    if (state.schedule.some(s => !s.completed && s.playerFighterId === fighter.id)) {
+      return { ok: false, reason: 'booked' };
+    }
+    if ((state.outgoingChallenges || []).some(c => c.status === 'pending' && c.fighterId === fighter.id)) {
+      return { ok: false, reason: 'pendingChallenge' };
+    }
+    return { ok: true };
+  },
+
+  /**
+   * Calculate acceptance chance for a challenge
+   */
+  getAcceptanceChance(fighter, opponent, state) {
+    const playerRank = this.getFighterRanking(fighter.id, state);
+    const opponentRank = this.getFighterRanking(opponent.id, state);
+
+    // Both unranked
+    if (playerRank === null && opponentRank === null) return 85;
+
+    // Player unranked challenging ranked
+    if (playerRank === null && opponentRank !== null) {
+      if (opponentRank <= 5) return 15; // Top 5 won't fight unranked
+      if (opponentRank <= 10) return 40;
+      return 70;
+    }
+
+    // Player ranked challenging unranked
+    if (playerRank !== null && opponentRank === null) return 80;
+
+    // Both ranked — based on gap
+    const gap = Math.abs(playerRank - opponentRank);
+    if (gap <= 2) return 90;
+    if (gap <= 4) return 75;
+    if (gap <= 6) return 50;
+    if (gap <= 8) return 30;
+    return 15;
+  },
+
+  /**
+   * Create an outgoing challenge
+   */
+  createChallenge(fighterId, opponentId, state) {
+    if (!state.outgoingChallenges) state.outgoingChallenges = [];
+
+    const fighter = state.fighters.find(f => f.id === fighterId);
+    const opponent = state.aiFighters.find(f => f.id === opponentId);
+    if (!fighter || !opponent) return null;
+
+    const isTitle = this.isTitleShot(fighter, state);
+    const prepWeeks = isTitle ? OFFER_CONFIG.prepWeeksTitle : OFFER_CONFIG.prepWeeksNormal;
+    const fightWeek = Math.max(
+      state.week + prepWeeks + 1,
+      (fighter.lastFightWeek || 0) + OFFER_CONFIG.fightCooldown + prepWeeks
+    );
+
+    const purse = FinanceEngine.calculatePurse(fighter, state, isTitle);
+    const acceptChance = this.getAcceptanceChance(fighter, opponent, state);
+
+    const challenge = {
+      id: `challenge_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+      fighterId: fighter.id,
+      fighterName: fighter.fullName,
+      opponentId: opponent.id,
+      opponentName: opponent.fullName,
+      fightWeek,
+      purse,
+      isTitle,
+      acceptChance,
+      status: 'pending', // pending → accepted / refused
+      createdWeek: state.week
+    };
+
+    state.outgoingChallenges.push(challenge);
+    GameState.save();
+    return challenge;
+  },
+
+  /**
+   * Process outgoing challenges (called in advanceWeek)
+   * Returns array of results for weekly summary
+   */
+  processOutgoingChallenges(state) {
+    if (!state.outgoingChallenges) return [];
+
+    const results = [];
+    const pending = state.outgoingChallenges.filter(c => c.status === 'pending');
+
+    pending.forEach(challenge => {
+      const fighter = state.fighters.find(f => f.id === challenge.fighterId);
+      const opponent = state.aiFighters.find(f => f.id === challenge.opponentId);
+
+      if (!fighter || !opponent) {
+        challenge.status = 'refused';
+        results.push({ ...challenge, reason: 'unavailable' });
+        return;
+      }
+
+      // Roll for acceptance
+      const roll = Math.random() * 100;
+      if (roll < challenge.acceptChance) {
+        // Accepted — schedule the fight
+        challenge.status = 'accepted';
+
+        state.schedule.push({
+          id: `fight_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+          week: challenge.fightWeek,
+          eventName: `AFC Fight Night ${Math.ceil(challenge.fightWeek / EVENT_INTERVAL)}`,
+          playerFighterId: fighter.id,
+          opponentId: opponent.id,
+          fightCamp: null,
+          isTitle: challenge.isTitle,
+          completed: false
+        });
+
+        results.push({ ...challenge, accepted: true });
+      } else {
+        // Refused
+        challenge.status = 'refused';
+        const playerRank = LeagueEngine.getFighterRanking(fighter.id, state);
+        const opponentRank = LeagueEngine.getFighterRanking(opponent.id, state);
+        const gap = (playerRank === null || opponentRank === null) ? 99 : Math.abs(playerRank - opponentRank);
+        const reason = gap > 5 ? 'rank' : 'busy';
+        results.push({ ...challenge, accepted: false, reason });
+      }
+    });
+
+    // Clean up old challenges (keep last 10)
+    state.outgoingChallenges = state.outgoingChallenges.slice(-10);
+    return results;
   }
 };

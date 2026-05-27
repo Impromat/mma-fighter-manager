@@ -251,6 +251,7 @@ const OFFER_CONFIG = {
   maxConsecutiveDeclines: 3, // before rank penalty kicks in
   purseBoostOnDecline: 0.2, // +20% purse after lowPurse decline
   pursePenaltyOnWeak: 0.2,  // -20% purse after tooStrong decline
+  fightCooldown: 4,         // minimum weeks between fights
 };
 
 const ACTIVE_WEIGHT_CLASSES = ['lightweight', 'welterweight', 'middleweight', 'heavyweight'];

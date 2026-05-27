@@ -690,6 +690,20 @@ const App = {
 
             ${recoveriesHTML}
 
+            ${(report.challengeResults && report.challengeResults.length > 0) ? `
+              <div class="summary-section">
+                <div class="summary-section-title">⚔️ ${t('match.proposeTitle')}</div>
+                ${report.challengeResults.map(c => `
+                  <div class="summary-challenge ${c.accepted ? 'accepted' : 'refused'} animate-slide-in">
+                    ${c.accepted 
+                      ? `<span class="badge badge-win">✅</span> ${t('match.accepted', { name: c.opponentName, opponent: c.fighterName })}`
+                      : `<span class="badge badge-loss">❌</span> ${t('match.refused', { name: c.opponentName, opponent: c.fighterName })}`
+                    }
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
             <!-- Next event -->
             <div class="summary-next-event animate-slide-in" style="animation-delay: ${report.trainingReport.length * 80 + 200}ms;">
               📅 ${nextEventInfo}

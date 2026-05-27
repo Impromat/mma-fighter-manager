@@ -1240,6 +1240,132 @@
   color: var(--text-muted);
 }
 
+/* ========== MATCHMAKING ========== */
+.offer-reason-badge {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--accent-orange);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.badge-pending {
+  background: rgba(244, 162, 97, 0.1);
+  color: var(--accent-orange);
+  font-size: 9px;
+  padding: 2px 6px;
+}
+
+.btn-xs {
+  padding: 3px 8px;
+  font-size: 11px;
+}
+
+.propose-target {
+  text-align: center;
+  margin-bottom: var(--space-md);
+}
+
+.propose-target-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: var(--space-sm);
+}
+
+.propose-target-fighter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  justify-content: center;
+}
+
+.propose-divider {
+  text-align: center;
+  font-size: var(--font-xl);
+  font-weight: 900;
+  color: var(--text-muted);
+  padding: var(--space-sm) 0;
+}
+
+.propose-select-label {
+  font-size: var(--font-sm);
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.propose-candidates {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.propose-candidate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.propose-candidate:not(.disabled):hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--accent-orange);
+  transform: translateX(4px);
+}
+
+.propose-candidate.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.propose-candidate-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.propose-candidate-chance {
+  text-align: right;
+}
+
+.propose-chance-val {
+  font-size: var(--font-lg);
+  font-weight: 900;
+}
+
+.propose-chance-val.high { color: var(--color-success); }
+.propose-chance-val.mid { color: var(--accent-orange); }
+.propose-chance-val.low { color: var(--accent-red); }
+
+.summary-challenge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  font-weight: 600;
+}
+
+.summary-challenge.accepted {
+  background: rgba(46, 204, 113, 0.06);
+  color: var(--color-success);
+}
+
+.summary-challenge.refused {
+  background: rgba(230, 57, 70, 0.06);
+  color: var(--text-muted);
+}
+
 .fn-card-center {
   display: flex;
   flex-direction: column;

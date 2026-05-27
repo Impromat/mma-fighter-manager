@@ -278,9 +278,11 @@ const DashboardView = {
       const rankDisplay = offer.opponentRank !== null ? t('offer.vsRank', { n: offer.opponentRank }) : t('offer.vsUnranked');
       const weeksLeft = offer.expiresWeek - state.week;
       const prepWeeks = offer.fightWeek - state.week - OFFER_CONFIG.decisionWindow;
+      const reasonKey = offer.reason ? `match.reason.${offer.reason}` : 'match.reason.ranking';
 
       return `
         <div class="offer-card animate-fade-in-up" style="animation-delay: ${idx * 100}ms;" data-offer-id="${offer.id}">
+          <div class="offer-reason-badge">${t(reasonKey)}</div>
           ${offer.isTitle ? `<div class="offer-badge-title">${t('offer.titleFight')}</div>` : ''}
 
           <div class="offer-matchup">
