@@ -787,6 +787,14 @@ const LANG = {
     'tuto.sSeasonEnd': 'À la fin de la saison, un écran récapitulatif affiche vos stats et distribue les <strong>récompenses en budget</strong> pour chaque objectif complété.',
     'tuto.sSeasonTip': 'Complétez vos objectifs pour gagner de l\'argent supplémentaire et améliorer vos finances !',
 
+    // S — Événements
+    'tuto.sEventTitle': 'Événements Aléatoires',
+    'tuto.sEventIntro': 'Chaque semaine, un événement peut survenir. Blessure, scandale, opportunité de sponsor, call-out... Le monde du MMA est imprévisible !',
+    'tuto.sEventChoices': '<strong>Vous devez choisir</strong> comment réagir. Chaque choix a des conséquences réelles sur le moral, le budget ou la réputation.',
+    'tuto.sEventMandatory': 'Certains événements sont <strong>obligatoires</strong> (blessures, scandales) — vous devez agir. D\'autres sont des <strong>opportunités</strong> que vous pouvez ignorer.',
+    'tuto.sEventCategories': '5 catégories : 🏥 Santé, 🎤 Média, 💰 Business, ⚔️ Rivalité, 🎲 Opportunité',
+    'tuto.sEventTip': 'Les événements ne se déclenchent jamais pendant un Fight Night et jamais 2 semaines de suite. Restez attentif !',
+
     // --- General ---
     'general.week': 'Semaine {n}',
     'general.vs': 'VS',
@@ -1546,6 +1554,14 @@ const LANG = {
     'tuto.sSeasonTrack': 'Track your progress on the <strong>Dashboard</strong> (Objectives card) and in the <strong>sidebar</strong> (season number and week).',
     'tuto.sSeasonEnd': 'At the end of the season, a summary screen shows your stats and distributes <strong>budget rewards</strong> for each completed objective.',
     'tuto.sSeasonTip': 'Complete your objectives to earn extra money and improve your finances!',
+
+    // S — Events
+    'tuto.sEventTitle': 'Random Events',
+    'tuto.sEventIntro': 'Each week, an event may occur. Injuries, scandals, sponsor opportunities, call-outs... The MMA world is unpredictable!',
+    'tuto.sEventChoices': '<strong>You must choose</strong> how to respond. Each choice has real consequences on morale, budget, or reputation.',
+    'tuto.sEventMandatory': 'Some events are <strong>mandatory</strong> (injuries, scandals) — you must act. Others are <strong>opportunities</strong> you can ignore.',
+    'tuto.sEventCategories': '5 categories: 🏥 Health, 🎤 Media, 💰 Business, ⚔️ Rivalry, 🎲 Opportunity',
+    'tuto.sEventTip': 'Events never trigger during Fight Night and never 2 weeks in a row. Stay alert!',
 
     // --- General ---
     'general.week': 'Week {n}',

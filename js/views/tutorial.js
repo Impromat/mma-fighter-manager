@@ -443,6 +443,33 @@ const TutorialView = {
         `
       },
       {
+        icon: '🎲',
+        title: t('tuto.sEventTitle'),
+        content: `
+          <p>${t('tuto.sEventIntro')}</p>
+
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">🎯</span>
+              <div>${t('tuto.sEventChoices')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">⚠️</span>
+              <div>${t('tuto.sEventMandatory')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">📂</span>
+              <div>${t('tuto.sEventCategories')}</div>
+            </div>
+          </div>
+
+          <div class="tutorial-highlight mt-md">
+            <span class="tutorial-highlight-icon">💡</span>
+            <div>${t('tuto.sEventTip')}</div>
+          </div>
+        `
+      },
+      {
         icon: '🗺️',
         title: t('tuto.s9Title'),
         content: `
