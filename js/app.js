@@ -1373,7 +1373,7 @@ const App = {
     const fighter = state.fighters.find(f => f.id === fighterId);
     if (!fighter) return;
 
-    const severance = LeagueEngine.calculateSeverancePay(fighter);
+    const severance = LeagueEngine.calculateSeverancePay(fighter, state);
     const modalRoot = document.getElementById('modal-root');
 
     modalRoot.innerHTML = `

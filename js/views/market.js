@@ -164,7 +164,7 @@ const MarketView = {
     const ovr = TrainingEngine.calculateOverall(fighter);
     const wcData = WEIGHT_CLASSES.find(wc => wc.id === fighter.weightClass);
     const styleData = STYLES[fighter.style];
-    const severance = LeagueEngine.calculateSeverancePay(fighter);
+    const severance = LeagueEngine.calculateSeverancePay(fighter, state);
     const hasFight = state.schedule.some(s => !s.completed && s.playerFighterId === fighter.id);
 
     return `

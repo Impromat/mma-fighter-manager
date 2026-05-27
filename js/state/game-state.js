@@ -494,7 +494,7 @@ const GameState = {
     if (hasFight) return { error: 'hasFight' };
 
     // Pay severance
-    const severance = LeagueEngine.calculateSeverancePay(fighter);
+    const severance = LeagueEngine.calculateSeverancePay(fighter, state);
     FinanceEngine.addTransaction(state, 'expense', `Severance: ${fighter.fullName}`, severance);
 
     // Remove from roster
@@ -600,6 +600,10 @@ const GameState = {
         // Migration: add new fields for market system
         if (!this._state.freeAgents) this._state.freeAgents = [];
         if (!this._state.lastMarketRefresh) this._state.lastMarketRefresh = 0;
+        // Generate free agents if pool is empty (migration from old save)
+        if (this._state.freeAgents.length === 0 && this._state.fighters.length > 0) {
+          LeagueEngine.generateFreeAgents(this._state);
+        }
         this._notify('loaded');
         return true;
       }
