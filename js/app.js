@@ -1061,10 +1061,8 @@ const App = {
 
     // Build round analysis
     let analysisHTML = '';
-    let tags = {};
     try {
       analysisHTML = this._buildRoundAnalysis(lastRound, fighter, opponent, f1AccDamage, f2AccDamage);
-      tags = this._getCornerTags(lastRound, fighter, opponent, f1AccDamage, f2AccDamage);
     } catch(e) {
       console.error('Corner analysis error:', e);
     }
@@ -1076,17 +1074,13 @@ const App = {
         <div class="corner-subtitle">${t('corner.subtitle', { name: fighter.firstName })}</div>
       </div>
       <div class="corner-grid">
-        ${Object.values(CORNER_INSTRUCTIONS).map(ci => {
-          const tag = tags[ci.id];
-          const tagHTML = tag ? `<span class="corner-tag corner-tag-${tag.type}">${tag.label}</span>` : '';
-          return `
-            <button class="corner-btn" data-instruction="${ci.id}">
-              <span class="corner-btn-icon">${ci.icon}</span>
-              <span class="corner-btn-name">${ci.name} ${tagHTML}</span>
-              <span class="corner-btn-desc">${ci.shortDesc}</span>
-            </button>
-          `;
-        }).join('')}
+        ${Object.values(CORNER_INSTRUCTIONS).map(ci => `
+          <button class="corner-btn" data-instruction="${ci.id}">
+            <span class="corner-btn-icon">${ci.icon}</span>
+            <span class="corner-btn-name">${ci.name}</span>
+            <span class="corner-btn-desc">${ci.shortDesc}</span>
+          </button>
+        `).join('')}
       </div>
     `;
 
