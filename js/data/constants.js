@@ -244,7 +244,7 @@ const DECLINE_REASONS = {
 
 const OFFER_CONFIG = {
   offerFrequency: 3,        // generate offers every ~3 weeks
-  decisionWindow: 2,        // 2 weeks to respond
+  decisionWindow: 3,        // 3 weeks to respond
   prepWeeksNormal: 4,       // standard prep time
   prepWeeksTitle: 6,        // title fight prep time
   prepWeeksShort: 3,        // short notice
