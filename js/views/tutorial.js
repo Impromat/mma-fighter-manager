@@ -159,6 +159,10 @@ const TutorialView = {
             <span class="tutorial-highlight-icon">💡</span>
             <div>${t('tuto.s5DeclineTip')}</div>
           </div>
+          <div class="tutorial-highlight mt-md" style="border-color: var(--accent-red); background: rgba(230, 57, 70, 0.06);">
+            <span class="tutorial-highlight-icon">🚨</span>
+            <div>${t('tuto.s5IgnoreWarning')}</div>
+          </div>
         `
       },
       {

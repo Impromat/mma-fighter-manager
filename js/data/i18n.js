@@ -605,6 +605,7 @@ const LANG = {
     'tuto.s5DeclineTitle': 'Raisons de refus',
     'tuto.s5DeclineIntro': 'Si vous refusez, vous devez choisir pourquoi. Chaque raison a des conséquences différentes :',
     'tuto.s5DeclineTip': 'Les conséquences sont affichées <strong>avant</strong> le refus. Refuser stratégiquement peut être avantageux (ex: "trop faible" booste le moral), mais abuser des refus fait stagner le classement.',
+    'tuto.s5IgnoreWarning': '<strong>Ne jamais ignorer une offre !</strong> Laisser expirer une offre est bien pire qu\'un refus motivé : <strong>-10 moral</strong> et <strong>2 refus consécutifs</strong> comptabilisés. Répondez toujours, même pour refuser.',
 
     // S6 — Combat
     'tuto.s6Title': 'Les Combats',
@@ -1299,6 +1300,7 @@ const LANG = {
     'tuto.s5DeclineTitle': 'Decline reasons',
     'tuto.s5DeclineIntro': 'If you decline, you must choose why. Each reason has different consequences:',
     'tuto.s5DeclineTip': 'Consequences are shown <strong>before</strong> declining. Strategic refusals can be advantageous (e.g., "too weak" boosts morale), but too many declines will stall your rankings.',
+    'tuto.s5IgnoreWarning': '<strong>Never ignore an offer!</strong> Letting an offer expire is much worse than a motivated decline: <strong>-10 morale</strong> and <strong>2 consecutive declines</strong> counted. Always respond, even to decline.',
 
     // S6 — Combat
     'tuto.s6Title': 'Fights',
