@@ -111,6 +111,9 @@ const DashboardView = {
             `}
           </div>
 
+          <!-- Season Objectives -->
+          ${this._renderSeasonObjectives(state)}
+
           <!-- Alerts -->
           ${this._renderAlerts(state)}
 
@@ -383,5 +386,48 @@ const DashboardView = {
         App.showDeclineModal(offerId);
       });
     });
+  },
+
+  _renderSeasonObjectives(state) {
+    const objectives = state.seasonObjectives;
+    if (!objectives || objectives.length === 0) return '';
+
+    const season = state.season || 1;
+    const seasonWeek = state.seasonWeek || 1;
+
+    const objRows = objectives.map(obj => {
+      const def = SEASON_OBJECTIVES_POOL.find(p => p.id === obj.id);
+      const icon = def?.icon || '🎯';
+      const name = def?.name || obj.id;
+      const reward = obj.reward || def?.reward || 0;
+      const statusClass = obj.completed ? 'completed' : 'pending';
+      const statusIcon = obj.completed ? '✅' : '🔲';
+
+      return `
+        <div class="season-obj-row ${statusClass}">
+          <span class="season-obj-icon">${icon}</span>
+          <div class="season-obj-info">
+            <div class="season-obj-name">${name}</div>
+            <div class="season-obj-reward">${t('season.reward')}: +${FinanceEngine.formatMoney(reward)}</div>
+          </div>
+          <span class="season-obj-status">${statusIcon}</span>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="card mb-lg animate-fade-in-up stagger-6">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="card-title-icon">🏆</span>
+            ${t('season.objectives')}
+          </div>
+          <span class="badge badge-accent">${t('season.label', { n: season })} — ${t('season.week', { n: seasonWeek })}</span>
+        </div>
+        <div class="season-obj-list">
+          ${objRows}
+        </div>
+      </div>
+    `;
   }
 };

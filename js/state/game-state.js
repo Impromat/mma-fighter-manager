@@ -54,6 +54,9 @@ const GameState = {
     // Generate initial free agent pool
     LeagueEngine.generateFreeAgents(this._state);
 
+    // Initialize first season
+    SeasonEngine.initSeason(this._state);
+
     this.save();
     this._notify('newGame');
     return this._state;
@@ -295,7 +298,19 @@ const GameState = {
     report.budgetAfter = state.budget;
     report.budgetDelta = state.budget - report.budgetBefore;
 
-    // 11. Advance week counter
+    // 12. Season tracking
+    report.fightResults.forEach(result => {
+      SeasonEngine.recordFight(state, result);
+    });
+    SeasonEngine.checkObjectives(state);
+    state.seasonWeek = (state.seasonWeek || 1) + 1;
+
+    // Check for end of season
+    if (state.seasonWeek > SEASON_LENGTH) {
+      report.seasonEnd = SeasonEngine.getSeasonSummary(state);
+    }
+
+    // 13. Advance week counter
     state.week++;
 
     this.save();

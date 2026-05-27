@@ -201,6 +201,30 @@ const LANG = {
     'fight.control': 'Contrôle',
     'fight.cancelledInjury': 'Combat annulé — combattant blessé',
 
+    // --- Scouting ---
+    'scout.title': 'SCOUTING',
+    'scout.winRate': 'Win Rate',
+    'scout.winStreak': 'victoires consécutives',
+    'scout.recentLoss': 'Défaite récente',
+
+    // --- Saisons ---
+    'season.label': 'Saison {n}',
+    'season.week': 'Sem. {n}/26',
+    'season.objectives': 'Objectifs de Saison',
+    'season.completed': 'Complété !',
+    'season.inProgress': 'En cours',
+    'season.failed': 'Non atteint',
+    'season.summaryTitle': 'Fin de Saison {n}',
+    'season.summarySubtitle': 'Résumé de la saison',
+    'season.reward': 'Récompense',
+    'season.nextSeason': 'Commencer la Saison {n}',
+    'season.obj.top5': 'Placer un fighter dans le Top 5',
+    'season.obj.budget': 'Terminer avec un budget > {n}$',
+    'season.obj.title': 'Remporter un titre',
+    'season.obj.winstreak': 'Enchaîner {n} victoires',
+    'season.obj.winrate': 'Win rate > {n}% cette saison',
+    'season.obj.improve': 'Améliorer un fighter de +{n} OVR',
+
     // --- Corner Instructions ---
     'corner.title': '🗣️ Instructions pour le Round {n}',
     'corner.subtitle': 'Que dites-vous à {name} ?',
@@ -818,6 +842,30 @@ const LANG = {
     'fight.damageDealt': 'Damage Dealt',
     'fight.control': 'Control',
     'fight.cancelledInjury': 'Fight cancelled — fighter injured',
+
+    // --- Scouting ---
+    'scout.title': 'SCOUTING',
+    'scout.winRate': 'Win Rate',
+    'scout.winStreak': 'win streak',
+    'scout.recentLoss': 'Recent loss',
+
+    // --- Seasons ---
+    'season.label': 'Season {n}',
+    'season.week': 'Wk {n}/26',
+    'season.objectives': 'Season Objectives',
+    'season.completed': 'Completed!',
+    'season.inProgress': 'In Progress',
+    'season.failed': 'Not reached',
+    'season.summaryTitle': 'End of Season {n}',
+    'season.summarySubtitle': 'Season Summary',
+    'season.reward': 'Reward',
+    'season.nextSeason': 'Start Season {n}',
+    'season.obj.top5': 'Place a fighter in the Top 5',
+    'season.obj.budget': 'Finish with budget > ${n}',
+    'season.obj.title': 'Win a title',
+    'season.obj.winstreak': 'Chain {n} consecutive wins',
+    'season.obj.winrate': 'Win rate > {n}% this season',
+    'season.obj.improve': 'Improve a fighter by +{n} OVR',
 
     // --- Corner Instructions ---
     'corner.title': '🗣️ Instructions for Round {n}',

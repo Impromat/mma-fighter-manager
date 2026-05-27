@@ -298,6 +298,9 @@ const App = {
               <span>📅 ${t('sidebar.week', { n: '' })}</span>
               <span class="sidebar-week-number" id="sidebar-week">${state.week}</span>
             </div>
+            <div class="sidebar-season" id="sidebar-season">
+              🏆 ${t('season.label', { n: state.season || 1 })} — ${t('season.week', { n: state.seasonWeek || 1 })}
+            </div>
           </div>
 
           <nav class="sidebar-nav">
@@ -708,7 +711,103 @@ const App = {
 
       if (state.gameOver) {
         this.showGameOver();
+      } else if (report.seasonEnd) {
+        this.showSeasonSummary(report.seasonEnd);
       }
+    });
+  },
+
+  /**
+   * Show end-of-season summary screen
+   */
+  showSeasonSummary(summary) {
+    const modalRoot = document.getElementById('modal-root');
+    const state = GameState.get();
+
+    const objRows = summary.objectives.map(obj => {
+      const def = SEASON_OBJECTIVES_POOL.find(p => p.id === obj.id);
+      const icon = def?.icon || '🎯';
+      const name = def?.name || obj.id;
+      const reward = obj.reward || def?.reward || 0;
+      const done = obj.completed;
+
+      return `
+        <div class="season-summary-obj ${done ? 'completed' : 'failed'}">
+          <span class="season-summary-obj-icon">${icon}</span>
+          <div class="season-summary-obj-info">
+            <div class="season-summary-obj-name">${name}</div>
+            <div class="season-summary-obj-status">${done ? t('season.completed') : t('season.failed')}</div>
+          </div>
+          <span class="season-summary-obj-reward ${done ? 'earned' : ''}">${done ? '+' + FinanceEngine.formatMoney(reward) : '—'}</span>
+        </div>
+      `;
+    }).join('');
+
+    const totalFights = summary.wins + summary.losses;
+    const winRate = totalFights > 0 ? Math.round((summary.wins / totalFights) * 100) : 0;
+
+    modalRoot.innerHTML = `
+      <div class="modal-overlay season-overlay">
+        <div class="modal season-modal animate-scale-in">
+          <div class="season-summary-header">
+            <div class="season-summary-badge animate-pop">🏆</div>
+            <h2 class="season-summary-title">${t('season.summaryTitle', { n: summary.season })}</h2>
+            <div class="season-summary-sub">${state.gymName}</div>
+          </div>
+
+          <div class="season-summary-body">
+            <div class="season-summary-stats">
+              <div class="season-stat-item">
+                <div class="season-stat-val">${summary.wins}-${summary.losses}</div>
+                <div class="season-stat-label">Record</div>
+              </div>
+              <div class="season-stat-item">
+                <div class="season-stat-val">${winRate}%</div>
+                <div class="season-stat-label">Win Rate</div>
+              </div>
+              <div class="season-stat-item">
+                <div class="season-stat-val">${summary.kos}</div>
+                <div class="season-stat-label">KOs</div>
+              </div>
+              <div class="season-stat-item">
+                <div class="season-stat-val">${summary.bestStreak}</div>
+                <div class="season-stat-label">🔥 Best Streak</div>
+              </div>
+            </div>
+
+            <div class="season-summary-section-title">${t('season.objectives')}</div>
+            <div class="season-summary-obj-list">
+              ${objRows}
+            </div>
+
+            ${summary.totalReward > 0 ? `
+              <div class="season-reward-banner animate-pop">
+                💰 ${t('season.reward')}: <strong>+${FinanceEngine.formatMoney(summary.totalReward)}</strong>
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="season-summary-footer">
+            <button class="btn btn-primary btn-lg" id="season-next-btn">
+              ${t('season.nextSeason', { n: (summary.season || 1) + 1 })}
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('season-next-btn').addEventListener('click', () => {
+      // Apply rewards
+      if (summary.totalReward > 0) {
+        state.budget += summary.totalReward;
+      }
+      // Start new season
+      SeasonEngine.initSeason(state);
+      GameState.save();
+
+      modalRoot.innerHTML = '';
+      this.updateSidebar();
+      this.navigateTo('dashboard');
     });
   },
 
@@ -733,6 +832,7 @@ const App = {
       const f1Ovr = TrainingEngine.calculateOverall(playerFighter);
       const f2Ovr = TrainingEngine.calculateOverall(opponent);
       const wcData = WEIGHT_CLASSES.find(wc => wc.id === playerFighter.weightClass);
+      const scout = this._buildScoutProfile(opponent);
 
       return `
         <div class="fn-fight-card ${isInjured ? 'fn-cancelled' : ''}">
@@ -751,7 +851,7 @@ const App = {
             <div class="fn-card-wc">${wcData?.icon} ${wcData?.name || ''}</div>
             ${fight.isTitle ? '<div class="fn-card-title">🏆 Title Fight</div>' : ''}
           </div>
-          <div class="fn-card-fighter">
+          <div class="fn-card-fighter fn-card-opponent">
             <div class="fn-card-avatar" style="background: ${opponent.avatarColor};">
               ${opponent.firstName[0]}${opponent.lastName[0]}
             </div>
@@ -759,6 +859,7 @@ const App = {
             <div class="fn-card-record">${opponent.wins}-${opponent.losses}</div>
             <div class="fn-card-ovr">${f2Ovr} OVR</div>
             <div class="fn-card-style">${STYLES[opponent.style]?.icon} ${STYLES[opponent.style]?.name}</div>
+            ${scout}
           </div>
         </div>
       `;
@@ -1095,6 +1196,63 @@ const App = {
         onChoose(instruction);
       });
     });
+  },
+
+  /**
+   * Build scouting profile HTML for an opponent
+   */
+  _buildScoutProfile(opponent) {
+    const totalFights = opponent.wins + opponent.losses;
+    const winRate = totalFights > 0 ? Math.round((opponent.wins / totalFights) * 100) : 0;
+
+    // Generate finish profile from style + stats (AI fighters don't have real fight history)
+    const str = opponent.stats.striking || 50;
+    const sub = opponent.stats.submission || 50;
+    const grap = opponent.stats.grappling || 50;
+    const wrs = opponent.stats.wrestling || 50;
+    const ath = opponent.stats.athleticism || 50;
+
+    // Approximate finish tendency based on stats
+    const koWeight = str + ath * 0.3;
+    const subWeight = sub + grap * 0.5;
+    const decWeight = opponent.stats.cardio + opponent.stats.mental * 0.5;
+    const totalWeight = koWeight + subWeight + decWeight;
+    const koRate = Math.round((koWeight / totalWeight) * 100);
+    const subRate = Math.round((subWeight / totalWeight) * 100);
+    const decRate = 100 - koRate - subRate;
+
+    // Streak (simulated from record)
+    const streakNum = Math.min(opponent.wins, 1 + Math.floor(Math.random() * 3));
+    const isWinStreak = opponent.wins >= opponent.losses;
+    const streakText = isWinStreak 
+      ? `🔥 ${streakNum} ${t('scout.winStreak')}`
+      : `📉 ${t('scout.recentLoss')}`;
+
+    // Stat level (1-5 dots) — approximate, not exact
+    const toLevel = (val) => Math.max(1, Math.min(5, Math.round(val / 20)));
+    const dots = (level) => '●'.repeat(level) + '○'.repeat(5 - level);
+
+    return `
+      <div class="fn-scout">
+        <div class="fn-scout-title">🔍 ${t('scout.title')}</div>
+        <div class="fn-scout-winrate">
+          <span class="fn-scout-pct ${winRate >= 60 ? 'high' : winRate >= 40 ? 'mid' : 'low'}">${winRate}%</span>
+          <span class="fn-scout-label">${t('scout.winRate')}</span>
+        </div>
+        <div class="fn-scout-finish">
+          <div class="fn-scout-finish-row"><span class="fn-scout-type">👊 KO</span><span class="fn-scout-val">${koRate}%</span></div>
+          <div class="fn-scout-finish-row"><span class="fn-scout-type">🔒 SUB</span><span class="fn-scout-val">${subRate}%</span></div>
+          <div class="fn-scout-finish-row"><span class="fn-scout-type">📋 DEC</span><span class="fn-scout-val">${decRate}%</span></div>
+        </div>
+        <div class="fn-scout-stats">
+          <div class="fn-scout-stat"><span>STR</span><span class="fn-scout-dots">${dots(toLevel(str))}</span></div>
+          <div class="fn-scout-stat"><span>GRP</span><span class="fn-scout-dots">${dots(toLevel(grap))}</span></div>
+          <div class="fn-scout-stat"><span>WRS</span><span class="fn-scout-dots">${dots(toLevel(wrs))}</span></div>
+          <div class="fn-scout-stat"><span>ATH</span><span class="fn-scout-dots">${dots(toLevel(ath))}</span></div>
+        </div>
+        <div class="fn-scout-streak">${streakText}</div>
+      </div>
+    `;
   },
 
   /**
@@ -1544,6 +1702,9 @@ const App = {
 
     const weekEl = document.getElementById('sidebar-week');
     if (weekEl) weekEl.textContent = state.week;
+
+    const seasonEl = document.getElementById('sidebar-season');
+    if (seasonEl) seasonEl.textContent = `🏆 ${t('season.label', { n: state.season || 1 })} — ${t('season.week', { n: state.seasonWeek || 1 })}`;
 
     const budgetEl = document.getElementById('sidebar-budget');
     if (budgetEl) {
