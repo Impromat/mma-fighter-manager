@@ -229,6 +229,8 @@ const LANG = {
     'match.reason.rivalry': 'Revanche demandée',
     'match.reason.debut': 'Première opportunité',
     'match.pendingChallenge': 'Proposition en attente',
+    'match.expired': '⚠️ Offre ignorée : {fighter} vs {opponent} — moral -10, {n} refus consécutifs',
+    'match.expiredTitle': 'Offres ignorées',
 
     // --- Saisons ---
     'season.label': 'Saison {n}',
@@ -921,6 +923,8 @@ const LANG = {
     'match.reason.rivalry': 'Rematch requested',
     'match.reason.debut': 'First opportunity',
     'match.pendingChallenge': 'Proposal pending',
+    'match.expired': '⚠️ Ignored offer: {fighter} vs {opponent} — morale -10, {n} consecutive declines',
+    'match.expiredTitle': 'Ignored offers',
 
     // --- Seasons ---
     'season.label': 'Season {n}',

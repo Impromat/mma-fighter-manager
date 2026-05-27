@@ -704,6 +704,17 @@ const App = {
               </div>
             ` : ''}
 
+            ${(report.expiredOffers && report.expiredOffers.length > 0) ? `
+              <div class="summary-section">
+                <div class="summary-section-title" style="color: var(--accent-red);">⚠️ ${t('match.expiredTitle')}</div>
+                ${report.expiredOffers.map(e => `
+                  <div class="summary-challenge refused animate-slide-in">
+                    ${t('match.expired', { fighter: e.fighterName, opponent: e.opponentName, n: e.consecutive })}
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
             <!-- Next event -->
             <div class="summary-next-event animate-slide-in" style="animation-delay: ${report.trainingReport.length * 80 + 200}ms;">
               📅 ${nextEventInfo}

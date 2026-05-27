@@ -450,16 +450,31 @@ const LeagueEngine = {
    * Clean up expired offers
    */
   cleanExpiredOffers(state) {
+    const expired = [];
     state.fightOffers.forEach(offer => {
       if (offer.status === 'pending' && state.week > offer.expiresWeek) {
         offer.status = 'expired';
-        // Penalty for ignoring: morale -5
         const fighter = state.fighters.find(f => f.id === offer.fighterId);
         if (fighter) {
-          fighter.morale = Math.max(10, fighter.morale - 5);
+          // Harsh penalty: morale -10
+          fighter.morale = Math.max(10, (fighter.morale || 50) - 10);
+
+          // Count as 2 consecutive declines (worse than a motivated refusal)
+          if (!state.declineHistory[fighter.id]) {
+            state.declineHistory[fighter.id] = { consecutive: 0, lastReason: null, lowPurseCount: 0, notReadyCount: 0 };
+          }
+          state.declineHistory[fighter.id].consecutive += 2;
+          state.declineHistory[fighter.id].lastReason = 'ignored';
+
+          expired.push({
+            fighterName: fighter.fullName,
+            opponentName: state.aiFighters.find(f => f.id === offer.opponentId)?.fullName || '???',
+            consecutive: state.declineHistory[fighter.id].consecutive
+          });
         }
       }
     });
+    return expired;
   },
 
   /**

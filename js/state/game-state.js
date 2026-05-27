@@ -254,7 +254,7 @@ const GameState = {
     state.budgetHistory.push(state.budget);
 
     // 9. Generate fight offers if needed + clean expired
-    LeagueEngine.cleanExpiredOffers(state);
+    report.expiredOffers = LeagueEngine.cleanExpiredOffers(state);
     if (state.week - (state.lastOfferWeek || 0) >= OFFER_CONFIG.offerFrequency) {
       const newOffers = LeagueEngine.generateOffers(state);
       if (newOffers.length > 0) {
