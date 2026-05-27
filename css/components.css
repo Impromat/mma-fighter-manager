@@ -1366,6 +1366,61 @@
   color: var(--text-muted);
 }
 
+/* Confirm matchup modal */
+.confirm-matchup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+  padding: var(--space-lg) 0;
+}
+
+.confirm-fighter {
+  text-align: center;
+  flex: 1;
+}
+
+.confirm-fighter .fighter-mini-avatar {
+  margin: 0 auto var(--space-sm);
+}
+
+.confirm-fighter-name {
+  font-weight: 800;
+  font-size: var(--font-md);
+}
+
+.confirm-vs {
+  font-size: var(--font-2xl);
+  font-weight: 900;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.confirm-details {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+}
+
+.confirm-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-xs) 0;
+  font-size: var(--font-sm);
+}
+
+.confirm-detail-row + .confirm-detail-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.confirm-actions {
+  text-align: center;
+  padding-top: var(--space-md);
+}
+
 .fn-card-center {
   display: flex;
   flex-direction: column;

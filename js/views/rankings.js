@@ -224,11 +224,16 @@ const RankingsView = {
     const opponent = state.aiFighters.find(f => f.id === opponentId);
     if (!opponent) return;
 
-    // Get player fighters in this weight class that can fight
-    const candidates = state.fighters.filter(f => 
-      f.weightClass === opponent.weightClass
-    );
+    const candidates = state.fighters.filter(f => f.weightClass === opponent.weightClass);
+    const eligible = candidates.filter(f => LeagueEngine.canProposeFight(f, state).ok);
 
+    // If only 1 eligible fighter → skip to confirmation
+    if (eligible.length === 1) {
+      this._showConfirmModal(eligible[0], opponent);
+      return;
+    }
+
+    // Step 1: Select fighter
     const modalRoot = document.getElementById('modal-root');
     const opponentOvr = TrainingEngine.calculateOverall(opponent);
     const opponentRank = LeagueEngine.getFighterRanking(opponent.id, state);
@@ -274,26 +279,23 @@ const RankingsView = {
       <div class="modal-overlay">
         <div class="modal" style="max-width: 500px;">
           <div class="modal-header">
-            <div class="modal-title">⚔️ ${t('match.proposeTitle')}</div>
+            <div class="modal-title">⚔️ ${t('match.selectFighter')}</div>
             <button class="modal-close" id="close-propose-modal">✕</button>
           </div>
           <div class="modal-body">
             <div class="propose-target">
-              <div class="propose-target-label">${t('match.propose')}</div>
+              <div class="propose-target-label">Adversaire ciblé</div>
               <div class="propose-target-fighter">
-                <div class="fighter-mini-avatar" style="background: ${opponent.avatarColor}; width: 48px; height: 48px;">
+                <div class="fighter-mini-avatar" style="background: ${opponent.avatarColor}; width: 44px; height: 44px;">
                   ${opponent.firstName[0]}${opponent.lastName[0]}
                 </div>
                 <div>
-                  <div class="font-bold text-lg">${opponent.fullName}</div>
-                  <div class="text-sm text-muted">${opponent.wins}-${opponent.losses} · OVR ${opponentOvr} · ${opponentRankDisplay}</div>
-                  <span class="badge badge-style mt-xs">${STYLES[opponent.style]?.icon} ${STYLES[opponent.style]?.name}</span>
+                  <div class="font-bold">${opponent.fullName}</div>
+                  <div class="text-xs text-muted">${opponent.wins}-${opponent.losses} · OVR ${opponentOvr} · ${opponentRankDisplay}</div>
                 </div>
               </div>
             </div>
-
-            <div class="propose-divider">VS</div>
-
+            <div class="propose-divider">👇</div>
             <div class="propose-select-label">${t('match.selectFighter')}</div>
             <div class="propose-candidates" id="propose-candidates">
               ${candidateOptions}
@@ -303,28 +305,106 @@ const RankingsView = {
       </div>
     `;
 
-    // Close modal
-    document.getElementById('close-propose-modal').addEventListener('click', () => {
-      modalRoot.innerHTML = '';
-    });
+    document.getElementById('close-propose-modal').addEventListener('click', () => { modalRoot.innerHTML = ''; });
     modalRoot.querySelector('.modal-overlay').addEventListener('click', (e) => {
       if (e.target.classList.contains('modal-overlay')) modalRoot.innerHTML = '';
     });
 
-    // Candidate selection
     document.querySelectorAll('.propose-candidate:not([data-disabled])').forEach(el => {
       el.addEventListener('click', () => {
         const fighterId = el.dataset.fighterId;
         const fighter = state.fighters.find(f => f.id === fighterId);
-        if (!fighter) return;
-
-        const challenge = LeagueEngine.createChallenge(fighterId, opponentId, state);
-        if (challenge) {
-          modalRoot.innerHTML = '';
-          App.showToast(t('match.sent'), 'success');
-          App.navigateTo('rankings');
-        }
+        if (fighter) this._showConfirmModal(fighter, opponent);
       });
+    });
+  },
+
+  _showConfirmModal(fighter, opponent) {
+    const state = GameState.get();
+    const modalRoot = document.getElementById('modal-root');
+    const f1Ovr = TrainingEngine.calculateOverall(fighter);
+    const f2Ovr = TrainingEngine.calculateOverall(opponent);
+    const chance = LeagueEngine.getAcceptanceChance(fighter, opponent, state);
+    const isTitle = LeagueEngine.isTitleShot(fighter, state);
+    const prepWeeks = isTitle ? OFFER_CONFIG.prepWeeksTitle : OFFER_CONFIG.prepWeeksNormal;
+    const fightWeek = Math.max(
+      state.week + prepWeeks + 1,
+      (fighter.lastFightWeek || 0) + OFFER_CONFIG.fightCooldown + prepWeeks
+    );
+    const purse = FinanceEngine.calculatePurse(fighter, state, isTitle);
+    const f1Rank = LeagueEngine.getFighterRanking(fighter.id, state);
+    const f2Rank = LeagueEngine.getFighterRanking(opponent.id, state);
+    const f1RankDisplay = f1Rank === 0 ? 'C' : f1Rank ? `#${f1Rank}` : 'NR';
+    const f2RankDisplay = f2Rank === 0 ? 'C' : f2Rank ? `#${f2Rank}` : 'NR';
+
+    modalRoot.innerHTML = `
+      <div class="modal-overlay">
+        <div class="modal" style="max-width: 480px;">
+          <div class="modal-header">
+            <div class="modal-title">⚔️ ${t('match.proposeTitle')}</div>
+            <button class="modal-close" id="close-confirm-modal">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="confirm-matchup">
+              <div class="confirm-fighter">
+                <div class="fighter-mini-avatar" style="background: ${fighter.avatarColor}; width: 56px; height: 56px; font-size: 18px;">
+                  ${fighter.firstName[0]}${fighter.lastName[0]}
+                </div>
+                <div class="confirm-fighter-name">${fighter.fullName}</div>
+                <div class="text-xs text-muted">${f1RankDisplay} · OVR ${f1Ovr} · ${fighter.wins}-${fighter.losses}</div>
+              </div>
+              <div class="confirm-vs">VS</div>
+              <div class="confirm-fighter">
+                <div class="fighter-mini-avatar" style="background: ${opponent.avatarColor}; width: 56px; height: 56px; font-size: 18px;">
+                  ${opponent.firstName[0]}${opponent.lastName[0]}
+                </div>
+                <div class="confirm-fighter-name">${opponent.fullName}</div>
+                <div class="text-xs text-muted">${f2RankDisplay} · OVR ${f2Ovr} · ${opponent.wins}-${opponent.losses}</div>
+              </div>
+            </div>
+
+            <div class="confirm-details">
+              <div class="confirm-detail-row">
+                <span>📅 ${t('match.fightWeek', { n: fightWeek })}</span>
+              </div>
+              <div class="confirm-detail-row">
+                <span>💰 ${t('match.estimatedPurse')}</span>
+                <span class="text-success font-bold">${FinanceEngine.formatMoney(purse.show)} + ${FinanceEngine.formatMoney(purse.win)}</span>
+              </div>
+              <div class="confirm-detail-row">
+                <span>🎯 ${t('match.acceptChance')}</span>
+                <span class="font-bold ${chance >= 70 ? 'text-success' : chance >= 40 ? 'text-orange' : 'text-danger'}">${chance}%</span>
+              </div>
+              ${isTitle ? '<div class="confirm-detail-row"><span>🏆 Title Fight!</span></div>' : ''}
+            </div>
+
+            <div class="confirm-actions">
+              <button class="btn btn-primary btn-lg btn-block" id="confirm-send-btn">
+                ⚔️ ${t('match.confirm')}
+              </button>
+              <button class="btn btn-ghost btn-sm" id="confirm-cancel-btn" style="margin-top: var(--space-sm);">
+                ${t('match.cancel')}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('close-confirm-modal').addEventListener('click', () => { modalRoot.innerHTML = ''; });
+    document.getElementById('confirm-cancel-btn').addEventListener('click', () => { modalRoot.innerHTML = ''; });
+    modalRoot.querySelector('.modal-overlay').addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-overlay')) modalRoot.innerHTML = '';
+    });
+
+    document.getElementById('confirm-send-btn').addEventListener('click', () => {
+      const challenge = LeagueEngine.createChallenge(fighter.id, opponent.id, GameState.get());
+      if (challenge) {
+        modalRoot.innerHTML = '';
+        App.showToast(t('match.sent'), 'success');
+        App.navigateTo('rankings');
+      }
     });
   }
 };
+
