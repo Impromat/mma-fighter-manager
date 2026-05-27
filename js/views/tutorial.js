@@ -303,6 +303,58 @@ const TutorialView = {
         `
       },
       {
+        icon: '💱',
+        title: t('tuto.s10Title'),
+        content: `
+          <p>${t('tuto.s10Intro')}</p>
+
+          <h5 class="mt-lg mb-sm">🆓 ${t('tuto.s10FreeAgentsTitle')}</h5>
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">👥</span>
+              <div><strong>${t('tuto.s10PoolSize')}</strong> — ${t('tuto.s10PoolSizeDesc')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">🔄</span>
+              <div><strong>${t('tuto.s10Refresh')}</strong> — ${t('tuto.s10RefreshDesc')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">✍️</span>
+              <div><strong>${t('tuto.s10Signing')}</strong> — ${t('tuto.s10SigningDesc')}</div>
+            </div>
+          </div>
+
+          <h5 class="mt-lg mb-sm">✂️ ${t('tuto.s10CutTitle')}</h5>
+          <p>${t('tuto.s10CutDesc')}</p>
+
+          <h5 class="mt-lg mb-sm">⭐ ${t('tuto.s10RepTitle')}</h5>
+          <p>${t('tuto.s10RepDesc')}</p>
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">💰</span>
+              <div><strong>${t('market.repBudget')}</strong> — ${t('tuto.s10RepBudget')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">🏆</span>
+              <div><strong>${t('market.repChampions')}</strong> — ${t('tuto.s10RepChampions')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">🥊</span>
+              <div><strong>${t('market.repWins')}</strong> — ${t('tuto.s10RepWins')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">😊</span>
+              <div><strong>${t('market.repMorale')}</strong> — ${t('tuto.s10RepMorale')}</div>
+            </div>
+          </div>
+
+          <div class="tutorial-highlight mt-lg">
+            <span class="tutorial-highlight-icon">🔑</span>
+            <div>${t('tuto.s10Tip')}</div>
+          </div>
+        `
+      },
+      {
         icon: '🗺️',
         title: t('tuto.s9Title'),
         content: `

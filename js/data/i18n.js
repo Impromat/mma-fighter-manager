@@ -588,6 +588,26 @@ const LANG = {
     'tuto.s8SalaryDesc': 'Vous pouvez <strong>ajuster les salaires</strong> de chaque combattant. Augmenter le salaire booste le moral, le baisser l\'affecte négativement. Trouvez le bon équilibre entre budget et motivation !',
     'tuto.s8GameOver': '<strong>Game Over</strong> si votre budget reste négatif pendant <strong>4 semaines consécutives</strong>. Gardez un œil sur vos finances !',
 
+    // S10 — Marché
+    'tuto.s10Title': 'Marché des Agents Libres',
+    'tuto.s10Intro': 'Votre roster n\'est pas figé ! Via le <strong>Marché</strong>, vous pouvez <strong>signer des agents libres</strong> et <strong>couper des combattants</strong> pour renouveler votre équipe.',
+    'tuto.s10FreeAgentsTitle': 'Agents libres',
+    'tuto.s10PoolSize': '5 agents disponibles',
+    'tuto.s10PoolSizeDesc': 'Un pool de 5 combattants disponibles à la signature',
+    'tuto.s10Refresh': 'Renouvellement',
+    'tuto.s10RefreshDesc': 'Le pool se renouvelle toutes les 4 semaines',
+    'tuto.s10Signing': 'Bonus de signature',
+    'tuto.s10SigningDesc': 'Chaque agent a un coût d\'entrée (3 000 à 18 000 € selon le niveau)',
+    'tuto.s10CutTitle': 'Couper un combattant',
+    'tuto.s10CutDesc': 'Vous pouvez vous séparer d\'un combattant pour économiser son salaire. Vous devrez payer une <strong>indemnité de départ</strong> (2× son salaire hebdo). Impossible de couper un fighter avec un combat planifié. <strong>Limite du roster : 6 combattants max.</strong>',
+    'tuto.s10RepTitle': 'Réputation de la gym',
+    'tuto.s10RepDesc': 'La qualité des agents disponibles dépend de votre <strong>score de réputation</strong> (0-15). Plus votre gym est réputée, meilleurs sont les agents !',
+    'tuto.s10RepBudget': '+1 par tranche de 10 000 € (max +4)',
+    'tuto.s10RepChampions': '+3 par ceinture détenue',
+    'tuto.s10RepWins': '+1 par victoire sur les 10 derniers combats (max +5)',
+    'tuto.s10RepMorale': '+1 si moral moyen ≥ 70, +2 si ≥ 80',
+    'tuto.s10Tip': 'Gagnez des combats et décrochez des ceintures pour attirer les <strong>meilleurs agents libres</strong>. C\'est un cercle vertueux : plus vous gagnez, meilleurs sont les recrues disponibles !',
+
     // S9 — Tips
     'tuto.s9Title': 'Conseils de Pro',
     'tuto.s9Tip1Title': 'Variez l\'entraînement',
@@ -1166,6 +1186,26 @@ const LANG = {
     'tuto.s8SalaryTitle': 'Salary Management',
     'tuto.s8SalaryDesc': 'You can <strong>adjust salaries</strong> for each fighter. Raising salary boosts morale, lowering it hurts morale. Find the right balance between budget and motivation!',
     'tuto.s8GameOver': '<strong>Game Over</strong> if your budget stays negative for <strong>4 consecutive weeks</strong>. Keep an eye on your finances!',
+
+    // S10 — Market
+    'tuto.s10Title': 'Free Agent Market',
+    'tuto.s10Intro': 'Your roster isn\'t set in stone! Through the <strong>Market</strong>, you can <strong>sign free agents</strong> and <strong>cut fighters</strong> to refresh your team.',
+    'tuto.s10FreeAgentsTitle': 'Free Agents',
+    'tuto.s10PoolSize': '5 agents available',
+    'tuto.s10PoolSizeDesc': 'A pool of 5 fighters available for signing',
+    'tuto.s10Refresh': 'Refresh cycle',
+    'tuto.s10RefreshDesc': 'The pool refreshes every 4 weeks',
+    'tuto.s10Signing': 'Signing bonus',
+    'tuto.s10SigningDesc': 'Each agent has an entry cost (€3,000 to €18,000 depending on level)',
+    'tuto.s10CutTitle': 'Cutting a fighter',
+    'tuto.s10CutDesc': 'You can release a fighter to save on their salary. You\'ll need to pay <strong>severance</strong> (2× their weekly salary). Cannot cut a fighter with a scheduled fight. <strong>Roster limit: 6 fighters max.</strong>',
+    'tuto.s10RepTitle': 'Gym Reputation',
+    'tuto.s10RepDesc': 'The quality of available agents depends on your <strong>reputation score</strong> (0-15). The better your gym\'s rep, the better the agents!',
+    'tuto.s10RepBudget': '+1 per €10,000 in budget (max +4)',
+    'tuto.s10RepChampions': '+3 per title held',
+    'tuto.s10RepWins': '+1 per win in the last 10 fights (max +5)',
+    'tuto.s10RepMorale': '+1 if avg morale ≥ 70, +2 if ≥ 80',
+    'tuto.s10Tip': 'Win fights and capture titles to attract the <strong>best free agents</strong>. It\'s a virtuous cycle: the more you win, the better the recruits available!',
 
     // S9 — Tips
     'tuto.s9Title': 'Pro Tips',
