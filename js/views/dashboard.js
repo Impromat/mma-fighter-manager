@@ -304,6 +304,7 @@ const DashboardView = {
               </div>
               <span class="badge badge-style" style="margin-top: 4px;">${opponentStyle.icon} ${opponentStyle.name}</span>
               <span class="badge" style="margin-top: 2px;">${rankDisplay}</span>
+              ${App._buildScoutProfile(opponent)}
             </div>
           </div>
 
