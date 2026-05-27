@@ -355,6 +355,90 @@ const TutorialView = {
         `
       },
       {
+        icon: '🔍',
+        title: t('tuto.sAnalyseTitle'),
+        content: `
+          <p>${t('tuto.sAnalyseIntro')}</p>
+
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">👆</span>
+              <div>${t('tuto.sAnalyseClick')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">📊</span>
+              <div>${t('tuto.sAnalyseStats')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">📍</span>
+              <div>${t('tuto.sAnalyseWhere')}</div>
+            </div>
+          </div>
+
+          <div class="tutorial-highlight mt-md">
+            <span class="tutorial-highlight-icon">💡</span>
+            <div>${t('tuto.sAnalyseTip')}</div>
+          </div>
+        `
+      },
+      {
+        icon: '⚔️',
+        title: t('tuto.sMatchTitle'),
+        content: `
+          <p>${t('tuto.sMatchIntro')}</p>
+
+          <h5 class="mt-lg mb-sm">📋 Comment proposer</h5>
+          <ul class="tutorial-list">
+            <li>${t('tuto.sMatchHow1')}</li>
+            <li>${t('tuto.sMatchHow2')}</li>
+            <li>${t('tuto.sMatchHow3')}</li>
+            <li>${t('tuto.sMatchHow4')}</li>
+          </ul>
+
+          <div class="tutorial-highlight mt-md">
+            <span class="tutorial-highlight-icon">📊</span>
+            <div>${t('tuto.sMatchAcceptance')}</div>
+          </div>
+
+          <div class="tutorial-highlight mt-md">
+            <span class="tutorial-highlight-icon">⏱️</span>
+            <div>${t('tuto.sMatchCooldown')}</div>
+          </div>
+
+          <div class="tutorial-highlight mt-md">
+            <span class="tutorial-highlight-icon">🔑</span>
+            <div>${t('tuto.sMatchTip')}</div>
+          </div>
+        `
+      },
+      {
+        icon: '🏆',
+        title: t('tuto.sSeasonTitle'),
+        content: `
+          <p>${t('tuto.sSeasonIntro')}</p>
+
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">🎯</span>
+              <div>${t('tuto.sSeasonObj')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">📋</span>
+              <div>${t('tuto.sSeasonTrack')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">🏁</span>
+              <div>${t('tuto.sSeasonEnd')}</div>
+            </div>
+          </div>
+
+          <div class="tutorial-highlight mt-md">
+            <span class="tutorial-highlight-icon">💡</span>
+            <div>${t('tuto.sSeasonTip')}</div>
+          </div>
+        `
+      },
+      {
         icon: '🗺️',
         title: t('tuto.s9Title'),
         content: `

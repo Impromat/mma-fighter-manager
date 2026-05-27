@@ -692,6 +692,33 @@ const LANG = {
     'tuto.s9Tip7Desc': 'Refuser "adversaire trop faible" booste le moral mais amène un adversaire plus dur. C\'est un outil stratégique, pas juste un bouton "non".',
     'tuto.s9Outro': 'Vous êtes prêt ! Retournez au <strong>Dashboard</strong> et commencez à construire votre empire MMA. Bonne chance, Coach !',
 
+    // --- Tutorial: Analyse ---
+    'tuto.sAnalyseTitle': 'Analyse adverse',
+    'tuto.sAnalyseIntro': 'Avant d\'accepter un combat, vous pouvez <strong>analyser votre adversaire</strong> pour adapter votre stratégie.',
+    'tuto.sAnalyseClick': 'Cliquez sur le nom ou l\'avatar de l\'adversaire pour ouvrir sa fiche complète.',
+    'tuto.sAnalyseStats': 'Vous verrez ses <strong>stats détaillées</strong>, son <strong>radar chart</strong>, son <strong>win rate</strong>, et ses <strong>tendances de finish</strong> (KO%, SUB%, DEC%).',
+    'tuto.sAnalyseWhere': 'L\'analyse est disponible depuis les <strong>offres de combat</strong>, la <strong>page Rankings</strong>, et la <strong>pre-fight card</strong>.',
+    'tuto.sAnalyseTip': 'Un adversaire avec un haut % de KO ? Préparez la défense en striking. Un spécialiste soumission ? Travaillez le wrestling.',
+
+    // --- Tutorial: Matchmaking ---
+    'tuto.sMatchTitle': 'Propositions de combat',
+    'tuto.sMatchIntro': 'Vous ne dépendez plus uniquement des offres ! Depuis la page <strong>Rankings</strong>, vous pouvez <strong>proposer un combat</strong> à n\'importe quel adversaire de la division.',
+    'tuto.sMatchHow1': 'Allez dans <strong>Rankings</strong> et trouvez l\'adversaire souhaité',
+    'tuto.sMatchHow2': 'Cliquez sur <strong>"⚔️ Proposer un combat"</strong>',
+    'tuto.sMatchHow3': 'Sélectionnez votre combattant — la <strong>chance d\'acceptation</strong> s\'affiche',
+    'tuto.sMatchHow4': 'L\'adversaire répond la semaine suivante (accepté ou refusé)',
+    'tuto.sMatchAcceptance': 'La chance d\'acceptation dépend de l\'écart de classement. Un #15 défiant le #1 aura peu de chances, mais un #5 vs #3 sera souvent accepté.',
+    'tuto.sMatchCooldown': 'Un combattant doit se reposer <strong>4 semaines minimum</strong> entre chaque combat. Ce garde-fou s\'applique aux offres entrantes et aux propositions.',
+    'tuto.sMatchTip': 'Proposez stratégiquement : ciblez un adversaire que vous pouvez battre pour grimper dans le classement !',
+
+    // --- Tutorial: Saisons ---
+    'tuto.sSeasonTitle': 'Saisons & Objectifs',
+    'tuto.sSeasonIntro': 'Le jeu est découpé en <strong>saisons de 26 semaines</strong>. Chaque saison a des objectifs à remplir pour débloquer des récompenses.',
+    'tuto.sSeasonObj': 'Au début de chaque saison, <strong>3 objectifs aléatoires</strong> sont assignés parmi : atteindre le Top 5, avoir un budget > 80k$, décrocher un titre, 3 victoires d\'affilée, win rate > 60%, +5 OVR.',
+    'tuto.sSeasonTrack': 'Suivez votre progression sur le <strong>Dashboard</strong> (carte Objectifs) et dans la <strong>sidebar</strong> (numéro de saison et semaine).',
+    'tuto.sSeasonEnd': 'À la fin de la saison, un écran récapitulatif affiche vos stats et distribue les <strong>récompenses en budget</strong> pour chaque objectif complété.',
+    'tuto.sSeasonTip': 'Complétez vos objectifs pour gagner de l\'argent supplémentaire et améliorer vos finances !',
+
     // --- General ---
     'general.week': 'Semaine {n}',
     'general.vs': 'VS',
@@ -1356,6 +1383,33 @@ const LANG = {
     'tuto.s9Tip7Title': 'Decline strategically',
     'tuto.s9Tip7Desc': 'Declining "opponent too weak" boosts morale but brings a tougher opponent next time. It\'s a strategic tool, not just a "no" button.',
     'tuto.s9Outro': 'You\'re ready! Go back to the <strong>Dashboard</strong> and start building your MMA empire. Good luck, Coach!',
+
+    // --- Tutorial: Analysis ---
+    'tuto.sAnalyseTitle': 'Opponent Analysis',
+    'tuto.sAnalyseIntro': 'Before accepting a fight, you can <strong>analyze your opponent</strong> to adjust your strategy.',
+    'tuto.sAnalyseClick': 'Click on the opponent\'s name or avatar to open their full profile.',
+    'tuto.sAnalyseStats': 'You\'ll see their <strong>detailed stats</strong>, <strong>radar chart</strong>, <strong>win rate</strong>, and <strong>finish tendencies</strong> (KO%, SUB%, DEC%).',
+    'tuto.sAnalyseWhere': 'Analysis is available from <strong>fight offers</strong>, the <strong>Rankings page</strong>, and the <strong>pre-fight card</strong>.',
+    'tuto.sAnalyseTip': 'Opponent with a high KO rate? Prepare striking defense. Submission specialist? Work on wrestling.',
+
+    // --- Tutorial: Matchmaking ---
+    'tuto.sMatchTitle': 'Fight Proposals',
+    'tuto.sMatchIntro': 'You no longer depend only on offers! From the <strong>Rankings</strong> page, you can <strong>propose a fight</strong> to any opponent in the division.',
+    'tuto.sMatchHow1': 'Go to <strong>Rankings</strong> and find the desired opponent',
+    'tuto.sMatchHow2': 'Click <strong>"⚔️ Propose a fight"</strong>',
+    'tuto.sMatchHow3': 'Select your fighter — the <strong>acceptance chance</strong> is shown',
+    'tuto.sMatchHow4': 'The opponent responds next week (accepted or refused)',
+    'tuto.sMatchAcceptance': 'Acceptance chance depends on ranking gap. A #15 challenging #1 will rarely be accepted, but #5 vs #3 will often work.',
+    'tuto.sMatchCooldown': 'A fighter must rest <strong>at least 4 weeks</strong> between fights. This applies to both incoming offers and outgoing proposals.',
+    'tuto.sMatchTip': 'Propose strategically: target an opponent you can beat to climb the rankings!',
+
+    // --- Tutorial: Seasons ---
+    'tuto.sSeasonTitle': 'Seasons & Objectives',
+    'tuto.sSeasonIntro': 'The game is split into <strong>26-week seasons</strong>. Each season has objectives to complete for rewards.',
+    'tuto.sSeasonObj': 'At the start of each season, <strong>3 random objectives</strong> are assigned from: reach Top 5, budget > $80k, win a title, 3-win streak, win rate > 60%, +5 OVR.',
+    'tuto.sSeasonTrack': 'Track your progress on the <strong>Dashboard</strong> (Objectives card) and in the <strong>sidebar</strong> (season number and week).',
+    'tuto.sSeasonEnd': 'At the end of the season, a summary screen shows your stats and distributes <strong>budget rewards</strong> for each completed objective.',
+    'tuto.sSeasonTip': 'Complete your objectives to earn extra money and improve your finances!',
 
     // --- General ---
     'general.week': 'Week {n}',
