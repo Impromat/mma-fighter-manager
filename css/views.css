@@ -1,0 +1,1206 @@
+/* ============================================
+   MMA Fighter Manager — View-Specific Styles
+   ============================================ */
+
+/* --- Dashboard View --- */
+.dashboard-summary-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.summary-card {
+  padding: var(--space-lg);
+}
+
+.summary-card-label {
+  font-size: var(--font-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.summary-card-value {
+  font-size: var(--font-2xl);
+  font-weight: 800;
+  margin-top: var(--space-xs);
+  line-height: 1;
+}
+
+.summary-card-detail {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-sm);
+}
+
+.dashboard-main {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-lg);
+}
+
+.dashboard-fighters-mini {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.fighter-mini-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+  cursor: pointer;
+}
+
+.fighter-mini-row:hover {
+  background: var(--glass-bg);
+}
+
+.fighter-mini-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: var(--font-sm);
+  color: white;
+  flex-shrink: 0;
+}
+
+.fighter-mini-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.fighter-mini-name {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.fighter-mini-detail {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+}
+
+.fighter-mini-status {
+  flex-shrink: 0;
+}
+
+/* --- Upcoming Fights --- */
+.upcoming-fight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+  border: var(--glass-border);
+  margin-bottom: var(--space-sm);
+}
+
+.upcoming-fight-vs {
+  font-weight: 900;
+  font-size: var(--font-lg);
+  color: var(--accent-red);
+  flex-shrink: 0;
+}
+
+.upcoming-fight-info {
+  flex: 1;
+}
+
+.upcoming-fight-names {
+  font-weight: 700;
+  font-size: var(--font-sm);
+  margin-bottom: 2px;
+}
+
+.upcoming-fight-details {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+}
+
+/* --- Fighter Detail View --- */
+.fighter-detail {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: var(--space-xl);
+}
+
+.fighter-detail-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.fighter-detail-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-3xl);
+  font-weight: 900;
+  color: white;
+  margin: 0 auto var(--space-md);
+}
+
+.fighter-detail-name {
+  font-size: var(--font-2xl);
+  font-weight: 800;
+  text-align: center;
+}
+
+.fighter-detail-meta {
+  text-align: center;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  margin-top: var(--space-xs);
+}
+
+.fighter-detail-badges {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.fighter-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.fighter-info-item {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-sm);
+  background: var(--glass-bg);
+  border-radius: var(--radius-sm);
+}
+
+.fighter-info-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.fighter-info-value {
+  font-size: var(--font-base);
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.fighter-detail-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* --- Training View (v2 — Table Layout) --- */
+.training-table-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.training-table-card:hover {
+  transform: none;
+}
+
+.training-table-header {
+  display: grid;
+  grid-template-columns: 240px 130px 1fr 130px 80px;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  font-size: var(--font-xs);
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.training-row {
+  display: grid;
+  grid-template-columns: 240px 130px 1fr 130px 80px;
+  gap: var(--space-sm);
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background var(--transition-fast);
+}
+
+.training-row:last-child {
+  border-bottom: none;
+}
+
+.training-row:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.training-col-fighter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+.training-fighter-details {
+  min-width: 0;
+}
+
+.training-fighter-name {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.training-fighter-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.training-col-stats {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.training-top-stat {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--glass-bg);
+  padding: 1px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.training-col-training {
+  min-width: 0;
+}
+
+.training-pills-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.training-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 16px;
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.training-pill:hover:not(.disabled) {
+  border-color: var(--accent-orange);
+  color: var(--text-primary);
+  background: rgba(244, 162, 97, 0.06);
+}
+
+.training-pill.active {
+  border-color: var(--accent-red);
+  background: rgba(230, 57, 70, 0.12);
+  color: var(--accent-red);
+}
+
+.training-pill.disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.training-pill-icon {
+  font-size: 12px;
+}
+
+.training-pill-label {
+  font-size: 10px;
+}
+
+/* Training pill wrapper (for tooltip positioning) */
+.training-pill-wrapper {
+  position: relative;
+}
+
+.training-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  min-width: 200px;
+  z-index: 500;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  transform: translateX(-50%) translateY(4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.training-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--border-light);
+}
+
+.training-pill-wrapper:hover .training-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.tt-title {
+  font-size: var(--font-sm);
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+}
+
+.tt-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-bottom: var(--space-sm);
+}
+
+.tt-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-bottom: var(--space-xs);
+}
+
+.tt-stat-chip {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: rgba(46, 204, 113, 0.12);
+  color: var(--color-success);
+  white-space: nowrap;
+}
+
+.tt-stat-chip.tt-none {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+}
+
+.tt-row {
+  font-size: 10px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.tt-positive { color: var(--color-success); }
+.tt-negative { color: var(--color-danger); }
+.tt-neutral { color: var(--text-muted); }
+
+/* --- Salary Adjuster --- */
+.training-col-salary {
+  display: flex;
+  justify-content: center;
+}
+
+.salary-adjuster {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.salary-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  line-height: 1;
+}
+
+.salary-btn:hover:not(:disabled) {
+  border-color: var(--accent-orange);
+  color: var(--accent-orange);
+  background: rgba(244, 162, 97, 0.08);
+}
+
+.salary-btn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.salary-btn.salary-up:hover:not(:disabled) {
+  border-color: var(--color-success);
+  color: var(--color-success);
+  background: rgba(46, 204, 113, 0.08);
+}
+
+.salary-btn.salary-down:hover:not(:disabled) {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+  background: rgba(231, 76, 60, 0.08);
+}
+
+.salary-display {
+  text-align: center;
+  min-width: 65px;
+}
+
+.salary-amount {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.salary-multiplier {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.salary-multiplier.high {
+  color: var(--color-success);
+}
+
+.salary-multiplier.low {
+  color: var(--color-danger);
+}
+
+.training-col-moral {
+  display: flex;
+  justify-content: center;
+}
+
+.training-morale-display {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+}
+
+.training-morale-bar {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.training-morale-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+
+.training-morale-value {
+  font-size: var(--font-xs);
+  font-weight: 700;
+  min-width: 24px;
+  text-align: right;
+}
+
+/* --- Fight Camp Rows --- */
+.fight-camp-row {
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.fight-camp-row:last-child {
+  border-bottom: none;
+}
+
+.fight-camp-matchup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-md);
+}
+
+.fight-camp-fighter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex: 1;
+}
+
+.fight-camp-vs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.fight-camp-pills {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.camp-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 14px;
+  font-size: var(--font-xs);
+  font-weight: 600;
+  border-radius: 16px;
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.camp-pill:hover {
+  border-color: var(--accent-orange);
+  color: var(--text-primary);
+  background: rgba(244, 162, 97, 0.06);
+}
+
+.camp-pill.active {
+  border-color: var(--accent-orange);
+  background: rgba(244, 162, 97, 0.15);
+  color: var(--accent-orange);
+}
+
+.camp-pill.recommended {
+  border-color: rgba(46, 204, 113, 0.3);
+}
+
+.camp-pill.recommended:hover {
+  border-color: var(--color-success);
+  background: rgba(46, 204, 113, 0.08);
+}
+
+.camp-rec-dot {
+  font-size: 6px;
+  color: var(--color-success);
+}
+
+.camp-pill.cancel {
+  padding: 5px 10px;
+  border-color: rgba(231, 76, 60, 0.3);
+  color: var(--color-danger);
+}
+
+.camp-pill.cancel:hover {
+  background: rgba(231, 76, 60, 0.1);
+  border-color: var(--color-danger);
+}
+
+/* --- Fight Camp Section (kept for compatibility) --- */
+.fight-camp-section {
+  margin-top: var(--space-md);
+  padding: var(--space-lg);
+  background: rgba(244, 162, 97, 0.04);
+  border: 1px solid rgba(244, 162, 97, 0.15);
+  border-radius: var(--radius-lg);
+}
+
+.fight-camp-title {
+  font-size: var(--font-md);
+  font-weight: 700;
+  color: var(--accent-orange);
+  margin-bottom: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.fight-camp-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+/* --- Agenda View --- */
+.timeline {
+  position: relative;
+  padding-left: var(--space-xl);
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border-subtle);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: var(--space-lg);
+  animation: fadeInUp 0.3s ease forwards;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: calc(-1 * var(--space-xl) + 5px);
+  top: var(--space-md);
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: var(--accent-red);
+  border: 2px solid var(--bg-primary);
+}
+
+.timeline-dot.future {
+  background: var(--text-muted);
+}
+
+.timeline-dot.past {
+  background: var(--color-success);
+}
+
+.timeline-content {
+  padding: var(--space-md) var(--space-lg);
+  background: var(--glass-bg);
+  border: var(--glass-border);
+  border-radius: var(--radius-md);
+}
+
+.timeline-date {
+  font-size: var(--font-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-xs);
+}
+
+/* --- Rankings View --- */
+.rankings-champion {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-xl);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.06), rgba(255, 165, 0, 0.03));
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.rankings-champion-belt {
+  font-size: 2.5rem;
+}
+
+.rankings-champion-info {
+  flex: 1;
+}
+
+.rankings-champion-label {
+  font-size: var(--font-xs);
+  font-weight: 700;
+  color: #ffd700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.rankings-champion-name {
+  font-size: var(--font-xl);
+  font-weight: 800;
+  margin-top: var(--space-xs);
+}
+
+.rank-number {
+  font-weight: 900;
+  font-size: var(--font-md);
+  color: var(--text-muted);
+  width: 35px;
+  text-align: center;
+}
+
+.rank-number.top-5 {
+  color: var(--accent-orange);
+}
+
+.rank-number.top-3 {
+  color: var(--accent-red);
+}
+
+/* --- Finances View --- */
+.finance-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.finance-chart-placeholder {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-size: var(--font-sm);
+}
+
+.transaction-amount {
+  font-weight: 700;
+}
+
+.transaction-amount.income {
+  color: var(--color-success);
+}
+
+.transaction-amount.expense {
+  color: var(--color-danger);
+}
+
+/* --- Fight Simulation Overlay --- */
+.fight-sim-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.5s ease;
+}
+
+.fight-sim-container {
+  width: 100%;
+  max-width: 700px;
+  padding: var(--space-xl);
+}
+
+.fight-sim-header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.fight-sim-vs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-lg);
+}
+
+.fight-sim-fighter {
+  text-align: center;
+}
+
+.fight-sim-fighter-name {
+  font-size: var(--font-lg);
+  font-weight: 800;
+  margin-top: var(--space-sm);
+}
+
+.fight-sim-fighter-record {
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+}
+
+.fight-sim-vs-icon {
+  font-size: var(--font-3xl);
+  font-weight: 900;
+  color: var(--accent-red);
+}
+
+.fight-sim-progress {
+  margin-bottom: var(--space-xl);
+}
+
+.fight-sim-events {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* --- Tutorial View --- */
+.tutorial-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.tutorial-toc {
+  position: sticky;
+  top: var(--space-xl);
+}
+
+.tutorial-toc-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-bottom: 2px;
+}
+
+.tutorial-toc-item:hover {
+  background: var(--glass-bg);
+  color: var(--text-primary);
+}
+
+.tutorial-toc-item.active {
+  background: rgba(230, 57, 70, 0.1);
+  color: var(--accent-red);
+  font-weight: 600;
+}
+
+.tutorial-toc-icon {
+  font-size: 1rem;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.tutorial-content {
+  min-width: 0;
+}
+
+.tutorial-section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.tutorial-section-icon {
+  font-size: 2.5rem;
+}
+
+.tutorial-section-title {
+  font-size: var(--font-2xl);
+  font-weight: 800;
+}
+
+.tutorial-section-body {
+  font-size: var(--font-base);
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.tutorial-section-body p {
+  margin-bottom: var(--space-md);
+}
+
+.tutorial-section-body strong {
+  color: var(--text-primary);
+}
+
+.tutorial-section-body h5 {
+  color: var(--text-primary);
+}
+
+.tutorial-highlight {
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: rgba(244, 162, 97, 0.06);
+  border: 1px solid rgba(244, 162, 97, 0.15);
+  border-radius: var(--radius-md);
+  margin: var(--space-md) 0;
+  font-size: var(--font-sm);
+  line-height: 1.6;
+}
+
+.tutorial-highlight-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tutorial-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+  margin: var(--space-md) 0;
+}
+
+.tutorial-stat-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--glass-bg);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+}
+
+.tutorial-stat-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tutorial-camps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+  margin: var(--space-md) 0;
+}
+
+.tutorial-camp-item {
+  padding: var(--space-md);
+  background: var(--glass-bg);
+  border-radius: var(--radius-sm);
+  border: var(--glass-border);
+}
+
+.tutorial-training-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: var(--space-md) 0;
+  font-size: var(--font-sm);
+}
+
+.tutorial-training-list > div {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--glass-bg);
+  border-radius: var(--radius-sm);
+}
+
+.tutorial-list {
+  list-style: none;
+  margin: var(--space-md) 0;
+}
+
+.tutorial-list li {
+  padding: var(--space-sm) 0;
+  padding-left: var(--space-lg);
+  position: relative;
+  font-size: var(--font-sm);
+}
+
+.tutorial-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent-orange);
+  font-weight: 700;
+}
+
+.tutorial-results-grid {
+  display: flex;
+  gap: var(--space-md);
+  margin: var(--space-md) 0;
+}
+
+.tutorial-result-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.tutorial-title-path {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  margin: var(--space-lg) 0;
+  padding: var(--space-lg);
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+  border: var(--glass-border);
+}
+
+.tutorial-path-step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.tutorial-path-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+  background: var(--accent-red);
+  flex-shrink: 0;
+}
+
+.tutorial-path-arrow {
+  margin-left: 3px;
+  color: var(--text-muted);
+  font-size: var(--font-sm);
+}
+
+.tutorial-finance-table {
+  margin: var(--space-sm) 0;
+}
+
+.tutorial-finance-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--glass-bg);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  margin-bottom: 4px;
+}
+
+.tutorial-tips {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.tutorial-tip {
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+  border: var(--glass-border);
+  transition: all var(--transition-fast);
+}
+
+.tutorial-tip:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--border-light);
+}
+
+.tutorial-tip-number {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
+  color: white;
+  font-weight: 800;
+  font-size: var(--font-sm);
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.tutorial-tip p {
+  margin-top: var(--space-xs);
+  margin-bottom: 0;
+}
+
+.tutorial-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border-subtle);
+}
+
+@media (max-width: 900px) {
+  .tutorial-layout {
+    grid-template-columns: 1fr;
+  }
+  .tutorial-toc {
+    position: static;
+  }
+  .tutorial-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .tutorial-camps-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Responsive adjustments --- */
+@media (max-width: 1200px) {
+  .dashboard-summary-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dashboard-main {
+    grid-template-columns: 1fr;
+  }
+  .fighter-detail {
+    grid-template-columns: 1fr;
+  }
+  .training-options-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .fight-camp-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .finance-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-summary-cards {
+    grid-template-columns: 1fr;
+  }
+  .fight-camp-options {
+    grid-template-columns: 1fr;
+  }
+  .finance-summary {
+    grid-template-columns: 1fr;
+  }
+  .training-table-header {
+    display: none;
+  }
+  .training-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+  .training-col-stats {
+    display: none;
+  }
+  .training-pills-row {
+    justify-content: flex-start;
+  }
+  .fight-camp-matchup {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+}
