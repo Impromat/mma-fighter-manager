@@ -689,6 +689,17 @@ const GameState = {
         if (!this._state.season) {
           SeasonEngine.initSeason(this._state);
         }
+        // Migration: add reputation and rivalries
+        if (this._state.reputation === undefined) this._state.reputation = REPUTATION_CONFIG.initial;
+        if (!this._state.rivalries) this._state.rivalries = [];
+        // Migration: add aging and chin props to all fighters
+        const allFighters = [...(this._state.fighters || []), ...(this._state.aiFighters || [])];
+        allFighters.forEach(f => {
+          if (f.peakAge === undefined) f.peakAge = AGING_CONFIG.peakAgeMin + Math.floor(Math.random() * (AGING_CONFIG.peakAgeMax - AGING_CONFIG.peakAgeMin + 1));
+          if (f.retireAge === undefined) f.retireAge = AGING_CONFIG.retireAgeMin + Math.floor(Math.random() * (AGING_CONFIG.retireAgeMax - AGING_CONFIG.retireAgeMin + 1));
+          if (f.koLosses === undefined) f.koLosses = 0;
+          if (f.chinDamage === undefined) f.chinDamage = 0;
+        });
         this._notify('loaded');
         return true;
       }

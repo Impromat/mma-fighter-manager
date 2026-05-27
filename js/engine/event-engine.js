@@ -15,7 +15,7 @@ const EventEngine = {
       descKey: 'event.trainingInjury.desc',
       mandatory: true,
       condition(state) {
-        const f = state.fighters.find(f => f.status === 'available' && f.trainingPlan);
+        const f = state.fighters.find(f => f.status === 'available' && f.currentTraining);
         return f ? { valid: true, fighter: f } : { valid: false };
       },
       choices: [
@@ -57,7 +57,7 @@ const EventEngine = {
           apply(fighter, state) {
             const stats = ['striking', 'grappling', 'wrestling', 'submission'];
             const stat = stats[Math.floor(Math.random() * stats.length)];
-            fighter[stat] = Math.min(99, fighter[stat] + 2);
+            fighter.stats[stat] = Math.min(99, fighter.stats[stat] + 2);
             fighter.morale = Math.max(10, (fighter.morale || 50) - 5);
             return 'event.motivationPeak.intensifyResult';
           }
