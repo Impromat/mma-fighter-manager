@@ -2427,3 +2427,214 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* ============================================
+   Mobile Responsive — Components
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Offer cards */
+  .offer-matchup {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .offer-vs {
+    font-size: var(--font-lg);
+  }
+
+  .offer-details {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .offer-actions {
+    flex-direction: column;
+  }
+
+  .offer-actions .btn {
+    min-width: unset;
+    width: 100%;
+  }
+
+  /* Fight sim */
+  .fight-sim-container {
+    padding: var(--space-md);
+  }
+
+  .fight-sim-vs {
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .fight-sim-fighter-name {
+    font-size: var(--font-base);
+  }
+
+  .fight-sim-vs-icon {
+    font-size: var(--font-xl);
+  }
+
+  .fight-sim-events {
+    max-height: 250px;
+  }
+
+  /* Corner instructions */
+  .corner-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xs);
+  }
+
+  .corner-btn {
+    padding: var(--space-sm);
+    font-size: var(--font-xs);
+  }
+
+  /* Summary overlay */
+  .summary-overlay .modal {
+    margin: var(--space-sm);
+  }
+
+  /* Summary cards (dashboard) */
+  .dashboard-summary-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+  }
+
+  .summary-card {
+    padding: var(--space-md);
+  }
+
+  .summary-card-value {
+    font-size: var(--font-lg);
+  }
+
+  /* Fight card mini */
+  .fight-card-matchup {
+    flex-direction: column;
+    gap: var(--space-xs);
+    text-align: center;
+  }
+
+  /* Draft */
+  .draft-header-top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .draft-title {
+    font-size: var(--font-xl);
+  }
+
+  /* Scouting modal */
+  .scout-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scout-matchup {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  /* Draft cards — full width, compact */
+  .draft-grid {
+    grid-template-columns: 1fr;
+    padding: var(--space-sm);
+    gap: var(--space-sm);
+  }
+
+  .draft-card {
+    padding: var(--space-md);
+  }
+
+  .draft-card-stats {
+    gap: var(--space-xs);
+  }
+
+  /* Dashboard summary 2 columns stays but smaller */
+  .dashboard-summary-cards {
+    gap: var(--space-xs);
+  }
+
+  .summary-card-label {
+    font-size: var(--font-xs);
+  }
+
+  /* Offer cards */
+  .offer-card {
+    padding: var(--space-md);
+  }
+
+  .offer-fighter-name {
+    font-size: var(--font-xs);
+  }
+
+  .offer-detail-label,
+  .offer-detail-value {
+    font-size: var(--font-xs);
+  }
+
+  /* Fight sim — tighter */
+  .fight-sim-container {
+    padding: var(--space-sm);
+  }
+
+  .fight-sim-events {
+    max-height: 200px;
+    font-size: var(--font-sm);
+  }
+
+  /* Corner — 2 columns on small phones */
+  .corner-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .corner-btn-title {
+    font-size: var(--font-xs);
+  }
+
+  .corner-btn-desc {
+    display: none;
+  }
+
+  /* Decline modal */
+  .decline-reason-desc {
+    font-size: 10px;
+  }
+
+  .decline-reason-effect {
+    font-size: 10px;
+  }
+
+  /* Welcome/intro screen */
+  .welcome-content {
+    padding: var(--space-md);
+  }
+
+  .welcome-title {
+    font-size: var(--font-xl);
+  }
+
+  /* Weekly summary */
+  .summary-section {
+    padding: var(--space-sm);
+  }
+
+  /* Training rows */
+  .training-options-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fight-camp-options {
+    grid-template-columns: 1fr;
+  }
+
+  /* Buttons */
+  .btn-lg {
+    padding: var(--space-sm) var(--space-lg);
+    font-size: var(--font-base);
+  }
+}

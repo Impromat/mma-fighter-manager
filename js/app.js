@@ -277,6 +277,15 @@ const App = {
 
     app.innerHTML = `
       <div class="app">
+        <!-- Mobile header -->
+        <div class="mobile-header" id="mobile-header">
+          <button class="mobile-menu-btn" id="mobile-menu-btn">
+            <span></span><span></span><span></span>
+          </button>
+          <div class="mobile-header-title">MMA Manager</div>
+          <div class="mobile-header-week">${t('sidebar.week', { n: state.week })}</div>
+        </div>
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
         <aside class="sidebar" id="sidebar">
           <div class="sidebar-header">
             <div class="sidebar-logo">
@@ -362,7 +371,11 @@ const App = {
     document.querySelectorAll('.nav-item').forEach(item => {
       item.addEventListener('click', () => {
         const view = item.dataset.view;
-        if (view) this.navigateTo(view);
+        if (view) {
+          this.navigateTo(view);
+          // Auto-close sidebar on mobile
+          this._closeMobileSidebar();
+        }
       });
     });
 
@@ -385,6 +398,32 @@ const App = {
         this.navigateTo(this.currentView);
       });
     });
+
+    // Bind mobile menu button
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      this._toggleMobileSidebar();
+    });
+    document.getElementById('sidebar-overlay').addEventListener('click', () => {
+      this._closeMobileSidebar();
+    });
+  },
+
+  _toggleMobileSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const btn = document.getElementById('mobile-menu-btn');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+    btn.classList.toggle('active');
+  },
+
+  _closeMobileSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const btn = document.getElementById('mobile-menu-btn');
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
+    if (btn) btn.classList.remove('active');
   },
 
   /**
@@ -1314,6 +1353,10 @@ const App = {
       budgetEl.textContent = FinanceEngine.formatMoney(state.budget);
       budgetEl.className = `sidebar-budget-value ${state.budget < 0 ? 'negative' : ''}`;
     }
+
+    // Mobile header week
+    const mobileWeek = document.querySelector('.mobile-header-week');
+    if (mobileWeek) mobileWeek.textContent = t('sidebar.week', { n: state.week });
   },
 
   /**
