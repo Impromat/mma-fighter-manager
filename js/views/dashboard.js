@@ -276,6 +276,7 @@ const DashboardView = {
       const ovrDiff = opponentOvr - fighterOvr;
       const ovrClass = ovrDiff > 5 ? 'text-danger' : ovrDiff < -5 ? 'text-success' : 'text-secondary';
       const rankDisplay = offer.opponentRank !== null ? t('offer.vsRank', { n: offer.opponentRank }) : t('offer.vsUnranked');
+      const fighterRank = LeagueEngine.getFighterRanking(fighter.id, state);
       const weeksLeft = offer.expiresWeek - state.week;
       const prepWeeks = offer.fightWeek - state.week - OFFER_CONFIG.decisionWindow;
       const reasonKey = offer.reason ? `match.reason.${offer.reason}` : 'match.reason.ranking';
@@ -286,24 +287,25 @@ const DashboardView = {
           ${offer.isTitle ? `<div class="offer-badge-title">${t('offer.titleFight')}</div>` : ''}
 
           <div class="offer-matchup">
-            <div class="offer-fighter">
+            <div class="offer-fighter offer-fighter-clickable" data-fighter-id="${fighter.id}" data-is-player="true">
               <div class="fighter-mini-avatar" style="background: ${fighter.avatarColor}; width: 44px; height: 44px;">
                 ${fighter.firstName[0]}${fighter.lastName[0]}
               </div>
               <div class="offer-fighter-name">${fighter.fullName}</div>
               <div class="offer-fighter-meta">${fighter.wins}-${fighter.losses} · OVR ${fighterOvr}</div>
+              <span class="badge badge-style" style="margin-top: 4px;">${STYLES[fighter.style]?.icon} ${STYLES[fighter.style]?.name}</span>
+              <span class="badge" style="margin-top: 2px;">${fighterRank !== null ? t('offer.vsRank', { n: fighterRank }) : t('offer.vsUnranked')}</span>
+              <div class="offer-scout-hint">🔍 ${t('scout.title')}</div>
             </div>
 
             <div class="offer-vs">VS</div>
 
-            <div class="offer-fighter offer-opponent-clickable" data-opponent-id="${opponent.id}">
+            <div class="offer-fighter offer-fighter-clickable" data-fighter-id="${opponent.id}" data-is-player="false">
               <div class="fighter-mini-avatar" style="background: ${opponent.avatarColor}; width: 44px; height: 44px;">
                 ${opponent.firstName[0]}${opponent.lastName[0]}
               </div>
               <div class="offer-fighter-name">${opponent.fullName}</div>
-              <div class="offer-fighter-meta">
-                ${opponent.wins}-${opponent.losses} · <span class="${ovrClass}">OVR ${opponentOvr}</span>
-              </div>
+              <div class="offer-fighter-meta">${opponent.wins}-${opponent.losses} · <span class="${ovrClass}">OVR ${opponentOvr}</span></div>
               <span class="badge badge-style" style="margin-top: 4px;">${opponentStyle.icon} ${opponentStyle.name}</span>
               <span class="badge" style="margin-top: 2px;">${rankDisplay}</span>
               <div class="offer-scout-hint">🔍 ${t('scout.title')}</div>
@@ -390,14 +392,20 @@ const DashboardView = {
       });
     });
 
-    // Opponent scouting click
-    container.querySelectorAll('.offer-opponent-clickable').forEach(el => {
+    // Fighter analysis click (both player + opponent)
+    container.querySelectorAll('.offer-fighter-clickable').forEach(el => {
       el.addEventListener('click', (e) => {
         e.stopPropagation();
-        const opponentId = el.dataset.opponentId;
+        const fighterId = el.dataset.fighterId;
+        const isPlayer = el.dataset.isPlayer === 'true';
         const state = GameState.get();
-        const opponent = state.aiFighters.find(f => f.id === opponentId);
-        if (opponent) App.showOpponentDetail(opponent);
+        if (isPlayer) {
+          const fighter = state.fighters.find(f => f.id === fighterId);
+          if (fighter) FightersView._showFighterDetail(fighter, state);
+        } else {
+          const opponent = state.aiFighters.find(f => f.id === fighterId);
+          if (opponent) App.showOpponentDetail(opponent);
+        }
       });
     });
   },

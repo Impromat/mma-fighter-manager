@@ -1186,15 +1186,15 @@
   color: var(--text-secondary);
 }
 
-/* Clickable opponent hint */
-.offer-opponent-clickable {
+/* Clickable fighter in offers */
+.offer-fighter-clickable {
   cursor: pointer;
   transition: all 0.2s ease;
   border-radius: var(--radius-md);
   padding: var(--space-sm);
 }
 
-.offer-opponent-clickable:hover {
+.offer-fighter-clickable:hover {
   background: rgba(255, 255, 255, 0.04);
   transform: translateY(-1px);
 }

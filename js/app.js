@@ -849,7 +849,7 @@ const App = {
 
       return `
         <div class="fn-fight-card ${isInjured ? 'fn-cancelled' : ''}">
-          <div class="fn-card-fighter">
+          <div class="fn-card-fighter offer-fighter-clickable" data-fighter-id="${playerFighter.id}" data-is-player="true">
             <div class="fn-card-avatar" style="background: ${playerFighter.avatarColor};">
               ${playerFighter.firstName[0]}${playerFighter.lastName[0]}
             </div>
@@ -858,13 +858,14 @@ const App = {
             <div class="fn-card-ovr">${f1Ovr} OVR</div>
             <div class="fn-card-style">${STYLES[playerFighter.style]?.icon} ${STYLES[playerFighter.style]?.name}</div>
             ${isInjured ? `<span class="badge badge-injured">🤕 ${t('fighters.injured')}</span>` : ''}
+            <div class="offer-scout-hint">🔍 ${t('scout.title')}</div>
           </div>
           <div class="fn-card-center">
             <div class="fn-card-vs">VS</div>
             <div class="fn-card-wc">${wcData?.icon} ${wcData?.name || ''}</div>
             ${fight.isTitle ? '<div class="fn-card-title">🏆 Title Fight</div>' : ''}
           </div>
-          <div class="fn-card-fighter fn-card-opponent offer-opponent-clickable" data-opponent-id="${opponent.id}">
+          <div class="fn-card-fighter fn-card-opponent offer-fighter-clickable" data-fighter-id="${opponent.id}" data-is-player="false">
             <div class="fn-card-avatar" style="background: ${opponent.avatarColor};">
               ${opponent.firstName[0]}${opponent.lastName[0]}
             </div>
@@ -893,13 +894,19 @@ const App = {
       </div>
     `;
 
-    // Opponent scouting click on pre-fight card
-    container.querySelectorAll('.offer-opponent-clickable').forEach(el => {
+    // Fighter analysis click on pre-fight card (both sides)
+    container.querySelectorAll('.offer-fighter-clickable').forEach(el => {
       el.addEventListener('click', (e) => {
-        const opponentId = el.dataset.opponentId;
+        const fighterId = el.dataset.fighterId;
+        const isPlayer = el.dataset.isPlayer === 'true';
         const st = GameState.get();
-        const opp = st.aiFighters.find(f => f.id === opponentId);
-        if (opp) this.showOpponentDetail(opp);
+        if (isPlayer) {
+          const fighter = st.fighters.find(f => f.id === fighterId);
+          if (fighter) FightersView._showFighterDetail(fighter, st);
+        } else {
+          const opp = st.aiFighters.find(f => f.id === fighterId);
+          if (opp) this.showOpponentDetail(opp);
+        }
       });
     });
 
