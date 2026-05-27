@@ -580,6 +580,18 @@ const LANG = {
     'offer.forced': '⚠️ Combat imposé par la ligue',
 
     // --- Decline Reasons ---
+    // Withdraw
+    'withdraw.title': 'Déclarer forfait',
+    'withdraw.consequences': 'Conséquences du forfait',
+    'withdraw.repLoss': 'Réputation -5',
+    'withdraw.moraleLoss': 'Moral du fighter -10',
+    'withdraw.moneyLoss': 'Pénalité financière : {n}',
+    'withdraw.injuryNote': '{name} est blessé ({n} semaines restantes). Le forfait est justifié.',
+    'withdraw.confirm': 'Confirmer le forfait',
+    'withdraw.toast': '{name} : combat annulé (forfait)',
+    'dash.withdraw': 'Forfait',
+    'dash.injuredForFight': '⚠️ {name} est blessé ! ({n} sem. restantes)',
+
     'decline.title': '❌ Raison du refus',
     'decline.subtitle': 'Pourquoi refusez-vous ce combat ?',
     'decline.notReady': 'Pas prêt',
@@ -1402,6 +1414,18 @@ const LANG = {
     'offer.forced': '⚠️ Fight imposed by the league',
 
     // --- Decline Reasons ---
+    // Withdraw
+    'withdraw.title': 'Withdraw from fight',
+    'withdraw.consequences': 'Withdrawal consequences',
+    'withdraw.repLoss': 'Reputation -5',
+    'withdraw.moraleLoss': 'Fighter morale -10',
+    'withdraw.moneyLoss': 'Financial penalty: {n}',
+    'withdraw.injuryNote': '{name} is injured ({n} weeks remaining). Withdrawal is justified.',
+    'withdraw.confirm': 'Confirm withdrawal',
+    'withdraw.toast': '{name}: fight cancelled (withdrawal)',
+    'dash.withdraw': 'Withdraw',
+    'dash.injuredForFight': '⚠️ {name} is injured! ({n} wk remaining)',
+
     'decline.title': '❌ Reason for declining',
     'decline.subtitle': 'Why are you declining this fight?',
     'decline.notReady': 'Not ready',

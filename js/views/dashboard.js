@@ -187,10 +187,14 @@ const DashboardView = {
     const opponent = state.aiFighters.find(f => f.id === fight.opponentId);
     if (!fighter || !opponent) return '';
 
+    const weeksUntil = fight.week - state.week;
+    const isInjured = fighter.status === 'injured';
+    const injuryWarning = isInjured && fighter.injuryWeeksLeft > weeksUntil;
+
     return `
-      <div class="upcoming-fight">
+      <div class="upcoming-fight ${injuryWarning ? 'upcoming-fight-danger' : ''}">
         <div class="upcoming-fight-vs">${t('general.vs')}</div>
-        <div class="upcoming-fight-info">
+        <div class="upcoming-fight-info" style="flex:1;">
           <div class="upcoming-fight-names">
             ${fighter.fullName} vs <span class="text-secondary">${opponent.fullName}</span>
           </div>
@@ -199,7 +203,15 @@ const DashboardView = {
             ${fight.isTitle ? ` · <span class="text-warning">${t('dash.titleFight')}</span>` : ''}
             ${fight.fightCamp ? ` · <span class="badge badge-camp">${t('dash.camp')}: ${FIGHT_CAMP_TYPES[fight.fightCamp].name}</span>` : ''}
           </div>
+          ${injuryWarning ? `
+            <div class="text-danger text-xs mt-xs" style="font-weight:600;">
+              ⚠️ ${t('dash.injuredForFight', { name: fighter.fullName, n: fighter.injuryWeeksLeft })}
+            </div>
+          ` : ''}
         </div>
+        <button class="btn btn-ghost btn-sm withdraw-fight-btn" data-fight-id="${fight.id}" title="${t('dash.withdraw')}" style="color: var(--accent-red); flex-shrink:0;">
+          ✕ ${t('dash.withdraw')}
+        </button>
       </div>
     `;
   },
@@ -418,6 +430,15 @@ const DashboardView = {
           const opponent = state.aiFighters.find(f => f.id === fighterId);
           if (opponent) App.showOpponentDetail(opponent);
         }
+      });
+    });
+
+    // Withdraw from scheduled fight
+    container.querySelectorAll('.withdraw-fight-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const fightId = btn.dataset.fightId;
+        App.showWithdrawConfirm(fightId);
       });
     });
   },

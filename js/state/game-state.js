@@ -525,6 +525,38 @@ const GameState = {
   },
 
   /**
+   * Withdraw from a scheduled fight (forfeit)
+   */
+  withdrawFight(fightId) {
+    const state = this._state;
+    const fightIdx = state.schedule.findIndex(s => s.id === fightId && !s.completed);
+    if (fightIdx === -1) return null;
+
+    const fight = state.schedule[fightIdx];
+    const fighter = state.fighters.find(f => f.id === fight.playerFighterId);
+    if (!fighter) return null;
+
+    // Remove from schedule
+    state.schedule.splice(fightIdx, 1);
+
+    // Consequences: reputation hit (-5), morale hit (-10), financial penalty
+    state.reputation = Math.max(0, (state.reputation || 50) - 5);
+    fighter.morale = Math.max(0, (fighter.morale || 50) - 10);
+
+    // Forfeit penalty: lose the show money as compensation
+    if (fight.purse && fight.purse.show) {
+      FinanceEngine.addTransaction(state, 'expense', `Forfait: ${fighter.fullName}`, fight.purse.show);
+    }
+
+    // Record as decline for matchmaking consequences
+    LeagueEngine.applyDeclineEffects(fighter, 'withdrawal', state);
+
+    this.save();
+    this._notify('fightWithdrawn', { fight, fighter });
+    return { fight, fighter };
+  },
+
+  /**
    * Sign a free agent
    */
   signFreeAgent(agentId) {

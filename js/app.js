@@ -1803,6 +1803,72 @@ const App = {
   /**
    * Show decline reason modal for a fight offer
    */
+  showWithdrawConfirm(fightId) {
+    const modalRoot = document.getElementById('modal-root');
+    const state = GameState.get();
+    const fight = state.schedule.find(s => s.id === fightId && !s.completed);
+    if (!fight) return;
+
+    const fighter = state.fighters.find(f => f.id === fight.playerFighterId);
+    const opponent = state.aiFighters.find(f => f.id === fight.opponentId);
+    if (!fighter || !opponent) return;
+
+    const showMoney = fight.purse ? FinanceEngine.formatMoney(fight.purse.show) : '$0';
+
+    modalRoot.innerHTML = `
+      <div class="modal-overlay">
+        <div class="modal" style="max-width: 460px;">
+          <div class="modal-header">
+            <div class="modal-title">⚠️ ${t('withdraw.title')}</div>
+            <button class="modal-close" id="close-withdraw">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="text-sm text-muted mb-md" style="text-align: center;">
+              <strong>${fighter.fullName}</strong> vs <strong>${opponent.fullName}</strong><br>
+              ${t('sidebar.week', { n: fight.week })} · ${fight.eventName}
+            </div>
+
+            <div class="card" style="background: rgba(230,57,70,0.08); border: 1px solid var(--accent-red); padding: var(--space-md); margin-bottom: var(--space-md);">
+              <div class="text-sm font-semibold mb-sm" style="color: var(--accent-red);">${t('withdraw.consequences')}</div>
+              <div class="text-xs text-muted">
+                • ⭐ ${t('withdraw.repLoss')}<br>
+                • 😞 ${t('withdraw.moraleLoss')}<br>
+                • 💸 ${t('withdraw.moneyLoss', { n: showMoney })}
+              </div>
+            </div>
+
+            ${fighter.status === 'injured' ? `
+              <div class="card" style="background: rgba(255,159,28,0.08); border: 1px solid var(--accent-orange); padding: var(--space-md); margin-bottom: var(--space-md);">
+                <div class="text-xs" style="color: var(--accent-orange);">
+                  🤕 ${t('withdraw.injuryNote', { name: fighter.fullName, n: fighter.injuryWeeksLeft })}
+                </div>
+              </div>
+            ` : ''}
+
+            <div class="flex gap-sm mt-lg">
+              <button class="btn btn-secondary" id="cancel-withdraw" style="flex:1;">${t('general.cancel')}</button>
+              <button class="btn btn-block" id="confirm-withdraw" style="flex:1; background: var(--accent-red); color: white;">
+                ✕ ${t('withdraw.confirm')}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('close-withdraw').addEventListener('click', () => { modalRoot.innerHTML = ''; });
+    document.getElementById('cancel-withdraw').addEventListener('click', () => { modalRoot.innerHTML = ''; });
+    document.getElementById('confirm-withdraw').addEventListener('click', () => {
+      const result = GameState.withdrawFight(fightId);
+      if (result) {
+        this.showToast(t('withdraw.toast', { name: result.fighter.fullName }), 'warning');
+        modalRoot.innerHTML = '';
+        this.updateSidebar();
+        this.navigateTo('dashboard');
+      }
+    });
+  },
+
   showDeclineModal(offerId) {
     const modalRoot = document.getElementById('modal-root');
     const state = GameState.get();
