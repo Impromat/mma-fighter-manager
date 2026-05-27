@@ -59,8 +59,8 @@ const DashboardView = {
         </div>
       </div>
 
-      <!-- Fight Offers -->
-      ${this._renderOffers(state)}
+      <!-- Season Objectives (full width) -->
+      ${this._renderSeasonObjectives(state)}
 
       <!-- Main Grid -->
       <div class="dashboard-main">
@@ -111,9 +111,6 @@ const DashboardView = {
             `}
           </div>
 
-          <!-- Season Objectives -->
-          ${this._renderSeasonObjectives(state)}
-
           <!-- Alerts -->
           ${this._renderAlerts(state)}
 
@@ -136,6 +133,9 @@ const DashboardView = {
           </div>
         </div>
       </div>
+
+      <!-- Fight Offers (bottom) -->
+      ${this._renderOffers(state)}
     `;
 
     // Bind offer button events

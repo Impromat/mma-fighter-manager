@@ -619,6 +619,10 @@ const GameState = {
         if (this._state.freeAgents.length === 0 && this._state.fighters.length > 0) {
           LeagueEngine.generateFreeAgents(this._state);
         }
+        // Migration: add season system
+        if (!this._state.season) {
+          SeasonEngine.initSeason(this._state);
+        }
         this._notify('loaded');
         return true;
       }
