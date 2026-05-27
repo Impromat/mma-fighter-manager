@@ -929,10 +929,14 @@ const App = {
             } else {
               // Show corner instructions picker
               setTimeout(() => {
-                const lastRound = rounds[rounds.length - 1];
-                this._showCornerInstructions(log, currentRound, totalRounds, playerFighter, opponent, lastRound, f1AccDamage, f2AccDamage, (chosenInstruction) => {
-                  simulateAndShowRound(chosenInstruction);
-                });
+                try {
+                  const lastRound = rounds[rounds.length - 1];
+                  this._showCornerInstructions(log, currentRound, totalRounds, playerFighter, opponent, lastRound, f1AccDamage, f2AccDamage, (chosenInstruction) => {
+                    simulateAndShowRound(chosenInstruction);
+                  });
+                } catch(e) {
+                  console.error('Corner error:', e);
+                }
               }, 600);
             }
           }
@@ -1028,10 +1032,14 @@ const App = {
     cornerEl.className = 'corner-instructions-panel animate-fade-in';
 
     // Build round analysis
-    const analysisHTML = this._buildRoundAnalysis(lastRound, fighter, opponent, f1AccDamage, f2AccDamage);
-
-    // Calculate recommendation tags for each instruction
-    const tags = this._getCornerTags(lastRound, fighter, opponent, f1AccDamage, f2AccDamage);
+    let analysisHTML = '';
+    let tags = {};
+    try {
+      analysisHTML = this._buildRoundAnalysis(lastRound, fighter, opponent, f1AccDamage, f2AccDamage);
+      tags = this._getCornerTags(lastRound, fighter, opponent, f1AccDamage, f2AccDamage);
+    } catch(e) {
+      console.error('Corner analysis error:', e);
+    }
 
     cornerEl.innerHTML = `
       ${analysisHTML}
