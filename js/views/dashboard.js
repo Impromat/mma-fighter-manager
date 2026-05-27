@@ -294,7 +294,7 @@ const DashboardView = {
 
             <div class="offer-vs">VS</div>
 
-            <div class="offer-fighter">
+            <div class="offer-fighter offer-opponent-clickable" data-opponent-id="${opponent.id}">
               <div class="fighter-mini-avatar" style="background: ${opponent.avatarColor}; width: 44px; height: 44px;">
                 ${opponent.firstName[0]}${opponent.lastName[0]}
               </div>
@@ -304,7 +304,7 @@ const DashboardView = {
               </div>
               <span class="badge badge-style" style="margin-top: 4px;">${opponentStyle.icon} ${opponentStyle.name}</span>
               <span class="badge" style="margin-top: 2px;">${rankDisplay}</span>
-              ${App._buildScoutProfile(opponent)}
+              <div class="offer-scout-hint">🔍 ${t('scout.title')}</div>
             </div>
           </div>
 
@@ -385,6 +385,17 @@ const DashboardView = {
         e.stopPropagation();
         const offerId = btn.dataset.offerId;
         App.showDeclineModal(offerId);
+      });
+    });
+
+    // Opponent scouting click
+    container.querySelectorAll('.offer-opponent-clickable').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const opponentId = el.dataset.opponentId;
+        const state = GameState.get();
+        const opponent = state.aiFighters.find(f => f.id === opponentId);
+        if (opponent) App.showOpponentDetail(opponent);
       });
     });
   },

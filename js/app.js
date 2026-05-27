@@ -832,7 +832,6 @@ const App = {
       const f1Ovr = TrainingEngine.calculateOverall(playerFighter);
       const f2Ovr = TrainingEngine.calculateOverall(opponent);
       const wcData = WEIGHT_CLASSES.find(wc => wc.id === playerFighter.weightClass);
-      const scout = this._buildScoutProfile(opponent);
 
       return `
         <div class="fn-fight-card ${isInjured ? 'fn-cancelled' : ''}">
@@ -851,7 +850,7 @@ const App = {
             <div class="fn-card-wc">${wcData?.icon} ${wcData?.name || ''}</div>
             ${fight.isTitle ? '<div class="fn-card-title">🏆 Title Fight</div>' : ''}
           </div>
-          <div class="fn-card-fighter fn-card-opponent">
+          <div class="fn-card-fighter fn-card-opponent offer-opponent-clickable" data-opponent-id="${opponent.id}">
             <div class="fn-card-avatar" style="background: ${opponent.avatarColor};">
               ${opponent.firstName[0]}${opponent.lastName[0]}
             </div>
@@ -859,7 +858,7 @@ const App = {
             <div class="fn-card-record">${opponent.wins}-${opponent.losses}</div>
             <div class="fn-card-ovr">${f2Ovr} OVR</div>
             <div class="fn-card-style">${STYLES[opponent.style]?.icon} ${STYLES[opponent.style]?.name}</div>
-            ${scout}
+            <div class="offer-scout-hint">🔍 ${t('scout.title')}</div>
           </div>
         </div>
       `;
@@ -879,6 +878,16 @@ const App = {
         </div>
       </div>
     `;
+
+    // Opponent scouting click on pre-fight card
+    container.querySelectorAll('.offer-opponent-clickable').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const opponentId = el.dataset.opponentId;
+        const st = GameState.get();
+        const opp = st.aiFighters.find(f => f.id === opponentId);
+        if (opp) this.showOpponentDetail(opp);
+      });
+    });
 
     document.getElementById('simulate-fights-btn').addEventListener('click', () => {
       const state = GameState.get();
@@ -1195,6 +1204,139 @@ const App = {
         cornerEl.remove();
         onChoose(instruction);
       });
+    });
+  },
+
+  /**
+   * Show opponent detail modal (read-only fighter sheet)
+   */
+  showOpponentDetail(opponent) {
+    const modalRoot = document.getElementById('modal-root');
+    const state = GameState.get();
+    const overall = TrainingEngine.calculateOverall(opponent);
+    const ranking = LeagueEngine.getFighterRanking(opponent.id, state);
+    const weightClass = WEIGHT_CLASSES.find(wc => wc.id === opponent.weightClass);
+    const style = STYLES[opponent.style];
+    const rankDisplay = ranking === 0 ? t('fighters.champion') : ranking ? `#${ranking}` : t('fighters.unranked');
+
+    // Finish tendencies
+    const str = opponent.stats.striking || 50;
+    const sub = opponent.stats.submission || 50;
+    const grap = opponent.stats.grappling || 50;
+    const ath = opponent.stats.athleticism || 50;
+    const koWeight = str + ath * 0.3;
+    const subWeight = sub + grap * 0.5;
+    const decWeight = (opponent.stats.cardio || 50) + (opponent.stats.mental || 50) * 0.5;
+    const totalWeight = koWeight + subWeight + decWeight;
+    const koRate = Math.round((koWeight / totalWeight) * 100);
+    const subRate = Math.round((subWeight / totalWeight) * 100);
+    const decRate = 100 - koRate - subRate;
+    const totalFights = opponent.wins + opponent.losses;
+    const winRate = totalFights > 0 ? Math.round((opponent.wins / totalFights) * 100) : 0;
+
+    modalRoot.innerHTML = `
+      <div class="modal-overlay">
+        <div class="modal modal-lg">
+          <div class="modal-header">
+            <div class="modal-title">🔍 ${opponent.nationality?.flag || ''} ${opponent.fullName}</div>
+            <button class="modal-close" id="close-opponent-detail">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="fighter-detail">
+              <!-- Left Sidebar -->
+              <div class="fighter-detail-sidebar">
+                <div class="card">
+                  <div class="fighter-detail-avatar" style="background: ${opponent.avatarColor};">
+                    ${opponent.firstName[0]}${opponent.lastName[0]}
+                  </div>
+                  <div class="fighter-detail-name">${opponent.fullName}</div>
+                  <div class="fighter-detail-meta">${weightClass?.name || ''} · Age ${opponent.age}</div>
+                  <div class="fighter-detail-badges">
+                    <span class="badge badge-style">${style.icon} ${style.name}</span>
+                  </div>
+                  <div class="fighter-info-grid">
+                    <div class="fighter-info-item">
+                      <span class="fighter-info-label">${t('fighters.overall')}</span>
+                      <span class="fighter-info-value">${overall}</span>
+                    </div>
+                    <div class="fighter-info-item">
+                      <span class="fighter-info-label">${t('fighters.ranking')}</span>
+                      <span class="fighter-info-value text-orange">${rankDisplay}</span>
+                    </div>
+                    <div class="fighter-info-item">
+                      <span class="fighter-info-label">${t('fighters.record')}</span>
+                      <span class="fighter-info-value">${opponent.wins}-${opponent.losses}</span>
+                    </div>
+                    <div class="fighter-info-item">
+                      <span class="fighter-info-label">Win Rate</span>
+                      <span class="fighter-info-value ${winRate >= 60 ? 'text-success' : winRate < 40 ? 'text-danger' : ''}">${winRate}%</span>
+                    </div>
+                    <div class="fighter-info-item">
+                      <span class="fighter-info-label">Nationality</span>
+                      <span class="fighter-info-value">${opponent.nationality?.flag || ''} ${opponent.nationality?.name || ''}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Finish Tendencies -->
+                <div class="card">
+                  <div class="card-title mb-md">🎯 ${t('scout.title')}</div>
+                  <div class="scout-tendency-grid">
+                    <div class="scout-tendency-item">
+                      <div class="scout-tendency-val">${koRate}%</div>
+                      <div class="scout-tendency-label">👊 KO</div>
+                    </div>
+                    <div class="scout-tendency-item">
+                      <div class="scout-tendency-val">${subRate}%</div>
+                      <div class="scout-tendency-label">🔒 SUB</div>
+                    </div>
+                    <div class="scout-tendency-item">
+                      <div class="scout-tendency-val">${decRate}%</div>
+                      <div class="scout-tendency-label">📋 DEC</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Main Content -->
+              <div class="fighter-detail-main">
+                <!-- Radar Chart -->
+                <div class="card">
+                  <div class="card-title mb-md">📊 Attributes</div>
+                  <div class="radar-chart-container">
+                    ${this.createRadarChart(opponent.stats)}
+                  </div>
+                </div>
+
+                <!-- Stat Bars -->
+                <div class="card">
+                  <div class="card-title mb-md">📈 Detailed Stats</div>
+                  ${STAT_NAMES.map(stat => {
+                    const value = Math.round(opponent.stats[stat.id]);
+                    const level = TrainingEngine.getStatLevel(value);
+                    return `
+                      <div class="stat-bar-container">
+                        <div class="stat-bar-label">${stat.icon} ${stat.label}</div>
+                        <div class="stat-bar-track">
+                          <div class="stat-bar-fill stat-${level}" style="width: ${value}%"></div>
+                        </div>
+                        <div class="stat-bar-value">${value}</div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('close-opponent-detail').addEventListener('click', () => {
+      modalRoot.innerHTML = '';
+    });
+    modalRoot.querySelector('.modal-overlay').addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-overlay')) modalRoot.innerHTML = '';
     });
   },
 

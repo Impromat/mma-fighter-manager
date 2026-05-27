@@ -1186,6 +1186,60 @@
   color: var(--text-secondary);
 }
 
+/* Clickable opponent hint */
+.offer-opponent-clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+}
+
+.offer-opponent-clickable:hover {
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-1px);
+}
+
+.offer-scout-hint {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--accent-orange);
+  letter-spacing: 1px;
+  margin-top: var(--space-xs);
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.offer-opponent-clickable:hover .offer-scout-hint {
+  opacity: 1;
+}
+
+/* Scout tendency grid (opponent detail modal) */
+.scout-tendency-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+  text-align: center;
+}
+
+.scout-tendency-item {
+  padding: var(--space-sm);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.scout-tendency-val {
+  font-size: var(--font-lg);
+  font-weight: 900;
+  color: var(--text-primary);
+}
+
+.scout-tendency-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
 .fn-card-center {
   display: flex;
   flex-direction: column;
