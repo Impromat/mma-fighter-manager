@@ -736,10 +736,87 @@ const App = {
 
       if (state.gameOver) {
         this.showGameOver();
+      } else if (report.event) {
+        this.showEventModal(report.event);
       } else if (report.seasonEnd) {
         this.showSeasonSummary(report.seasonEnd);
       }
     });
+  },
+
+  /**
+   * Show random event modal with choices
+   */
+  showEventModal(event) {
+    const modalRoot = document.getElementById('modal-root');
+    const state = GameState.get();
+    const fighter = state.fighters.find(f => f.id === event.fighterId);
+    if (!fighter) return;
+
+    const categoryColors = {
+      health: 'var(--accent-red)',
+      media: 'var(--color-info)',
+      business: 'var(--color-success)',
+      rivalry: 'var(--accent-orange)',
+      opportunity: '#a855f7'
+    };
+    const color = categoryColors[event.category] || 'var(--accent-orange)';
+
+    const choicesHTML = event.choices.map((choice, i) => `
+      <button class="btn btn-lg btn-block event-choice-btn" data-choice="${i}" style="
+        border: 1px solid ${i === 0 ? color : 'rgba(255,255,255,0.1)'};
+        background: ${i === 0 ? color + '15' : 'transparent'};
+        margin-bottom: var(--space-sm);
+      ">
+        ${t(choice.labelKey)}
+      </button>
+    `).join('');
+
+    modalRoot.innerHTML = `
+      <div class="modal-overlay">
+        <div class="modal event-modal" style="max-width: 460px;">
+          <div class="event-modal-header" style="border-bottom: 2px solid ${color};">
+            <div class="event-modal-icon">${event.icon}</div>
+            <div>
+              <div class="event-modal-title">${t(event.titleKey)}</div>
+              <div class="event-modal-fighter">${fighter.fullName}</div>
+            </div>
+          </div>
+          <div class="modal-body">
+            <p class="event-modal-desc">${t(event.descKey, { name: fighter.fullName })}</p>
+            <div class="event-choices">
+              ${choicesHTML}
+            </div>
+            ${!event.mandatory ? `
+              <button class="btn btn-ghost btn-sm event-dismiss-btn" style="margin-top: var(--space-sm);">
+                ${t('match.cancel')}
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Choice handlers
+    modalRoot.querySelectorAll('.event-choice-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const choiceIndex = parseInt(btn.dataset.choice);
+        const resultKey = EventEngine.applyChoice(event, choiceIndex, state);
+        modalRoot.innerHTML = '';
+        if (resultKey) {
+          App.showToast(t(resultKey, { name: fighter.fullName }), 'info');
+        }
+        this.navigateTo(this.currentView);
+      });
+    });
+
+    // Dismiss for non-mandatory
+    const dismissBtn = modalRoot.querySelector('.event-dismiss-btn');
+    if (dismissBtn) {
+      dismissBtn.addEventListener('click', () => {
+        modalRoot.innerHTML = '';
+      });
+    }
   },
 
   /**

@@ -1421,6 +1421,66 @@
   padding-top: var(--space-md);
 }
 
+/* Event modal */
+.event-modal {
+  animation: eventAppear 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes eventAppear {
+  from { opacity: 0; transform: scale(0.9) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.event-modal-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+}
+
+.event-modal-icon {
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
+.event-modal-title {
+  font-size: var(--font-xl);
+  font-weight: 800;
+}
+
+.event-modal-fighter {
+  color: var(--text-muted);
+  font-size: var(--font-sm);
+  margin-top: 2px;
+}
+
+.event-modal-desc {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-lg);
+}
+
+.event-choices {
+  margin-top: var(--space-md);
+}
+
+.event-choice-btn {
+  text-align: left;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.event-choice-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.event-dismiss-btn {
+  width: 100%;
+  text-align: center;
+  opacity: 0.6;
+}
+
 .fn-card-center {
   display: flex;
   flex-direction: column;

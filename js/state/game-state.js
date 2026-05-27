@@ -319,7 +319,10 @@ const GameState = {
     // 14. Process outgoing challenges
     report.challengeResults = LeagueEngine.processOutgoingChallenges(state);
 
-    // 15. Advance week counter
+    // 15. Roll for random event
+    report.event = EventEngine.rollEvent(state);
+
+    // 16. Advance week counter
     state.week++;
 
     this.save();
