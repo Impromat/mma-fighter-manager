@@ -588,8 +588,8 @@ const LeagueEngine = {
    */
   isFighterOnCooldown(fighter, state) {
     if (fighter.status === 'injured') return true;
-    const lastFight = fighter.lastFightWeek || 0;
-    return (state.week - lastFight) < OFFER_CONFIG.fightCooldown;
+    if (!fighter.lastFightWeek) return false; // Never fought = no cooldown
+    return (state.week - fighter.lastFightWeek) < OFFER_CONFIG.fightCooldown;
   },
 
   /**
