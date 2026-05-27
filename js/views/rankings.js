@@ -111,6 +111,11 @@ const RankingsView = {
           </div>
           <div style="text-align: right;">
             <div class="text-3xl font-black" style="color: #ffd700;">C</div>
+            ${(!playerFighterIds.includes(champion.id) && fullRankings.ranked.some(r => playerFighterIds.includes(r.id) && fullRankings.ranked.indexOf(r) < 3)) ? `
+              <button class="btn btn-ghost btn-xs rank-propose-btn mt-sm" data-opponent-id="${champion.id}" onclick="event.stopPropagation()">
+                🏆 ${t('match.propose')}
+              </button>
+            ` : ''}
           </div>
         </div>
       ` : `
