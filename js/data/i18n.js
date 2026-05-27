@@ -819,6 +819,36 @@ const LANG = {
     'tuto.sEventCategories': '5 catégories : 🏥 Santé, 🎤 Média, 💰 Business, ⚔️ Rivalité, 🎲 Opportunité',
     'tuto.sEventTip': 'Les événements ne se déclenchent jamais pendant un Fight Night et jamais 2 semaines de suite. Restez attentif !',
 
+    // S — Vieillissement
+    'tuto.sAgingTitle': 'Vieillissement & Déclin',
+    'tuto.sAgingIntro': 'Vos fighters vieillissent d\'<strong>1 an par saison</strong> (26 semaines). L\'âge impacte directement leurs performances.',
+    'tuto.sAgingPeak': '<strong>Pic :</strong> Entre 27 et 31 ans, le fighter est à son apogée. Entraînement à 100% d\'efficacité.',
+    'tuto.sAgingDecline': '<strong>Déclin :</strong> Passé le pic, 2-3 stats baissent chaque saison. L\'entraînement devient moins efficace (-10%/an).',
+    'tuto.sAgingRetire': '<strong>Retraite :</strong> Vers 35-38 ans, le fighter envisage de raccrocher. Vous pouvez l\'honorer ou lui offrir un dernier combat.',
+    'tuto.sAgingTip': 'Surveillez l\'âge de vos fighters ! Un vétéran qui décline peut devenir un boulet financier. Anticipez le renouvellement.',
+
+    // S — Chin
+    'tuto.sChinTitle': 'Dégâts Accumulés',
+    'tuto.sChinIntro': 'Chaque <strong>KO/TKO encaissé</strong> laisse des séquelles permanentes sur le menton (chin) du fighter.',
+    'tuto.sChinDamage': '<strong>-2 à -4 chin</strong> définitifs par KO subi. Un chin bas = KO plus facile au combat suivant.',
+    'tuto.sChinGlass': 'Après <strong>3 KO</strong>, un avertissement médical recommande la retraite. Continuer est risqué.',
+    'tuto.sChinTip': 'Protégez vos fighters des KO répétés ! Un menton fragile est irréversible et peut ruiner une carrière.',
+
+    // S — Réputation
+    'tuto.sRepTitle': 'Réputation du Manager',
+    'tuto.sRepIntro': 'Votre réputation (⭐ 0 à 100) reflète votre crédibilité dans le monde du MMA.',
+    'tuto.sRepUp': '<strong>Monte :</strong> accepter des combats (+3), remporter des titres (+8), rester actif.',
+    'tuto.sRepDown': '<strong>Baisse :</strong> refuser des offres (-1), ignorer des offres (-4), inactivité prolongée (-1/sem).',
+    'tuto.sRepImpact': '<strong>Impact :</strong> Réputation 75+ = meilleurs free agents. Réputation 35- = talents médiocres.',
+    'tuto.sRepTip': 'Faites combattre régulièrement et répondez toujours aux offres pour maintenir votre réputation !',
+
+    // S — Rivalités
+    'tuto.sRivalTitle': 'Rivalités',
+    'tuto.sRivalIntro': 'Après un KO ou un combat pour le titre, une <strong>rivalité</strong> peut naître (60% de chance).',
+    'tuto.sRivalGrow': 'La rivalité mûrit pendant <strong>12+ semaines</strong>, puis l\'adversaire revient avec un call-out public.',
+    'tuto.sRivalChoice': 'Accepter la revanche booste le moral et la réputation. Refuser coûte cher en réputation.',
+    'tuto.sRivalTip': 'Les rivalités créent des histoires ! L\'adversaire battu reviendra plus fort et plus motivé.',
+
     // --- General ---
     'general.week': 'Semaine {n}',
     'general.vs': 'VS',
@@ -1610,6 +1640,36 @@ const LANG = {
     'tuto.sEventMandatory': 'Some events are <strong>mandatory</strong> (injuries, scandals) — you must act. Others are <strong>opportunities</strong> you can ignore.',
     'tuto.sEventCategories': '5 categories: 🏥 Health, 🎤 Media, 💰 Business, ⚔️ Rivalry, 🎲 Opportunity',
     'tuto.sEventTip': 'Events never trigger during Fight Night and never 2 weeks in a row. Stay alert!',
+
+    // S — Aging
+    'tuto.sAgingTitle': 'Aging & Decline',
+    'tuto.sAgingIntro': 'Your fighters age <strong>1 year per season</strong> (26 weeks). Age directly impacts their performance.',
+    'tuto.sAgingPeak': '<strong>Peak:</strong> Between 27-31 years old, the fighter is at their best. Training at 100% efficiency.',
+    'tuto.sAgingDecline': '<strong>Decline:</strong> Past peak, 2-3 stats drop each season. Training becomes less effective (-10%/year).',
+    'tuto.sAgingRetire': '<strong>Retirement:</strong> Around 35-38 years old, the fighter considers retiring. You can honor them or offer one last fight.',
+    'tuto.sAgingTip': 'Watch your fighters\' ages! A declining veteran can become a financial burden. Plan ahead for renewal.',
+
+    // S — Chin
+    'tuto.sChinTitle': 'Accumulated Damage',
+    'tuto.sChinIntro': 'Each <strong>KO/TKO loss</strong> leaves permanent damage on the fighter\'s chin.',
+    'tuto.sChinDamage': '<strong>-2 to -4 chin</strong> permanently per KO loss. A low chin = easier KO in the next fight.',
+    'tuto.sChinGlass': 'After <strong>3 KOs</strong>, a medical warning recommends retirement. Continuing is risky.',
+    'tuto.sChinTip': 'Protect your fighters from repeated KOs! A glass chin is irreversible and can ruin a career.',
+
+    // S — Reputation
+    'tuto.sRepTitle': 'Manager Reputation',
+    'tuto.sRepIntro': 'Your reputation (⭐ 0-100) reflects your credibility in the MMA world.',
+    'tuto.sRepUp': '<strong>Goes up:</strong> accepting fights (+3), winning titles (+8), staying active.',
+    'tuto.sRepDown': '<strong>Goes down:</strong> declining offers (-1), ignoring offers (-4), prolonged inactivity (-1/wk).',
+    'tuto.sRepImpact': '<strong>Impact:</strong> Reputation 75+ = better free agents. Reputation 35- = mediocre talent.',
+    'tuto.sRepTip': 'Fight regularly and always respond to offers to maintain your reputation!',
+
+    // S — Rivalries
+    'tuto.sRivalTitle': 'Rivalries',
+    'tuto.sRivalIntro': 'After a KO or title fight, a <strong>rivalry</strong> may form (60% chance).',
+    'tuto.sRivalGrow': 'The rivalry matures over <strong>12+ weeks</strong>, then the opponent returns with a public call-out.',
+    'tuto.sRivalChoice': 'Accepting the rematch boosts morale and reputation. Declining costs reputation.',
+    'tuto.sRivalTip': 'Rivalries create stories! The defeated opponent will come back stronger and more motivated.',
 
     // --- General ---
     'general.week': 'Week {n}',

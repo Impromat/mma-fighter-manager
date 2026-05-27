@@ -470,6 +470,106 @@ const TutorialView = {
         `
       },
       {
+        icon: '🧓',
+        title: t('tuto.sAgingTitle'),
+        content: `
+          <p>${t('tuto.sAgingIntro')}</p>
+
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">📈</span>
+              <div>${t('tuto.sAgingPeak')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">📉</span>
+              <div>${t('tuto.sAgingDecline')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">🌅</span>
+              <div>${t('tuto.sAgingRetire')}</div>
+            </div>
+          </div>
+
+          <div class="tutorial-highlight mt-md" style="border-color: var(--accent-orange); background: rgba(255, 159, 28, 0.06);">
+            <span class="tutorial-highlight-icon">⚠️</span>
+            <div>${t('tuto.sAgingTip')}</div>
+          </div>
+        `
+      },
+      {
+        icon: '🥊',
+        title: t('tuto.sChinTitle'),
+        content: `
+          <p>${t('tuto.sChinIntro')}</p>
+
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">💀</span>
+              <div>${t('tuto.sChinDamage')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">🛑</span>
+              <div>${t('tuto.sChinGlass')}</div>
+            </div>
+          </div>
+
+          <div class="tutorial-highlight mt-md" style="border-color: var(--accent-red); background: rgba(230, 57, 70, 0.06);">
+            <span class="tutorial-highlight-icon">🚨</span>
+            <div>${t('tuto.sChinTip')}</div>
+          </div>
+        `
+      },
+      {
+        icon: '⭐',
+        title: t('tuto.sRepTitle'),
+        content: `
+          <p>${t('tuto.sRepIntro')}</p>
+
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">📈</span>
+              <div>${t('tuto.sRepUp')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">📉</span>
+              <div>${t('tuto.sRepDown')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">🎯</span>
+              <div>${t('tuto.sRepImpact')}</div>
+            </div>
+          </div>
+
+          <div class="tutorial-highlight mt-md">
+            <span class="tutorial-highlight-icon">💡</span>
+            <div>${t('tuto.sRepTip')}</div>
+          </div>
+        `
+      },
+      {
+        icon: '🔥',
+        title: t('tuto.sRivalTitle'),
+        content: `
+          <p>${t('tuto.sRivalIntro')}</p>
+
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">⏳</span>
+              <div>${t('tuto.sRivalGrow')}</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">🤜</span>
+              <div>${t('tuto.sRivalChoice')}</div>
+            </div>
+          </div>
+
+          <div class="tutorial-highlight mt-md">
+            <span class="tutorial-highlight-icon">💡</span>
+            <div>${t('tuto.sRivalTip')}</div>
+          </div>
+        `
+      },
+      {
         icon: '🗺️',
         title: t('tuto.s9Title'),
         content: `
