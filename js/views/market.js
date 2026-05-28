@@ -101,7 +101,7 @@ const MarketView = {
     const disabled = rosterFull || !canAfford;
 
     return `
-      <div class="market-agent-card card animate-fade-in-up stagger-${(index % 5) + 1}">
+      <div class="market-agent-card card card-interactive animate-fade-in-up stagger-${(index % 5) + 1}">
         <div class="market-agent-top">
           <div class="fighter-avatar" style="background: ${agent.avatarColor};">
             ${agent.firstName[0]}${agent.lastName[0]}

@@ -5,7 +5,7 @@
 /* --- Dashboard View --- */
 .dashboard-summary-cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: var(--space-md);
   margin-bottom: var(--space-lg);
 }
@@ -34,6 +34,30 @@
   color: var(--text-muted);
   margin-top: var(--space-sm);
 }
+
+/* Reputation value colors */
+.rep-value-high { color: var(--color-success); }
+.rep-value-mid { color: var(--text-primary); }
+.rep-value-low { color: var(--accent-red); }
+
+/* Reputation mini bar */
+.rep-bar-mini {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.rep-bar-mini-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+.rep-fill-high { background: var(--color-success); }
+.rep-fill-mid { background: var(--accent-orange); }
+.rep-fill-low { background: var(--accent-red); }
 
 .dashboard-main {
   display: grid;
@@ -1481,7 +1505,7 @@
 /* --- Responsive adjustments --- */
 @media (max-width: 1200px) {
   .dashboard-summary-cards {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
   .dashboard-main {
     grid-template-columns: 1fr;
@@ -1502,7 +1526,7 @@
 
 @media (max-width: 768px) {
   .dashboard-summary-cards {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
   .fight-camp-options {
     grid-template-columns: 1fr;
@@ -1526,5 +1550,23 @@
   .fight-camp-matchup {
     flex-direction: column;
     gap: var(--space-sm);
+  }
+}
+
+/* Training table tablet fix */
+@media (max-width: 1000px) and (min-width: 769px) {
+  .training-table-header,
+  .training-row {
+    grid-template-columns: 200px 1fr 100px 70px;
+  }
+  .training-col-stats {
+    display: none;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .dashboard-summary-cards {
+    grid-template-columns: 1fr;
   }
 }

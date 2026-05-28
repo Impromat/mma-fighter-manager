@@ -356,3 +356,35 @@ h6 { font-size: var(--font-md); font-weight: 500; }
   white-space: nowrap;
   border: 0;
 }
+
+.mt-xs { margin-top: var(--space-xs); }
+
+/* --- Focus Visible (Accessibility) --- */
+.btn:focus-visible,
+.nav-item:focus-visible,
+.tab:focus-visible,
+.training-pill:focus-visible,
+.camp-pill:focus-visible,
+.fighter-mini-row:focus-visible,
+.offer-fighter-clickable:focus-visible {
+  outline: 2px solid var(--accent-red);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--accent-orange);
+  outline-offset: 2px;
+}
+
+/* --- Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

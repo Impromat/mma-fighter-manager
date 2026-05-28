@@ -161,6 +161,11 @@
 .sidebar-footer {
   padding: var(--space-md) var(--space-lg);
   border-top: 1px solid var(--border-subtle);
+  margin-top: auto;
+  position: sticky;
+  bottom: 0;
+  background: var(--bg-secondary);
+  z-index: 2;
 }
 
 .sidebar-budget {

@@ -60,12 +60,12 @@ const DashboardView = {
 
         <div class="card summary-card animate-fade-in-up stagger-5">
           <div class="summary-card-label">⭐ ${t('dash.reputation')}</div>
-          <div class="summary-card-value" style="color: ${(state.reputation || 50) >= 75 ? 'var(--color-success)' : (state.reputation || 50) >= 35 ? 'var(--text-primary)' : 'var(--accent-red)'}">
+          <div class="summary-card-value rep-value-${(state.reputation || 50) >= 75 ? 'high' : (state.reputation || 50) >= 35 ? 'mid' : 'low'}">
             ${state.reputation || 50}/100
           </div>
           <div class="summary-card-detail">
-            <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;">
-              <div style="width: ${state.reputation || 50}%; height: 100%; background: ${(state.reputation || 50) >= 75 ? 'var(--color-success)' : (state.reputation || 50) >= 35 ? 'var(--accent-orange)' : 'var(--accent-red)'}; transition: width 0.5s;"></div>
+            <div class="rep-bar-mini">
+              <div class="rep-bar-mini-fill rep-fill-${(state.reputation || 50) >= 75 ? 'high' : (state.reputation || 50) >= 35 ? 'mid' : 'low'}" style="width: ${state.reputation || 50}%;"></div>
             </div>
           </div>
         </div>

@@ -28,15 +28,20 @@
 .card:hover {
   background: var(--glass-bg-hover);
   border-color: var(--border-light);
+}
+
+/* Interactive cards get lift effect */
+.card-interactive:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
 .card-static {
-  composes: card;
+  /* No hover effects */
 }
 .card-static:hover {
   transform: none;
+  box-shadow: none;
 }
 
 .card-header {
@@ -181,12 +186,13 @@
   background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
   color: white;
   font-weight: 700;
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   padding: var(--space-md) var(--space-xl);
   border-radius: var(--radius-md);
   box-shadow: 0 4px 24px rgba(230, 57, 70, 0.3);
   letter-spacing: 0.02em;
   width: 100%;
+  animation: glowPulse 3s ease-in-out infinite;
 }
 
 .btn-advance-week:hover {

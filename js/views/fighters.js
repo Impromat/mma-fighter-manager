@@ -46,7 +46,7 @@ const FightersView = {
       .sort((a, b) => b.value - a.value);
 
     return `
-      <div class="card fighter-card animate-fade-in-up stagger-${index + 1}" data-fighter-id="${fighter.id}">
+      <div class="card card-interactive fighter-card animate-fade-in-up stagger-${index + 1}" data-fighter-id="${fighter.id}">
         <div class="fighter-card-header">
           <div class="fighter-avatar" style="background: ${fighter.avatarColor};">
             ${fighter.firstName[0]}${fighter.lastName[0]}
