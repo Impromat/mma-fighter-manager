@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Test Worker</title>
+<style>
+  body { font-family: monospace; background: #1a1a2e; color: #eee; padding: 40px; }
+  h2 { color: #e94560; }
+  #result { background: #16213e; padding: 20px; border-radius: 8px; margin-top: 20px; white-space: pre-wrap; }
+  button { background: #e94560; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; cursor: pointer; margin: 10px 4px; }
+  .ok { color: #4caf50; } .err { color: #f44336; }
+</style>
+</head>
+<body>
+<h2>🥊 Test Worker — Trash Talk API</h2>
+
+<button onclick="testProvoke()">🎙️ Test PROVOKE (génère un trash talk)</button>
+<button onclick="testJudge()">⚖️ Test JUDGE (évalue un échange)</button>
+
+<div id="result">Clique sur un bouton pour tester...</div>
+
+<script>
+const WORKER = 'https://mma-trashtalk.lhoste-mathieu.workers.dev';
+
+const fighter = {name:'Hugo Moreno',wins:10,losses:2,rank:5,style:'striker',personality:'confident',strengths:'striking (78)',weakness:'wrestling (52)',winStreak:6,lossStreak:0};
+const opponent = {name:'Carlos Santos',wins:8,losses:5,rank:9,style:'wrestler',personality:'trashTalker',strengths:'wrestling (80)',weakness:'chin (55)',winStreak:0,lossStreak:1};
+const context = {isTitle:false,rivalry:null,history:null};
+
+function log(msg, cls='') {
+  document.getElementById('result').innerHTML = `<span class="${cls}">${msg}</span>`;
+}
+
+async function testProvoke() {
+  log('⏳ Appel en cours...');
+  try {
+    const res = await fetch(WORKER + '/provoke', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ fighter, opponent, context, lang: 'fr' })
+    });
+    const data = await res.json();
+    log(`✅ STATUS: ${res.status}\n\n🎙️ Trash talk de Carlos Santos:\n\n"${data.trashtalk || JSON.stringify(data)}"`, 'ok');
+  } catch(e) {
+    log('❌ ERREUR: ' + e.message, 'err');
+  }
+}
+
+async function testJudge() {
+  log('⏳ Appel en cours...');
+  try {
+    const res = await fetch(WORKER + '/judge', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        provocation: "Moreno parle de son win streak mais il a jamais battu un vrai lutteur. Je le mets au sol dès le premier échange.",
+        response: "Santos a 5 défaites et une gueule cassée. Mon striking va régler le problème rapidement.",
+        fighter, opponent, context, lang: 'fr'
+      })
+    });
+    const data = await res.json();
+    log(`✅ STATUS: ${res.status}\n\n⚖️ Verdict:\n${JSON.stringify(data, null, 2)}`, 'ok');
+  } catch(e) {
+    log('❌ ERREUR: ' + e.message, 'err');
+  }
+}
+</script>
+</body>
+</html>

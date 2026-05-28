@@ -486,6 +486,22 @@ const App = {
       return;
     }
 
+    // Check if a press conference is due (fight in 1 week, not yet done)
+    const pressConfFight = PressConferenceView.getFightDueForPressConference(state);
+    if (pressConfFight) {
+      PressConferenceView.show(pressConfFight, state, () => {
+        document.getElementById('modal-root').innerHTML = '';
+        this._doAdvanceWeek();
+      });
+      return;
+    }
+
+    this._doAdvanceWeek();
+  },
+
+  _doAdvanceWeek() {
+    const state = GameState.get();
+
     // Check for scheduled fights this week
     const thisWeekFights = state.schedule.filter(s => s.week === state.week && !s.completed);
 

@@ -115,6 +115,11 @@ const FighterGenerator = {
 
     const avatarColor = AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)];
 
+    const PERSONALITIES = isPlayer
+      ? ['confident']
+      : ['trashTalker', 'trashTalker', 'confident', 'confident', 'humble', 'quiet'];
+    const personality = PERSONALITIES[Math.floor(Math.random() * PERSONALITIES.length)];
+
     return {
       id: this._generateId(idPrefix),
       firstName,
@@ -144,7 +149,8 @@ const FighterGenerator = {
       avatarColor,
       fightCampBonus: null,
       ranking: null,
-      feeMultiplier: 1.0
+      feeMultiplier: 1.0,
+      personality
     };
   },
 
