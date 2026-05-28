@@ -602,7 +602,7 @@ const GameState = {
     agent.morale = 75;
     agent.status = 'available';
     delete agent.signingBonus;
-    delete agent.weeklySalary;
+    delete agent.weeklyFee;
 
     state.fighters.push(agent);
     state.freeAgents.splice(agentIdx, 1);

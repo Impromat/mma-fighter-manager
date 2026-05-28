@@ -143,8 +143,8 @@ const MarketView = {
             <span class="market-agent-cost-value">${FinanceEngine.formatMoney(agent.signingBonus)}</span>
           </div>
           <div class="market-agent-cost">
-            <span class="market-agent-cost-label">📅 ${t('market.weeklySalary')}</span>
-            <span class="market-agent-cost-value">${FinanceEngine.formatMoney(agent.weeklySalary)}/sem</span>
+            <span class="market-agent-cost-label">📅 ${t('market.weeklyFee')}</span>
+            <span class="market-agent-cost-value">${FinanceEngine.formatMoney(agent.weeklyFee || GYM_FEES.rookie)}/sem</span>
           </div>
         </div>
 

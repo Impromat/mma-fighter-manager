@@ -540,8 +540,8 @@ const LeagueEngine = {
    * Calculate severance pay for cutting a fighter
    */
   calculateSeverancePay(fighter, state) {
-    const weeklySalary = FinanceEngine.getFighterSalary(fighter, state);
-    return Math.round(weeklySalary * MARKET_CONFIG.severancePay);
+    const weeklyFee = FinanceEngine.getFighterFee(fighter);
+    return Math.round(weeklyFee * MARKET_CONFIG.severancePay);
   },
 
   /**
@@ -593,7 +593,7 @@ const LeagueEngine = {
 
       // Calculate and attach signing bonus
       fighter.signingBonus = this.calculateSigningBonus(fighter);
-      fighter.weeklySalary = SALARY_BY_RANK.unranked; // Free agents are unranked
+      fighter.weeklyFee = GYM_FEES.rookie; // Free agents start at rookie rate
 
       existingNames.push(fighter.fullName);
       agents.push(fighter);

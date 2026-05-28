@@ -166,8 +166,8 @@ const App = {
                                      potentialAvg >= 75 ? '⭐ Haut' :
                                      potentialAvg >= 65 ? '📈 Moyen' : '📊 Bas';
 
-              // Weekly salary estimate
-              const salary = SALARY_BY_RANK.unranked;
+              // Weekly training fee
+              const fee = GYM_FEES.rookie;
 
               // Top 3 stats
               const topStats = STAT_NAMES.map(s => ({
@@ -216,7 +216,7 @@ const App = {
                   </div>
 
                   <div class="draft-card-footer">
-                    <span class="text-xs text-muted">💰 Salaire : ${FinanceEngine.formatMoney(salary)}/sem</span>
+                    <span class="text-xs text-muted">💰 ${t('train.fee')} : ${FinanceEngine.formatMoney(fee)}/sem</span>
                     <span class="text-xs text-muted">📈 Potentiel moy. : ${potentialAvg}</span>
                   </div>
                 </div>

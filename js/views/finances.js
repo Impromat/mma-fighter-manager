@@ -7,7 +7,7 @@ const FinancesView = {
     const state = GameState.get();
     const summary = FinanceEngine.getWeeklySummary(state);
     const recentTransactions = FinanceEngine.getRecentTransactions(state, 20);
-    const weeklySalaries = FinanceEngine.calculateWeeklySalaries(state);
+    const weeklyFinances = FinanceEngine.calculateWeeklyFinances(state);
 
     // Calculate totals
     const totalIncome = state.transactions
@@ -55,12 +55,12 @@ const FinancesView = {
       <div class="dashboard-main">
         <!-- Left: Breakdown -->
         <div>
-          <!-- Weekly Costs -->
+          <!-- Weekly Revenue -->
           <div class="card mb-lg animate-fade-in-up stagger-4">
             <div class="card-header">
               <div class="card-title">
-                <span class="card-title-icon">📋</span>
-                Weekly Cost Breakdown
+                <span class="card-title-icon">💰</span>
+                ${t('finance.trainingFees')}
               </div>
             </div>
 
@@ -69,15 +69,15 @@ const FinancesView = {
                 <thead>
                   <tr>
                     <th>Fighter</th>
-                    <th>Ranking</th>
-                    <th style="text-align: right;">Weekly Salary</th>
+                    <th>OVR</th>
+                    <th style="text-align: right;">${t('train.fee')}/sem</th>
                   </tr>
                 </thead>
                 <tbody>
                   ${state.fighters.map(fighter => {
-                    const salary = FinanceEngine.getFighterSalary(fighter, state);
-                    const ranking = LeagueEngine.getFighterRanking(fighter.id, state);
-                    const rankDisplay = ranking === 0 ? '🏆 Champion' : ranking ? `#${ranking}` : 'Unranked';
+                    const fee = FinanceEngine.getFighterFee(fighter);
+                    const ovr = TrainingEngine.calculateOverall(fighter);
+                    const multiplier = fighter.feeMultiplier || 1.0;
 
                     return `
                       <tr>
@@ -87,18 +87,27 @@ const FinancesView = {
                               ${fighter.firstName[0]}${fighter.lastName[0]}
                             </div>
                             <span class="font-semibold">${fighter.fullName}</span>
+                            ${multiplier !== 1.0 ? `<span class="text-xs ${multiplier > 1 ? 'text-success' : 'text-danger'}">×${multiplier.toFixed(2)}</span>` : ''}
                           </div>
                         </td>
-                        <td class="text-sm text-muted">${rankDisplay}</td>
-                        <td class="text-right transaction-amount expense">${FinanceEngine.formatMoney(salary)}</td>
+                        <td class="text-sm text-muted">${ovr}</td>
+                        <td class="text-right transaction-amount income">+${FinanceEngine.formatMoney(fee)}</td>
                       </tr>
                     `;
                   }).join('')}
                 </tbody>
                 <tfoot>
                   <tr style="border-top: 2px solid var(--border-light);">
-                    <td colspan="2" class="font-bold">Total Weekly Salaries</td>
-                    <td class="text-right font-bold transaction-amount expense">${FinanceEngine.formatMoney(weeklySalaries)}</td>
+                    <td colspan="2" class="font-bold">${t('finance.trainingFees')}</td>
+                    <td class="text-right font-bold transaction-amount income">+${FinanceEngine.formatMoney(weeklyFinances.fees)}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" class="font-bold">${t('finance.gymCosts')}</td>
+                    <td class="text-right font-bold transaction-amount expense">-${FinanceEngine.formatMoney(weeklyFinances.costs)}</td>
+                  </tr>
+                  <tr style="border-top: 2px solid var(--border-light);">
+                    <td colspan="2" class="font-bold">Net hebdo</td>
+                    <td class="text-right font-bold transaction-amount ${weeklyFinances.net >= 0 ? 'income' : 'expense'}">${weeklyFinances.net >= 0 ? '+' : ''}${FinanceEngine.formatMoney(weeklyFinances.net)}</td>
                   </tr>
                 </tfoot>
               </table>
@@ -157,12 +166,12 @@ const FinancesView = {
             `}
           </div>
 
-          <!-- Revenue Info -->
+          <!-- Commission Guide -->
           <div class="card mt-lg animate-fade-in-up stagger-6">
             <div class="card-header">
               <div class="card-title">
                 <span class="card-title-icon">💡</span>
-                Revenue Guide
+                ${t('finance.commission')} Guide (${Math.round(GYM_CUT.pursePercent * 100)}% show / ${Math.round(GYM_CUT.winBonusPercent * 100)}% win)
               </div>
             </div>
             <div class="table-container">
@@ -170,41 +179,29 @@ const FinancesView = {
                 <thead>
                   <tr>
                     <th>Fighter Level</th>
-                    <th style="text-align: right;">Show $</th>
-                    <th style="text-align: right;">Win Bonus</th>
+                    <th style="text-align: right;">Show Cut</th>
+                    <th style="text-align: right;">Win Cut</th>
+                    <th style="text-align: right;">Total</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td class="text-sm">Unranked</td>
-                    <td class="text-right text-sm">${FinanceEngine.formatMoney(1000)}</td>
-                    <td class="text-right text-sm text-success">${FinanceEngine.formatMoney(2000)}</td>
-                  </tr>
-                  <tr>
-                    <td class="text-sm">#15—#11</td>
-                    <td class="text-right text-sm">${FinanceEngine.formatMoney(1500)}</td>
-                    <td class="text-right text-sm text-success">${FinanceEngine.formatMoney(3000)}</td>
-                  </tr>
-                  <tr>
-                    <td class="text-sm">#10—#6</td>
-                    <td class="text-right text-sm">${FinanceEngine.formatMoney(2000)}</td>
-                    <td class="text-right text-sm text-success">${FinanceEngine.formatMoney(5000)}</td>
-                  </tr>
-                  <tr>
-                    <td class="text-sm">#5—#4</td>
-                    <td class="text-right text-sm">${FinanceEngine.formatMoney(3000)}</td>
-                    <td class="text-right text-sm text-success">${FinanceEngine.formatMoney(7000)}</td>
-                  </tr>
-                  <tr>
-                    <td class="text-sm">#3—#1</td>
-                    <td class="text-right text-sm">${FinanceEngine.formatMoney(4000)}</td>
-                    <td class="text-right text-sm text-success">${FinanceEngine.formatMoney(8000)}</td>
-                  </tr>
-                  <tr style="border-top: 2px solid var(--border-light);">
-                    <td class="text-sm font-bold">🏆 Title Fight</td>
-                    <td class="text-right text-sm font-bold">${FinanceEngine.formatMoney(5000)}</td>
-                    <td class="text-right text-sm text-success font-bold">${FinanceEngine.formatMoney(10000)}</td>
-                  </tr>
+                  ${Object.entries(FIGHT_PURSES).map(([key, purse]) => {
+                    const cut = FinanceEngine.getGymCut(purse, true);
+                    const label = key === 'unranked' ? 'Unranked' :
+                                  key === 'ranked15_11' ? '#15—#11' :
+                                  key === 'ranked10_6' ? '#10—#6' :
+                                  key === 'ranked5_4' ? '#5—#4' :
+                                  key === 'ranked3_1' ? '#3—#1' : '🏆 Title';
+                    const isTitle = key === 'titleFight';
+                    return `
+                      <tr ${isTitle ? 'style="border-top: 2px solid var(--border-light);"' : ''}>
+                        <td class="text-sm ${isTitle ? 'font-bold' : ''}">${label}</td>
+                        <td class="text-right text-sm">${FinanceEngine.formatMoney(cut.showCut)}</td>
+                        <td class="text-right text-sm text-success">${FinanceEngine.formatMoney(cut.winCut)}</td>
+                        <td class="text-right text-sm text-success font-bold">${FinanceEngine.formatMoney(cut.total)}</td>
+                      </tr>
+                    `;
+                  }).join('')}
                 </tbody>
               </table>
             </div>
