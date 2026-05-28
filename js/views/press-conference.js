@@ -239,7 +239,7 @@ const PressConferenceView = {
       <!-- Verdict -->
       <div style="background:${playerWon ? 'rgba(72,199,142,0.1)' : 'rgba(255,100,50,0.1)'}; border:1px solid ${playerWon ? 'rgba(72,199,142,0.3)' : 'rgba(255,100,50,0.3)'}; border-radius:10px; padding:16px;">
         <div style="font-size:1.2rem; font-weight:800; color:${playerWon ? '#48c78e' : 'var(--accent)'}; margin-bottom:8px;">
-          ${playerWon ? '🏆 Tu as remporté le mind game !' : '😤 Santos a eu le dessus... pour l\'instant.'}
+          ${playerWon ? '🏆 Tu as remporté le mind game !' : `😤 ${opponent.firstName} a eu le dessus... pour l'instant.`}
         </div>
         <div style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px; line-height:1.5;">
           ${effects.analysis}
