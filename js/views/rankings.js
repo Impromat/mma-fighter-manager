@@ -221,6 +221,83 @@ const RankingsView = {
           </div>
         ` : ''}
       </div>
+
+      <!-- Unranked Opponents — for unranked player fighters -->
+      ${this._renderUnrankedSection(wcId, state, playerFighterIds, hasAvailableFighter)}
+    `;
+  },
+
+  _renderUnrankedSection(wcId, state, playerFighterIds, hasAvailableFighter) {
+    // Only show if some player fighters in this weight class are unranked
+    const unrankedPlayerFighters = state.fighters.filter(f =>
+      f.weightClass === wcId &&
+      LeagueEngine.getFighterRanking(f.id, state) === null &&
+      LeagueEngine.getFighterRanking(f.id, state) !== 0
+    );
+    if (unrankedPlayerFighters.length === 0) return '';
+
+    // Get unranked AI opponents in this weight class
+    const rankedIds = new Set((state.rankings[wcId]?.ranked || []));
+    const championId = state.rankings[wcId]?.champion;
+    const unrankedOpponents = state.aiFighters.filter(f =>
+      f.weightClass === wcId &&
+      !rankedIds.has(f.id) &&
+      f.id !== championId &&
+      f.status !== 'injured'
+    ).slice(0, 6); // show up to 6 unranked opponents
+
+    if (unrankedOpponents.length === 0) return '';
+
+    return `
+      <div class="card animate-fade-in-up mt-lg">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="card-title-icon">🆕</span>
+            Adversaires Non-Classés
+          </div>
+          <span class="text-xs text-muted">Pour démarrer ton parcours</span>
+        </div>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Fighter</th>
+                <th>Style</th>
+                <th>Bilan</th>
+                <th>OVR</th>
+                <th style="width:120px;"></th>
+              </tr>
+            </thead>
+            <tbody>
+              ${unrankedOpponents.map((opponent, i) => {
+                const opponentStyle = STYLES[opponent.style];
+                const opponentBooked = state.schedule.some(s => !s.completed && s.opponentId === opponent.id);
+                const hasPendingChallenge = (state.outgoingChallenges || []).some(c => c.status === 'pending' && c.opponentId === opponent.id);
+                const canChallenge = hasAvailableFighter && !opponentBooked && !hasPendingChallenge;
+                return `
+                  <tr style="animation: fadeInUp 0.3s ease ${i * 30}ms both;">
+                    <td>
+                      <div class="flex items-center gap-sm">
+                        <div class="fighter-mini-avatar" style="background: ${opponent.avatarColor}; width:30px; height:30px; font-size:10px;">
+                          ${opponent.firstName[0]}${opponent.lastName[0]}
+                        </div>
+                        <div class="font-semibold">${opponent.fullName}</div>
+                      </div>
+                    </td>
+                    <td><span class="badge badge-style">${opponentStyle?.icon || ''} ${opponentStyle?.name || ''}</span></td>
+                    <td class="font-semibold">${opponent.wins}-${opponent.losses}</td>
+                    <td><span class="font-bold">${TrainingEngine.calculateOverall(opponent)}</span></td>
+                    <td>
+                      ${hasPendingChallenge ? `<span class="badge badge-pending">⏳ En attente</span>` :
+                        canChallenge ? `<button class="btn btn-ghost btn-xs rank-propose-btn" data-opponent-id="${opponent.id}">⚔️ ${t('match.propose')}</button>` : ''}
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
     `;
   },
 
