@@ -370,7 +370,7 @@ const GameState = {
 
       // Revenue — gym takes its cut (15% show + 10% win bonus)
       const purse = scheduledFight.purse || FinanceEngine.calculatePurse(playerFighter, state, scheduledFight.isTitle);
-      const gymCut = FinanceEngine.getGymCut(purse, true);
+      const gymCut = FinanceEngine.getGymCut(purse, true, playerFighter);
       FinanceEngine.addTransaction(state, 'income', `${t('finance.commission')}: ${playerFighter.fullName} (${t('finance.win')})`, gymCut.total);
 
       // Track fighter earnings for season stats
@@ -398,7 +398,7 @@ const GameState = {
 
       // Show money commission only (15% of show)
       const purse = scheduledFight.purse || FinanceEngine.calculatePurse(playerFighter, state, scheduledFight.isTitle);
-      const gymCut = FinanceEngine.getGymCut(purse, false);
+      const gymCut = FinanceEngine.getGymCut(purse, false, playerFighter);
       FinanceEngine.addTransaction(state, 'income', `${t('finance.commission')}: ${playerFighter.fullName}`, gymCut.total);
 
       // Morale drop
@@ -669,6 +669,36 @@ const GameState = {
 
     this.save();
     this._notify('feeChanged', { fighter, oldMultiplier, newMultiplier, moraleChange });
+    return { fighter, moraleChange };
+  },
+
+  /**
+   * Adjust gym's commission rate on a fighter's purses
+   */
+  adjustCommission(fighterId, direction) {
+    const fighter = this._state.fighters.find(f => f.id === fighterId);
+    if (!fighter) return;
+
+    const step = COMMISSION_STEPS.step;
+    const oldMultiplier = fighter.commissionMultiplier || COMMISSION_STEPS.default;
+    let newMultiplier;
+
+    if (direction === 'up') {
+      newMultiplier = Math.min(COMMISSION_STEPS.max, +(oldMultiplier + step).toFixed(2));
+    } else {
+      newMultiplier = Math.max(COMMISSION_STEPS.min, +(oldMultiplier - step).toFixed(2));
+    }
+
+    if (newMultiplier === oldMultiplier) return;
+
+    fighter.commissionMultiplier = newMultiplier;
+
+    // Morale impact: lower commission = happy, higher = unhappy
+    const moraleChange = direction === 'up' ? -COMMISSION_STEPS.moralePerStep : COMMISSION_STEPS.moralePerStep;
+    fighter.morale = Math.max(10, Math.min(100, fighter.morale + moraleChange));
+
+    this.save();
+    this._notify('commissionChanged', { fighter, oldMultiplier, newMultiplier, moraleChange });
     return { fighter, moraleChange };
   },
 

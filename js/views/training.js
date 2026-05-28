@@ -27,6 +27,7 @@ const TrainingView = {
             <div class="training-col-stats">${t('train.stats')}</div>
             <div class="training-col-training">${t('sidebar.training')}</div>
             <div class="training-col-salary">${t('train.fee')}</div>
+            <div class="training-col-commission">${t('train.commission')}</div>
             <div class="training-col-moral">${t('train.morale')}</div>
           </div>
           ${state.fighters.map((fighter, i) => this._renderFighterRow(fighter, state, i)).join('')}
@@ -143,6 +144,21 @@ const TrainingView = {
             </div>
             <button class="salary-btn salary-up" data-fighter="${fighter.id}" data-dir="up"
                     ${(fighter.feeMultiplier || 1.0) >= 2.0 ? 'disabled' : ''}>+</button>
+          </div>
+        </div>
+
+        <div class="training-col-commission">
+          <div class="salary-adjuster">
+            <button class="salary-btn salary-down" data-commission="${fighter.id}" data-dir="down"
+                    ${(fighter.commissionMultiplier || 1.0) <= COMMISSION_STEPS.min ? 'disabled' : ''}>−</button>
+            <div class="salary-display">
+              <div class="salary-amount">${FinanceEngine.getCommissionRates(fighter).showPercent}%/${FinanceEngine.getCommissionRates(fighter).winPercent}%</div>
+              <div class="salary-multiplier ${(fighter.commissionMultiplier || 1.0) > 1.0 ? 'high' : (fighter.commissionMultiplier || 1.0) < 1.0 ? 'low' : ''}">
+                ×${(fighter.commissionMultiplier || 1.0).toFixed(2)}
+              </div>
+            </div>
+            <button class="salary-btn salary-up" data-commission="${fighter.id}" data-dir="up"
+                    ${(fighter.commissionMultiplier || 1.0) >= COMMISSION_STEPS.max ? 'disabled' : ''}>+</button>
           </div>
         </div>
 
@@ -472,7 +488,7 @@ const TrainingView = {
     });
 
     // Fee adjustment clicks
-    container.querySelectorAll('.salary-btn').forEach(btn => {
+    container.querySelectorAll('.salary-btn[data-fighter]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const fighterId = btn.dataset.fighter;
@@ -484,6 +500,27 @@ const TrainingView = {
           const moraleText = result.moraleChange > 0 ? `+${result.moraleChange}` : result.moraleChange;
           App.showToast(
             `💰 ${result.fighter.fullName} — ${t('finance.feeAdjusted')} (×${result.fighter.feeMultiplier.toFixed(2)}) · ${moraleIcon} Moral ${moraleText}`,
+            result.moraleChange > 0 ? 'success' : 'warning'
+          );
+          this.render(container);
+        }
+      });
+    });
+
+    // Commission adjustment clicks
+    container.querySelectorAll('.salary-btn[data-commission]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const fighterId = btn.dataset.commission;
+        const direction = btn.dataset.dir;
+
+        const result = GameState.adjustCommission(fighterId, direction);
+        if (result) {
+          const rates = FinanceEngine.getCommissionRates(result.fighter);
+          const moraleIcon = result.moraleChange > 0 ? '😊' : '😤';
+          const moraleText = result.moraleChange > 0 ? `+${result.moraleChange}` : result.moraleChange;
+          App.showToast(
+            `📊 ${result.fighter.fullName} — ${t('finance.commissionAdjusted')} (${rates.showPercent}%/${rates.winPercent}%) · ${moraleIcon} Moral ${moraleText}`,
             result.moraleChange > 0 ? 'success' : 'warning'
           );
           this.render(container);

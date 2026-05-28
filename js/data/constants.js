@@ -210,14 +210,23 @@ const GYM_FEES = {
 
 // Gym fixed costs
 const GYM_COSTS = {
-  rent: 1500,             // weekly rent/equipment
-  staffPerFighter: 400    // coach cost per fighter
+  rent: 800,              // weekly rent/equipment (reduced for balance)
+  staffPerFighter: 250    // coach cost per fighter
 };
 
-// Gym's cut of fighter purses
+// Gym's default cut of fighter purses (adjustable per fighter)
 const GYM_CUT = {
-  pursePercent: 0.15,     // 15% of show money
-  winBonusPercent: 0.10   // 10% of win bonus
+  pursePercent: 0.20,     // 20% of show money
+  winBonusPercent: 0.15   // 15% of win bonus
+};
+
+// Commission multiplier steps (per fighter)
+const COMMISSION_STEPS = {
+  min: 0.50,   // ×0.50 = 10%/7.5%  → fighter happy
+  max: 2.00,   // ×2.00 = 40%/30%   → fighter angry
+  step: 0.25,
+  default: 1.0,
+  moralePerStep: 4   // morale change per step away from 1.0
 };
 
 const EVENT_INTERVAL = 4; // weeks between events

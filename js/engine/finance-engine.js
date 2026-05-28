@@ -62,12 +62,25 @@ const FinanceEngine = {
   },
 
   /**
-   * Calculate gym's cut from a fight purse
+   * Calculate gym's cut from a fight purse (per-fighter commission)
    */
-  getGymCut(purse, isWin) {
-    const showCut = Math.round(purse.show * GYM_CUT.pursePercent);
-    const winCut = isWin ? Math.round(purse.win * GYM_CUT.winBonusPercent) : 0;
+  getGymCut(purse, isWin, fighter) {
+    const mult = (fighter && fighter.commissionMultiplier) || 1.0;
+    const showCut = Math.round(purse.show * GYM_CUT.pursePercent * mult);
+    const winCut = isWin ? Math.round(purse.win * GYM_CUT.winBonusPercent * mult) : 0;
     return { showCut, winCut, total: showCut + winCut };
+  },
+
+  /**
+   * Get commission rates for a fighter (for UI display)
+   */
+  getCommissionRates(fighter) {
+    const mult = (fighter && fighter.commissionMultiplier) || 1.0;
+    return {
+      showPercent: Math.round(GYM_CUT.pursePercent * mult * 100),
+      winPercent: Math.round(GYM_CUT.winBonusPercent * mult * 100),
+      multiplier: mult
+    };
   },
 
   /**

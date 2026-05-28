@@ -269,7 +269,7 @@
 
 .training-table-header {
   display: grid;
-  grid-template-columns: 240px 130px 1fr 130px 80px;
+  grid-template-columns: 220px 120px 1fr 120px 120px 70px;
   gap: var(--space-sm);
   padding: var(--space-md) var(--space-lg);
   font-size: var(--font-xs);
@@ -283,7 +283,7 @@
 
 .training-row {
   display: grid;
-  grid-template-columns: 240px 130px 1fr 130px 80px;
+  grid-template-columns: 220px 120px 1fr 120px 120px 70px;
   gap: var(--space-sm);
   align-items: center;
   padding: var(--space-md) var(--space-lg);
@@ -479,8 +479,9 @@
 .tt-negative { color: var(--color-danger); }
 .tt-neutral { color: var(--text-muted); }
 
-/* --- Salary Adjuster --- */
-.training-col-salary {
+/* --- Salary & Commission Adjuster --- */
+.training-col-salary,
+.training-col-commission {
   display: flex;
   justify-content: center;
 }
@@ -1557,7 +1558,7 @@
 @media (max-width: 1000px) and (min-width: 769px) {
   .training-table-header,
   .training-row {
-    grid-template-columns: 200px 1fr 100px 70px;
+    grid-template-columns: 180px 1fr 100px 100px 60px;
   }
   .training-col-stats {
     display: none;

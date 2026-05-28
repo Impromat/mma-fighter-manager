@@ -281,11 +281,11 @@ const TutorialView = {
             </div>
             <div class="tutorial-finance-row">
               <span>${t('tuto.s8ShowCut')}</span>
-              <span class="text-success font-bold">15%</span>
+              <span class="text-success font-bold">20%</span>
             </div>
             <div class="tutorial-finance-row">
               <span>${t('tuto.s8WinCut')}</span>
-              <span class="text-success font-bold">10%</span>
+              <span class="text-success font-bold">15%</span>
             </div>
           </div>
           <p class="text-xs text-muted mt-sm">${t('tuto.s8FeeNote')}</p>
@@ -294,16 +294,19 @@ const TutorialView = {
           <div class="tutorial-finance-table">
             <div class="tutorial-finance-row">
               <span>${t('tuto.s8Rent')}</span>
-              <span class="text-danger font-bold">$1,500/sem</span>
+              <span class="text-danger font-bold">$800/sem</span>
             </div>
             <div class="tutorial-finance-row">
               <span>${t('tuto.s8Staff')}</span>
-              <span class="text-danger font-bold">$400/fighter/sem</span>
+              <span class="text-danger font-bold">$250/fighter/sem</span>
             </div>
           </div>
 
           <h5 class="mt-lg mb-sm">📊 ${t('tuto.s8FeeTitle')}</h5>
           <p>${t('tuto.s8FeeDesc')}</p>
+
+          <h5 class="mt-lg mb-sm">💱 ${t('tuto.s8CommTitle')}</h5>
+          <p>${t('tuto.s8CommDesc')}</p>
 
           <div class="tutorial-highlight mt-md">
             <span class="tutorial-highlight-icon">💡</span>
