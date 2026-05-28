@@ -189,12 +189,21 @@ const NATIONALITIES = [
 ];
 
 const FIGHT_PURSES = {
-  unranked: { show: 1000, win: 2000 },
-  ranked15_11: { show: 1500, win: 3000 },
-  ranked10_6: { show: 2000, win: 5000 },
-  ranked5_4: { show: 3000, win: 7000 },
-  ranked3_1: { show: 4000, win: 8000 },
-  titleFight: { show: 5000, win: 10000 }
+  unranked:    { show: 1500,  win: 3000 },
+  ranked15_11: { show: 2500,  win: 5000 },
+  ranked10_6:  { show: 4000,  win: 8000 },
+  ranked5_4:   { show: 6000,  win: 12000 },
+  ranked3_1:   { show: 8000,  win: 15000 },
+  titleFight:  { show: 15000, win: 30000 }
+};
+
+// Performance bonuses (paid to the gym directly)
+const PERFORMANCE_BONUS = {
+  koFinish: 2000,          // KO/TKO finish bonus
+  submissionFinish: 1500,  // Submission finish bonus
+  fightOfTheNight: 3000,   // Random chance on exciting fights
+  winStreak5: 5000,        // 5 win streak milestone
+  winStreak10: 10000       // 10 win streak milestone
 };
 
 // --- Gym Financial Model (MMA Realistic) ---

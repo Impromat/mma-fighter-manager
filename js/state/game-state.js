@@ -388,7 +388,7 @@ const GameState = {
       playerFighter.wins++;
       opponent.losses++;
 
-      // Revenue — gym takes its cut (15% show + 10% win bonus)
+      // Revenue — gym takes its cut
       const purse = scheduledFight.purse || FinanceEngine.calculatePurse(playerFighter, state, scheduledFight.isTitle);
       const gymCut = FinanceEngine.getGymCut(purse, true, playerFighter);
       FinanceEngine.addTransaction(state, 'income', `${t('finance.commission')}: ${playerFighter.fullName} (${t('finance.win')})`, gymCut.total);
@@ -398,19 +398,48 @@ const GameState = {
         state.seasonStats.moneyEarned = (state.seasonStats.moneyEarned || 0) + gymCut.total;
       }
 
-      // Morale boost
-      playerFighter.morale = Math.min(100, playerFighter.morale + 15);
+      // PERFORMANCE BONUSES
+      if (result.method === 'KO/TKO') {
+        FinanceEngine.addTransaction(state, 'income', `🥊 Bonus KO: ${playerFighter.fullName}`, PERFORMANCE_BONUS.koFinish);
+        result.performanceBonus = PERFORMANCE_BONUS.koFinish;
+      } else if (result.method === 'Submission') {
+        FinanceEngine.addTransaction(state, 'income', `🤼 Bonus Submission: ${playerFighter.fullName}`, PERFORMANCE_BONUS.submissionFinish);
+        result.performanceBonus = PERFORMANCE_BONUS.submissionFinish;
+      }
 
-      // Win streak tracking
+      // Win streak tracking + bonuses
       playerFighter.winStreak = (playerFighter.winStreak || 0) + 1;
       playerFighter.bestStreak = Math.max(playerFighter.bestStreak || 0, playerFighter.winStreak);
+      playerFighter.lossStreak = 0; // Reset loss streak
+      
+      if (playerFighter.winStreak === 5) {
+        FinanceEngine.addTransaction(state, 'income', `🔥 5 Win Streak: ${playerFighter.fullName}`, PERFORMANCE_BONUS.winStreak5);
+        result.streakBonus = PERFORMANCE_BONUS.winStreak5;
+      } else if (playerFighter.winStreak === 10) {
+        FinanceEngine.addTransaction(state, 'income', `🔥🔥 10 Win Streak: ${playerFighter.fullName}`, PERFORMANCE_BONUS.winStreak10);
+        result.streakBonus = PERFORMANCE_BONUS.winStreak10;
+      }
+
+      // Morale boost — fighter + global team boost
+      playerFighter.morale = Math.min(100, playerFighter.morale + 15);
+      state.fighters.forEach(f => {
+        if (f.id !== playerFighter.id) {
+          f.morale = Math.min(100, f.morale + 3);
+        }
+      });
 
       // Update rankings
       LeagueEngine.updateRankingsAfterFight(playerFighter, opponent, true, state);
 
-      // Title check
+      // Title check — celebration bonus
       if (scheduledFight.isTitle) {
         LeagueEngine.awardTitle(playerFighter, state);
+        FinanceEngine.addTransaction(state, 'income', `🏆 TITLE WON: ${playerFighter.fullName}`, 20000);
+        result.titleBonus = 20000;
+        // Massive morale boost for everyone
+        state.fighters.forEach(f => {
+          f.morale = Math.min(100, f.morale + 10);
+        });
       }
     } else {
       playerFighter.losses++;
@@ -421,11 +450,23 @@ const GameState = {
       const gymCut = FinanceEngine.getGymCut(purse, false, playerFighter);
       FinanceEngine.addTransaction(state, 'income', `${t('finance.commission')}: ${playerFighter.fullName}`, gymCut.total);
 
-      // Morale drop
-      playerFighter.morale = Math.max(20, playerFighter.morale - 15);
+      // Morale drop — fighter + global team impact
+      playerFighter.morale = Math.max(15, playerFighter.morale - 15);
+      state.fighters.forEach(f => {
+        if (f.id !== playerFighter.id) {
+          f.morale = Math.max(15, f.morale - 3);
+        }
+      });
 
-      // Reset win streak
+      // Reset win streak, track loss streak
       playerFighter.winStreak = 0;
+      playerFighter.lossStreak = (playerFighter.lossStreak || 0) + 1;
+
+      // 3+ consecutive losses = severe morale hit
+      if (playerFighter.lossStreak >= 3) {
+        playerFighter.morale = Math.max(10, playerFighter.morale - 10);
+        result.lossStreakWarning = playerFighter.lossStreak;
+      }
 
       // Update rankings
       LeagueEngine.updateRankingsAfterFight(playerFighter, opponent, false, state);
