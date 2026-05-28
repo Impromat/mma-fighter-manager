@@ -81,64 +81,74 @@ const LeagueEngine = {
     const playerRank = this.getFighterRanking(playerFighter.id, state);
     const opponentRank = this.getFighterRanking(opponent.id, state);
 
+    // Win streak bonus: extra ranking jump for hot fighters
+    const streakBonus = (playerFighter.winStreak || 0) >= 3 ? 1 : 0;
+
     if (playerWon) {
       if (playerRank === null && opponentRank === null) {
-        // Both unranked: winner enters bottom of rankings
-        rankings.ranked.push(playerFighter.id);
-        if (rankings.ranked.length > 15) {
-          // Remove last ranked if too many
-          const removed = rankings.ranked.pop();
-          // Actually push player in at 15, so pop the one before
-          rankings.ranked.splice(rankings.ranked.length - 1, 0, playerFighter.id);
-          rankings.ranked.pop(); // Remove the duplicate
+        // Both unranked: winner enters rankings (around #12-15)
+        if (rankings.ranked.length < 15) {
+          rankings.ranked.push(playerFighter.id);
+        } else {
+          // Replace last ranked
+          rankings.ranked[14] = playerFighter.id;
         }
       } else if (playerRank === null && opponentRank !== null) {
         // Player unranked, beat a ranked fighter: take their spot
         const idx = rankings.ranked.indexOf(opponent.id);
         rankings.ranked.splice(idx, 0, playerFighter.id);
-        // Push opponent down, trim to 15
         if (rankings.ranked.length > 15) {
           rankings.ranked = rankings.ranked.slice(0, 15);
         }
       } else if (playerRank !== null && opponentRank !== null) {
-        // Both ranked: winner moves up
+        // Both ranked: winner takes opponent's spot if higher + bonus jump
         const playerIdx = rankings.ranked.indexOf(playerFighter.id);
         const opponentIdx = rankings.ranked.indexOf(opponent.id);
 
         if (opponentIdx < playerIdx) {
-          // Beat someone ranked higher: take their position
+          // Beat someone ranked higher: take their position + streak bonus
           rankings.ranked.splice(playerIdx, 1);
-          rankings.ranked.splice(opponentIdx, 0, playerFighter.id);
+          const targetIdx = Math.max(0, opponentIdx - streakBonus);
+          rankings.ranked.splice(targetIdx, 0, playerFighter.id);
+        } else {
+          // Beat someone ranked lower: still climb 1-2 spots
+          const climb = 1 + streakBonus;
+          rankings.ranked.splice(playerIdx, 1);
+          const newIdx = Math.max(0, playerIdx - climb);
+          rankings.ranked.splice(newIdx, 0, playerFighter.id);
         }
-        // If beat someone ranked lower: no change (already higher)
       } else if (playerRank !== null && opponentRank === null) {
-        // Beat unranked: small bump if not already high
+        // Beat unranked: climb 1-2 spots
         const playerIdx = rankings.ranked.indexOf(playerFighter.id);
+        const climb = 1 + streakBonus;
         if (playerIdx > 0) {
-          // Move up 1 spot
           rankings.ranked.splice(playerIdx, 1);
-          rankings.ranked.splice(playerIdx - 1, 0, playerFighter.id);
+          const newIdx = Math.max(0, playerIdx - climb);
+          rankings.ranked.splice(newIdx, 0, playerFighter.id);
         }
       }
     } else {
-      // Player lost
+      // Player lost — drop 2-4 spots
       if (playerRank !== null) {
         const playerIdx = rankings.ranked.indexOf(playerFighter.id);
-        // Drop 2-3 spots
-        const drop = 2 + Math.floor(Math.random() * 2);
+        const drop = 2 + Math.floor(Math.random() * 3); // 2-4 spots
         rankings.ranked.splice(playerIdx, 1);
         const newIdx = Math.min(rankings.ranked.length, playerIdx + drop);
         rankings.ranked.splice(newIdx, 0, playerFighter.id);
 
         // Trim to 15
         if (rankings.ranked.length > 15) {
-          // Check if player dropped out
           if (rankings.ranked.indexOf(playerFighter.id) >= 15) {
             rankings.ranked = rankings.ranked.slice(0, 15);
           }
         }
       }
     }
+
+    // Track rank history for UI
+    const newRank = this.getFighterRanking(playerFighter.id, state);
+    if (!playerFighter.rankHistory) playerFighter.rankHistory = [];
+    playerFighter.rankHistory.push({ week: state.week, rank: newRank });
   },
 
   /**
@@ -256,10 +266,22 @@ const LeagueEngine = {
       if ((state.outgoingChallenges || []).some(c => c.status === 'pending' && c.fighterId === fighter.id)) return;
 
       // Find opponent adjusted by decline history
-      const opponent = this._findAdjustedOpponent(fighter, state);
+      let opponent = this._findAdjustedOpponent(fighter, state);
       if (!opponent) return;
 
       const isTitle = this.isTitleShot(fighter, state);
+
+      // For title shots: force opponent to be the champion
+      if (isTitle) {
+        const wcId = fighter.weightClass;
+        const rankings = state.rankings[wcId];
+        if (rankings?.champion) {
+          const champion = state.aiFighters.find(f => f.id === rankings.champion);
+          if (champion && champion.status === 'available') {
+            opponent = champion;
+          }
+        }
+      }
       const prepWeeks = isTitle ? OFFER_CONFIG.prepWeeksTitle : OFFER_CONFIG.prepWeeksNormal;
       const fightWeek = Math.max(
         state.week + OFFER_CONFIG.decisionWindow + prepWeeks,

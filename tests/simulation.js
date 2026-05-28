@@ -213,7 +213,10 @@ for (let w = 0; w < WEEKS; w++) {
         totalWins: log.wins,
         totalLosses: log.losses,
         gameOver: state.gameOver,
-        season: state.season
+        season: state.season,
+        bestRank: Math.min(...state.fighters.map(f => {
+          try { return run(`LeagueEngine.getFighterRanking("${f.id}", GameState.get())`) || 99; } catch { return 99; }
+        }))
       });
     }
 
@@ -283,23 +286,27 @@ if (log.fights.length > 0) {
 console.log('\n👥 ROSTER');
 console.log(`  Fighters: ${finalState.fighters.length}`);
 console.log(`  Agents signed: ${log.signedAgents} | Cut: ${log.cutFighters}`);
-console.log('  ' + '-'.repeat(55));
-console.log('  Name                    OVR   Record      Morale  Status');
-console.log('  ' + '-'.repeat(55));
+console.log('  ' + '-'.repeat(65));
+console.log('  Name                    OVR   Record      Morale  Rank    Status');
+console.log('  ' + '-'.repeat(65));
 finalState.fighters.forEach(f => {
   const ovr = getOvr(f);
   const record = `${f.wins}W-${f.losses}L`;
-  const status = f.status === 'injured' ? `🏥 (${f.injuryWeeksLeft}wk)` : f.isChampion ? '🏆' : '✅';
-  console.log(`  ${f.fullName.padEnd(22)} ${String(ovr).padEnd(5)} ${record.padEnd(11)} ${String(f.morale).padEnd(7)} ${status}`);
+  const status = f.status === 'injured' ? `🏥 (${f.injuryWeeksLeft}wk)` : f.isChampion ? '🏆 CHAMP' : '✅';
+  let rank;
+  try { rank = run(`LeagueEngine.getFighterRanking("${f.id}", GameState.get())`); } catch { rank = null; }
+  const rankStr = rank === 0 ? 'C' : rank ? `#${rank}` : 'NR';
+  console.log(`  ${f.fullName.padEnd(22)} ${String(ovr).padEnd(5)} ${record.padEnd(11)} ${String(f.morale).padEnd(7)} ${rankStr.padEnd(7)} ${status}`);
 });
 
 // --- Progression ---
 console.log('\n📈 PROGRESSION TIMELINE');
-console.log('  ' + '-'.repeat(62));
-console.log('  Week  Budget        OVR   Morale  Rep   W-L      Season');
-console.log('  ' + '-'.repeat(62));
+console.log('  ' + '-'.repeat(72));
+console.log('  Week  Budget        OVR   Morale  Rep   W-L      Rank  Season');
+console.log('  ' + '-'.repeat(72));
 log.weekSnapshots.forEach(s => {
-  console.log(`  W${String(s.week).padEnd(4)} ${fmt(s.budget).padEnd(13)} ${String(s.avgOvr).padEnd(5)} ${String(s.avgMorale).padEnd(7)} ${String(s.reputation).padEnd(5)} ${s.totalWins}W-${s.totalLosses}L    S${s.season} ${s.gameOver ? '💀' : ''}`);
+  const rankStr = s.bestRank < 99 ? `#${s.bestRank}` : 'NR';
+  console.log(`  W${String(s.week).padEnd(4)} ${fmt(s.budget).padEnd(13)} ${String(s.avgOvr).padEnd(5)} ${String(s.avgMorale).padEnd(7)} ${String(s.reputation).padEnd(5)} ${s.totalWins}W-${s.totalLosses}L    ${rankStr.padEnd(5)} S${s.season} ${s.gameOver ? '💀' : ''}`);
 });
 
 // --- Events & Milestones ---
