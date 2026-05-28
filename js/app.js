@@ -110,7 +110,7 @@ const App = {
     document.getElementById('start-game-btn').addEventListener('click', () => {
       const gymName = document.getElementById('gym-name-input').value.trim() || 'Iron Forge MMA';
       this._gymName = gymName;
-      this.showDraft();
+      this.showOnboarding();
     });
 
     document.getElementById('gym-name-input').addEventListener('keydown', (e) => {
@@ -118,6 +118,188 @@ const App = {
         document.getElementById('start-game-btn').click();
       }
     });
+  },
+
+  /**
+   * Cinematic onboarding slider — shown once before the draft
+   */
+  showOnboarding() {
+    const slides = [
+      {
+        emoji: '🏟️',
+        bg: 'linear-gradient(135deg, #0f0f1a 0%, #1a0a2e 100%)',
+        accent: '#a855f7',
+        title: 'Bienvenue, Directeur',
+        subtitle: `Tu viens de prendre les rênes de <strong>${this._gymName}</strong>.`,
+        body: 'Tu pars de zéro avec un budget serré, une salle vide et une seule ambition : bâtir la meilleure écurie MMA du monde.',
+        tag: 'Gestion de gym · Simulation · Stratégie'
+      },
+      {
+        emoji: '👥',
+        bg: 'linear-gradient(135deg, #0f1a0f 0%, #0a2e1a 100%)',
+        accent: '#22c55e',
+        title: 'Recrute & Forme tes Fighters',
+        subtitle: 'Chaque fighter est unique — stats, potentiel, personalité.',
+        body: 'Choisis ton camp d\'entraînement, gère la fatigue, surveille le vieillissement. Un bon coach voit le champion là où les autres voient un rookie.',
+        tag: 'Draft · Entraînement · Potentiel · Fight Camp'
+      },
+      {
+        emoji: '⚔️',
+        bg: 'linear-gradient(135deg, #1a0f0f 0%, #2e0a0a 100%)',
+        accent: '#ef4444',
+        title: 'Lance-les dans l\'Octogone',
+        subtitle: 'Accepte des offres, propose des combats, gère les stratégies en corner.',
+        body: 'Chaque résultat a des conséquences : morale, réputation, finances, classement. Un KO peut briser une carrière — ou la lancer.',
+        tag: 'Offres · Simulation interactive · Résultats'
+      },
+      {
+        emoji: '🎙️',
+        bg: 'linear-gradient(135deg, #1a1200 0%, #2e1f00 100%)',
+        accent: '#f59e0b',
+        title: 'La Guerre des Mots',
+        subtitle: 'La semaine avant chaque combat : la conférence de presse.',
+        body: 'L\'IA génère le trash talk de ton adversaire. Tu réponds. Le LLM juge. Morale, hype, bonus mental — chaque mot compte. Et avec une rivalité max, tout est permis.',
+        tag: 'IA · Rivalités · Effets réels sur le combat'
+      },
+      {
+        emoji: '🏆',
+        bg: 'linear-gradient(135deg, #1a1400 0%, #2e2400 100%)',
+        accent: '#ffd700',
+        title: 'Vise le Sommet',
+        subtitle: 'Unranked → Top 15 → Top 3 → Champion.',
+        body: 'Réputation, finances, rivalités, saisons, événements aléatoires. Chaque décision compte sur le long terme. Seuls les meilleurs managers arrivent au titre.',
+        tag: 'Progression · Saisons · Titre mondial'
+      }
+    ];
+
+    let current = 0;
+
+    const render = () => {
+      const slide = slides[current];
+      const isLast = current === slides.length - 1;
+
+      document.getElementById('app').innerHTML = `
+        <div style="
+          min-height: 100vh;
+          background: ${slide.bg};
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+          position: relative;
+          transition: background 0.5s;
+          font-family: 'Inter', sans-serif;
+        ">
+          <!-- Skip -->
+          <button id="onboard-skip" style="
+            position: absolute; top: 20px; right: 24px;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.5); padding: 6px 16px; border-radius: 20px;
+            font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+          ">Passer →</button>
+
+          <!-- Slide content -->
+          <div style="
+            max-width: 560px; width: 100%; text-align: center;
+            animation: onboardFadeIn 0.4s ease;
+          ">
+            <div style="font-size: 5rem; line-height: 1; margin-bottom: 24px; animation: onboardPop 0.5s ease;">
+              ${slide.emoji}
+            </div>
+
+            <div style="
+              display: inline-block; background: rgba(255,255,255,0.06);
+              border: 1px solid ${slide.accent}33; border-radius: 20px;
+              padding: 4px 14px; font-size: 0.7rem; color: ${slide.accent};
+              text-transform: uppercase; letter-spacing: 0.08em;
+              margin-bottom: 20px; font-weight: 600;
+            ">${slide.tag}</div>
+
+            <h1 style="
+              font-size: clamp(1.6rem, 5vw, 2.4rem); font-weight: 900;
+              color: #fff; margin: 0 0 12px; line-height: 1.2;
+            ">${slide.title}</h1>
+
+            <p style="
+              font-size: 1rem; color: rgba(255,255,255,0.7);
+              margin: 0 0 16px; font-weight: 500;
+            ">${slide.subtitle}</p>
+
+            <p style="
+              font-size: 0.9rem; color: rgba(255,255,255,0.5);
+              margin: 0 0 40px; line-height: 1.7;
+            ">${slide.body}</p>
+
+            <!-- Dots -->
+            <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 32px;">
+              ${slides.map((_, i) => `
+                <div style="
+                  width: ${i === current ? 24 : 8}px; height: 8px;
+                  border-radius: 4px; cursor: pointer;
+                  background: ${i === current ? slide.accent : 'rgba(255,255,255,0.2)'};
+                  transition: all 0.3s;
+                " data-dot="${i}"></div>
+              `).join('')}
+            </div>
+
+            <!-- Buttons -->
+            <div style="display: flex; gap: 12px; justify-content: center;">
+              ${current > 0 ? `
+                <button id="onboard-prev" style="
+                  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
+                  color: rgba(255,255,255,0.7); padding: 12px 24px; border-radius: 10px;
+                  font-size: 0.9rem; cursor: pointer;
+                ">← Précédent</button>
+              ` : ''}
+              <button id="onboard-next" style="
+                background: ${slide.accent}; border: none;
+                color: #000; padding: 14px 36px; border-radius: 10px;
+                font-size: 1rem; font-weight: 800; cursor: pointer;
+                box-shadow: 0 4px 20px ${slide.accent}66;
+                transition: transform 0.15s, box-shadow 0.15s;
+              ">
+                ${isLast ? '⚡ Choisir mes Fighters' : 'Suivant →'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <style>
+          @keyframes onboardFadeIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes onboardPop {
+            0%   { transform: scale(0.5); opacity: 0; }
+            70%  { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+          }
+        </style>
+      `;
+
+      document.getElementById('onboard-skip').addEventListener('click', () => this.showDraft());
+      document.getElementById('onboard-next').addEventListener('click', () => {
+        if (isLast) { this.showDraft(); return; }
+        current++;
+        render();
+      });
+      document.getElementById('onboard-prev')?.addEventListener('click', () => { current--; render(); });
+
+      // Dot clicks
+      document.querySelectorAll('[data-dot]').forEach(dot => {
+        dot.addEventListener('click', () => { current = parseInt(dot.dataset.dot); render(); });
+      });
+
+      // Keyboard navigation
+      document.onkeydown = (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'Enter') document.getElementById('onboard-next')?.click();
+        if (e.key === 'ArrowLeft') document.getElementById('onboard-prev')?.click();
+        if (e.key === 'Escape') this.showDraft();
+      };
+    };
+
+    render();
   },
 
   /**
