@@ -2,8 +2,9 @@
  * MMA Fighter Manager — Trash Talk API (Cloudflare Worker)
  * 
  * Routes:
- *   POST /provoke  → AI fighter generates a provocation
- *   POST /judge    → AI evaluates the trash talk exchange
+ *   POST /provoke   → AI fighter generates first provocation
+ *   POST /exchange  → AI responds to player + decides if exchange continues
+ *   POST /judge     → Final verdict on full conversation
  */
 
 const SYSTEM_PROMPT_PROVOKE = `Tu es un scénariste de conférences de presse MMA/UFC.
@@ -15,13 +16,24 @@ Règles:
 - Ne mentionne jamais que tu es une IA
 - Adapte le ton à la personnalité indiquée`;
 
-const SYSTEM_PROMPT_JUDGE = `Tu es un analyste MMA expert en psychologie du combat.
-Tu évalues un échange de conférence de presse entre deux fighters.
+const SYSTEM_PROMPT_EXCHANGE = `Tu es un scénariste de conférences de presse MMA/UFC.
+Tu gères un échange de trash talk entre deux fighters.
 Règles:
-- Évalue la qualité du trash talk: pertinence, créativité, impact psychologique
+- Génère la réplique du fighter IA en réponse au joueur
+- 2-3 phrases max, escalade le ton si la réponse du joueur était bonne
+- Décide si l'échange continue (intensité suffisante) ou s'arrête
+- L'échange continue max 4 rounds total
+- Réponds UNIQUEMENT en JSON valide, sans markdown`;
+
+const SYSTEM_PROMPT_JUDGE = `Tu es un analyste MMA expert en psychologie du combat.
+Tu évalues un échange complet de conférence de presse entre deux fighters.
+Règles:
+- Évalue la qualité globale de l'échange sur tous les rounds
 - Un bon trash talk référence des faits réels (stats, record, faiblesses)
 - Le bluff peut marcher s'il est bien fait
 - Une réponse faible ou générique donne l'avantage à l'adversaire
+- Les insultes sans contenu réel sont faibles — l'IA les pénalise
+- Plus l'échange est long et intense, plus les effets sont amplifiés
 - Réponds UNIQUEMENT en JSON valide, sans markdown`;
 
 function jsonResponse(data, status = 200) {
@@ -47,7 +59,7 @@ async function callOpenAI(env, systemPrompt, userPrompt) {
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
       ],
-      max_tokens: 200,
+      max_tokens: 250,
       temperature: 0.9,
     })
   });
@@ -86,31 +98,89 @@ ${context.rivalry ? 'RIVALITÉ ACTIVE (intensité: ' + context.rivalry + ')' : '
   return jsonResponse({ trashtalk: result });
 }
 
-async function handleJudge(body, env) {
-  const { provocation, response, opponent, fighter, context, lang } = body;
+async function handleExchange(body, env) {
+  const { history, fighter, opponent, context, roundNumber, lang } = body;
 
-  const userPrompt = `Évalue cet échange de conférence de presse MMA.
+  // Format conversation history
+  const historyText = history.map((msg, i) =>
+    `${msg.role === 'opponent' ? opponent.name : fighter.name}: "${msg.text}"`
+  ).join('\n');
+
+  const userPrompt = `Échange de conférence de presse MMA — Round ${roundNumber}.
 ${lang === 'en' ? 'Réponds en anglais.' : 'Réponds en français.'}
 
-PROVOCATION de ${opponent.name} (${opponent.wins}W-${opponent.losses}L, ${opponent.personality}):
-"${provocation}"
+FIGHTERS:
+- ${opponent.name} (${opponent.wins}W-${opponent.losses}L, ${opponent.personality}, style: ${opponent.style})
+- ${fighter.name} (${fighter.wins}W-${fighter.losses}L, style: ${fighter.style})
 
-RÉPONSE de ${fighter.name} (${fighter.wins}W-${fighter.losses}L):
-"${response}"
+ÉCHANGE SO FAR:
+${historyText}
 
-Contexte: ${context.isTitle ? 'Title fight' : 'Ranked fight'}, ${fighter.rank ? '#' + fighter.rank : 'NR'} vs ${opponent.rank ? '#' + opponent.rank : 'NR'}
+CONTEXTE: Round ${roundNumber}/4 max. ${context.isTitle ? 'Title fight.' : ''}
 
-Réponds UNIQUEMENT avec ce JSON (sans markdown, sans explication):
+Génère la réplique de ${opponent.name} et décide si l'échange continue.
+L'échange continue si la réponse du joueur était substantielle/intéressante.
+L'échange s'arrête si: réponse vide/courte, max rounds atteint, ou échange naturellement terminé.
+
+Réponds UNIQUEMENT avec ce JSON:
+{
+  "opponentReply": "réplique de ${opponent.name} en 2-3 phrases max",
+  "shouldContinue": true,
+  "intensity": 7,
+  "reason": "heated"
+}
+shouldContinue = false si l'échange doit se terminer après cette réplique.
+intensity = 1-10 (niveau de tension de l'échange).`;
+
+  const result = await callOpenAI(env, SYSTEM_PROMPT_EXCHANGE, userPrompt);
+  
+  try {
+    const cleaned = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    return jsonResponse(JSON.parse(cleaned));
+  } catch {
+    return jsonResponse({
+      opponentReply: `${opponent.name} reste concentré sur le combat à venir.`,
+      shouldContinue: false,
+      intensity: 3,
+      reason: 'neutral'
+    });
+  }
+}
+
+async function handleJudge(body, env) {
+  const { history, opponent, fighter, context, lang } = body;
+
+  const historyText = history.map(msg =>
+    `${msg.role === 'opponent' ? opponent.name : fighter.name}: "${msg.text}"`
+  ).join('\n');
+
+  const rounds = Math.ceil(history.length / 2);
+
+  const userPrompt = `Évalue cet échange complet de conférence de presse MMA (${rounds} round(s)).
+${lang === 'en' ? 'Réponds en anglais.' : 'Réponds en français.'}
+
+${opponent.name} (${opponent.wins}W-${opponent.losses}L) vs ${fighter.name} (${fighter.wins}W-${fighter.losses}L)
+Contexte: ${context.isTitle ? 'Title fight' : 'Ranked fight'}
+
+ÉCHANGE COMPLET:
+${historyText}
+
+Évalue qui a dominé la conférence de presse sur l'ensemble de l'échange.
+Les insultes sans contenu factuel sont FAIBLES. Les références aux stats/records sont FORTES.
+Les effets sont amplifiés si l'échange a duré plusieurs rounds.
+
+Réponds UNIQUEMENT avec ce JSON:
 {
   "winner": "fighter",
   "score": 7,
-  "analysis": "exemple d'analyse courte",
+  "analysis": "analyse en 1-2 phrases",
   "playerMorale": 3,
   "opponentMorale": -2,
   "hypeMultiplier": 1.2,
   "mentalBonus": 1
 }
-Remplace les valeurs selon ton évaluation. winner = "fighter" si ${fighter.name} a le dessus, "opponent" sinon.`;
+winner = "fighter" si ${fighter.name} a dominé, "opponent" sinon.
+hypeMultiplier: entre 1.0 et ${1.0 + rounds * 0.15} (amplifié par le nombre de rounds).`;
 
   const result = await callOpenAI(env, SYSTEM_PROMPT_JUDGE, userPrompt);
   
@@ -120,7 +190,7 @@ Remplace les valeurs selon ton évaluation. winner = "fighter" si ${fighter.name
   } catch {
     return jsonResponse({ 
       winner: 'opponent', score: 5, 
-      analysis: 'Échange serré.', 
+      analysis: 'Échange serré.',
       playerMorale: 0, opponentMorale: 0, 
       hypeMultiplier: 1.0, mentalBonus: 0 
     });
@@ -129,7 +199,6 @@ Remplace les valeurs selon ton évaluation. winner = "fighter" si ${fighter.name
 
 export default {
   async fetch(request, env) {
-    // CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         headers: {
@@ -150,8 +219,9 @@ export default {
 
     try {
       const body = await request.json();
-      if (path === '/provoke') return await handleProvoke(body, env);
-      if (path === '/judge')   return await handleJudge(body, env);
+      if (path === '/provoke')  return await handleProvoke(body, env);
+      if (path === '/exchange') return await handleExchange(body, env);
+      if (path === '/judge')    return await handleJudge(body, env);
       return jsonResponse({ error: 'Not found' }, 404);
     } catch (e) {
       return jsonResponse({ error: e.message }, 500);
