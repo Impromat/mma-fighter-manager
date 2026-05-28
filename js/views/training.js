@@ -115,7 +115,22 @@ const TrainingView = {
               ${isInjured ? '<span class="badge badge-injured" style="margin-left: 6px;">🤕 ' + fighter.injuryWeeksLeft + 'w</span>' : ''}
             </div>
             <div class="training-fighter-meta">
-              ${fighter.nationality.flag} ${weightClass?.name || ''} · ${style.icon} ${style.name} · OVR <strong>${overall}</strong>
+              ${fighter.nationality.flag} ${weightClass?.name || ''} · OVR <strong>${overall}</strong>
+            </div>
+            <!-- Target Profile inline selector -->
+            <div style="margin-top:6px;">
+              <select class="target-profile-select" data-fighter-id="${fighter.id}"
+                style="font-size:0.72rem; padding:2px 6px; border-radius:6px;
+                       background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15);
+                       color:${(STYLES[fighter.targetProfile] || STYLES.wellRounded).color};
+                       cursor:pointer; outline:none;">
+                ${Object.values(STYLES).map(s => `
+                  <option value="${s.id}" ${fighter.targetProfile === s.id ? 'selected' : ''}
+                          style="background:#1a1a2e; color:${s.color};">
+                    ${s.icon} ${s.name}
+                  </option>
+                `).join('')}
+              </select>
             </div>
           </div>
         </div>
@@ -468,6 +483,19 @@ const TrainingView = {
   },
 
   _bindEvents(state, container) {
+    // Target profile selects
+    container.querySelectorAll('.target-profile-select').forEach(select => {
+      select.addEventListener('change', () => {
+        const fighterId = select.dataset.fighterId;
+        const styleId = select.value;
+        GameState.setTargetProfile(fighterId, styleId);
+        const style = STYLES[styleId];
+        select.style.color = style.color;
+        const fighter = state.fighters.find(f => f.id === fighterId);
+        App.showToast(`🎯 ${fighter.fullName} → ${style.icon} ${style.name}`, 'success');
+      });
+    });
+
     // Training pill clicks
     container.querySelectorAll('.training-pill:not(.disabled)').forEach(pill => {
       pill.addEventListener('click', () => {
