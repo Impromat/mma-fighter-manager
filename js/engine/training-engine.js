@@ -5,6 +5,12 @@
 const TrainingEngine = {
   /**
    * Apply weekly training to a fighter
+   *
+   * TARGET PROFILE LOGIC:
+   * - profileMultiplier (1.4x / 1.1x / 0.7x) amplifies gains from the training type
+   * - profileBonus adds a small passive gain on primary/secondary stats EVEN when
+   *   the training type doesn't target them — this makes the profile actually
+   *   steer long-term development, not just amplify what the camp already does.
    */
   applyWeeklyTraining(fighter) {
     const trainingType = TRAINING_TYPES[fighter.currentTraining] || TRAINING_TYPES.general;
@@ -17,17 +23,24 @@ const TrainingEngine = {
     const breakthroughs = [];
     STAT_NAMES.forEach(stat => {
       const baseGain = trainingType.statGains[stat.id] || 0;
-      if (baseGain <= 0) return;
 
-      // Target profile bonus
+      // Target profile: multiplier on trained stats + passive bonus on identity stats
       let profileMultiplier = 1.0;
+      let profileBonus = 0;
+
       if (targetStyle.primaryStats.includes(stat.id)) {
         profileMultiplier = 1.4;
+        if (baseGain === 0) profileBonus = 0.4; // passive growth even outside training focus
       } else if (targetStyle.secondaryStats.includes(stat.id)) {
         profileMultiplier = 1.1;
+        if (baseGain === 0) profileBonus = 0.1;
       } else if (targetStyle.weakStats.includes(stat.id)) {
         profileMultiplier = 0.7;
+        // no passive bonus on weak stats
       }
+
+      const effectiveBase = baseGain + profileBonus;
+      if (effectiveBase <= 0) return;
 
       // Morale affects training quality
       const moraleFactor = fighter.morale >= 80 ? 1.15 :
@@ -50,7 +63,7 @@ const TrainingEngine = {
                           age < 27 ? 1.1 : 1.0;
 
       // Calculate final gain with some randomness
-      let gain = baseGain * ageFactor * profileMultiplier * moraleFactor * potentialFactor * youthFactor;
+      let gain = effectiveBase * ageFactor * profileMultiplier * moraleFactor * potentialFactor * youthFactor;
       gain = gain * (0.8 + Math.random() * 0.4); // ±20% variance
 
       // Round to apply
@@ -78,8 +91,6 @@ const TrainingEngine = {
     if (Math.random() < trainingType.injuryRisk) {
       this._applyTrainingInjury(fighter);
     }
-
-
   },
 
   /**
