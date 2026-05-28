@@ -225,10 +225,14 @@ const GameState = {
       LeagueEngine.simulateAIFights(state);
     }
 
-    // 5. Pay weekly salaries
-    const totalSalaries = FinanceEngine.calculateWeeklySalaries(state);
-    FinanceEngine.addTransaction(state, 'expense', 'Salaires hebdomadaires', totalSalaries);
-    report.salaries = totalSalaries;
+    // 5. Collect fighter training fees + pay gym costs
+    const weeklyFinances = FinanceEngine.calculateWeeklyFinances(state);
+    if (weeklyFinances.fees > 0) {
+      FinanceEngine.addTransaction(state, 'income', t('finance.trainingFees'), weeklyFinances.fees);
+    }
+    FinanceEngine.addTransaction(state, 'expense', t('finance.gymCosts'), weeklyFinances.costs);
+    report.gymFees = weeklyFinances.fees;
+    report.gymCosts = weeklyFinances.costs;
 
     // 6. Check for natural morale drift
     state.fighters.forEach(fighter => {
@@ -364,10 +368,15 @@ const GameState = {
       playerFighter.wins++;
       opponent.losses++;
 
-      // Revenue — use offer purse if available, otherwise calculate
+      // Revenue — gym takes its cut (15% show + 10% win bonus)
       const purse = scheduledFight.purse || FinanceEngine.calculatePurse(playerFighter, state, scheduledFight.isTitle);
-      FinanceEngine.addTransaction(state, 'income', `Win bonus: ${playerFighter.firstName} ${playerFighter.lastName}`, purse.win);
-      FinanceEngine.addTransaction(state, 'income', `Show money: ${playerFighter.firstName} ${playerFighter.lastName}`, purse.show);
+      const gymCut = FinanceEngine.getGymCut(purse, true);
+      FinanceEngine.addTransaction(state, 'income', `${t('finance.commission')}: ${playerFighter.fullName} (${t('finance.win')})`, gymCut.total);
+
+      // Track fighter earnings for season stats
+      if (state.seasonStats) {
+        state.seasonStats.moneyEarned = (state.seasonStats.moneyEarned || 0) + gymCut.total;
+      }
 
       // Morale boost
       playerFighter.morale = Math.min(100, playerFighter.morale + 15);
@@ -387,9 +396,10 @@ const GameState = {
       playerFighter.losses++;
       opponent.wins++;
 
-      // Show money only
+      // Show money commission only (15% of show)
       const purse = scheduledFight.purse || FinanceEngine.calculatePurse(playerFighter, state, scheduledFight.isTitle);
-      FinanceEngine.addTransaction(state, 'income', `Show money: ${playerFighter.firstName} ${playerFighter.lastName}`, purse.show);
+      const gymCut = FinanceEngine.getGymCut(purse, false);
+      FinanceEngine.addTransaction(state, 'income', `${t('finance.commission')}: ${playerFighter.fullName}`, gymCut.total);
 
       // Morale drop
       playerFighter.morale = Math.max(20, playerFighter.morale - 15);
@@ -632,14 +642,15 @@ const GameState = {
   },
 
   /**
-   * Adjust fighter salary (direction: 'up' or 'down')
+   * Adjust fighter training fee (direction: 'up' or 'down')
+   * Higher fee = more revenue but fighter loses morale
    */
-  adjustSalary(fighterId, direction) {
+  adjustFee(fighterId, direction) {
     const fighter = this._state.fighters.find(f => f.id === fighterId);
     if (!fighter) return;
 
     const step = 0.25;
-    const oldMultiplier = fighter.salaryMultiplier || 1.0;
+    const oldMultiplier = fighter.feeMultiplier || 1.0;
     let newMultiplier;
 
     if (direction === 'up') {
@@ -650,14 +661,14 @@ const GameState = {
 
     if (newMultiplier === oldMultiplier) return;
 
-    fighter.salaryMultiplier = newMultiplier;
+    fighter.feeMultiplier = newMultiplier;
 
-    // Morale impact: raise = +4, cut = -6 (asymmetric)
-    const moraleChange = direction === 'up' ? 4 : -6;
+    // Morale impact: discount = +4, surcharge = -6 (asymmetric)
+    const moraleChange = direction === 'up' ? -6 : 4;
     fighter.morale = Math.max(10, Math.min(100, fighter.morale + moraleChange));
 
     this.save();
-    this._notify('salaryChanged', { fighter, oldMultiplier, newMultiplier, moraleChange });
+    this._notify('feeChanged', { fighter, oldMultiplier, newMultiplier, moraleChange });
     return { fighter, moraleChange };
   },
 

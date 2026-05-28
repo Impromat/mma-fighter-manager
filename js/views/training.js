@@ -26,7 +26,7 @@ const TrainingView = {
             <div class="training-col-fighter">${t('sidebar.fighters')}</div>
             <div class="training-col-stats">${t('train.stats')}</div>
             <div class="training-col-training">${t('sidebar.training')}</div>
-            <div class="training-col-salary">${t('train.salary')}</div>
+            <div class="training-col-salary">${t('train.fee')}</div>
             <div class="training-col-moral">${t('train.morale')}</div>
           </div>
           ${state.fighters.map((fighter, i) => this._renderFighterRow(fighter, state, i)).join('')}
@@ -134,15 +134,15 @@ const TrainingView = {
         <div class="training-col-salary">
           <div class="salary-adjuster">
             <button class="salary-btn salary-down" data-fighter="${fighter.id}" data-dir="down"
-                    ${(fighter.salaryMultiplier || 1.0) <= 0.5 ? 'disabled' : ''}>−</button>
+                    ${(fighter.feeMultiplier || 1.0) <= 0.5 ? 'disabled' : ''}>−</button>
             <div class="salary-display">
-              <div class="salary-amount">${FinanceEngine.formatMoney(FinanceEngine.getFighterSalary(fighter, state))}</div>
-              <div class="salary-multiplier ${(fighter.salaryMultiplier || 1.0) > 1.0 ? 'high' : (fighter.salaryMultiplier || 1.0) < 1.0 ? 'low' : ''}">
-                ×${(fighter.salaryMultiplier || 1.0).toFixed(2)}
+              <div class="salary-amount">${FinanceEngine.formatMoney(FinanceEngine.getFighterFee(fighter))}</div>
+              <div class="salary-multiplier ${(fighter.feeMultiplier || 1.0) > 1.0 ? 'high' : (fighter.feeMultiplier || 1.0) < 1.0 ? 'low' : ''}">
+                ×${(fighter.feeMultiplier || 1.0).toFixed(2)}
               </div>
             </div>
             <button class="salary-btn salary-up" data-fighter="${fighter.id}" data-dir="up"
-                    ${(fighter.salaryMultiplier || 1.0) >= 2.0 ? 'disabled' : ''}>+</button>
+                    ${(fighter.feeMultiplier || 1.0) >= 2.0 ? 'disabled' : ''}>+</button>
           </div>
         </div>
 
@@ -471,19 +471,19 @@ const TrainingView = {
       });
     });
 
-    // Salary adjustment clicks
+    // Fee adjustment clicks
     container.querySelectorAll('.salary-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const fighterId = btn.dataset.fighter;
         const direction = btn.dataset.dir;
 
-        const result = GameState.adjustSalary(fighterId, direction);
+        const result = GameState.adjustFee(fighterId, direction);
         if (result) {
           const moraleIcon = result.moraleChange > 0 ? '😊' : '😤';
           const moraleText = result.moraleChange > 0 ? `+${result.moraleChange}` : result.moraleChange;
           App.showToast(
-            `💰 ${result.fighter.fullName} — Salaire ajusté (×${result.fighter.salaryMultiplier.toFixed(2)}) · ${moraleIcon} Moral ${moraleText}`,
+            `💰 ${result.fighter.fullName} — ${t('finance.feeAdjusted')} (×${result.fighter.feeMultiplier.toFixed(2)}) · ${moraleIcon} Moral ${moraleText}`,
             result.moraleChange > 0 ? 'success' : 'warning'
           );
           this.render(container);

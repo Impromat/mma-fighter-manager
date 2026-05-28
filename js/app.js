@@ -582,8 +582,12 @@ const App = {
                 </span>
               </div>
               <div class="summary-finance-item">
-                <span class="text-xs text-muted">${t('summary.salaries')}</span>
-                <span class="font-bold text-danger">-${FinanceEngine.formatMoney(report.salaries)}</span>
+                <span class="text-xs text-muted">${t('finance.trainingFees')}</span>
+                <span class="font-bold text-success">+${FinanceEngine.formatMoney(report.gymFees || 0)}</span>
+              </div>
+              <div class="summary-finance-item">
+                <span class="text-xs text-muted">${t('finance.gymCosts')}</span>
+                <span class="font-bold text-danger">-${FinanceEngine.formatMoney(report.gymCosts || 0)}</span>
               </div>
               <div class="summary-finance-item">
                 <span class="text-xs text-muted">${t('summary.variation')}</span>

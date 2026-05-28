@@ -1,45 +1,77 @@
 /* ============================================
    MMA Fighter Manager — Finance Engine
+   Realistic MMA gym model:
+   - Revenue: fighter training fees + % of purses
+   - Costs: rent + staff per fighter
    ============================================ */
 
 const FinanceEngine = {
   /**
-   * Calculate weekly salaries for all fighters
+   * Calculate weekly gym finances
+   * Returns { fees, costs, net }
    */
-  calculateWeeklySalaries(state) {
-    let total = 0;
+  calculateWeeklyFinances(state) {
+    let totalFees = 0;
     state.fighters.forEach(fighter => {
-      const salary = this.getFighterSalary(fighter, state);
-      total += salary;
+      totalFees += this.getFighterFee(fighter);
     });
-    return total;
+
+    const totalCosts = this.getGymCosts(state);
+
+    return {
+      fees: totalFees,
+      costs: totalCosts,
+      net: totalFees - totalCosts
+    };
   },
 
   /**
-   * Get base salary for a fighter (before multiplier)
+   * Get weekly training fee a fighter pays to the gym
    */
-  getBaseSalary(fighter, state) {
-    const ranking = LeagueEngine.getFighterRanking(fighter.id, state);
+  getFighterFee(fighter) {
+    const ovr = TrainingEngine.calculateOverall(fighter);
+    const multiplier = fighter.feeMultiplier || 1.0;
 
-    if (ranking === 0) return SALARY_BY_RANK.champion;
-    if (ranking === null) return SALARY_BY_RANK.unranked;
-    if (ranking <= 3) return SALARY_BY_RANK.ranked3_1;
-    if (ranking <= 5) return SALARY_BY_RANK.ranked5_4;
-    if (ranking <= 10) return SALARY_BY_RANK.ranked10_6;
-    return SALARY_BY_RANK.ranked15_11;
+    let baseFee;
+    if (ovr >= 90) baseFee = GYM_FEES.champion;
+    else if (ovr >= 80) baseFee = GYM_FEES.elite;
+    else if (ovr >= 70) baseFee = GYM_FEES.contender;
+    else if (ovr >= 60) baseFee = GYM_FEES.prospect;
+    else baseFee = GYM_FEES.rookie;
+
+    return Math.round(baseFee * multiplier);
   },
 
   /**
-   * Get individual fighter salary (base × multiplier)
+   * Get base fee before multiplier (for UI display)
    */
-  getFighterSalary(fighter, state) {
-    const base = this.getBaseSalary(fighter, state);
-    const multiplier = fighter.salaryMultiplier || 1.0;
-    return Math.round(base * multiplier);
+  getBaseFee(fighter) {
+    const ovr = TrainingEngine.calculateOverall(fighter);
+    if (ovr >= 90) return GYM_FEES.champion;
+    if (ovr >= 80) return GYM_FEES.elite;
+    if (ovr >= 70) return GYM_FEES.contender;
+    if (ovr >= 60) return GYM_FEES.prospect;
+    return GYM_FEES.rookie;
   },
 
   /**
-   * Calculate fight purse
+   * Get weekly gym running costs
+   */
+  getGymCosts(state) {
+    return GYM_COSTS.rent + (GYM_COSTS.staffPerFighter * state.fighters.length);
+  },
+
+  /**
+   * Calculate gym's cut from a fight purse
+   */
+  getGymCut(purse, isWin) {
+    const showCut = Math.round(purse.show * GYM_CUT.pursePercent);
+    const winCut = isWin ? Math.round(purse.win * GYM_CUT.winBonusPercent) : 0;
+    return { showCut, winCut, total: showCut + winCut };
+  },
+
+  /**
+   * Calculate fight purse (paid by the promotion to the fighter)
    */
   calculatePurse(fighter, state, isTitle) {
     if (isTitle) return FIGHT_PURSES.titleFight;
@@ -110,12 +142,12 @@ const FinanceEngine = {
   },
 
   /**
-   * Format currency
+   * Format currency (USD)
    */
   formatMoney(amount) {
-    return new Intl.NumberFormat('fr-FR', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'EUR',
+      currency: 'USD',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(amount);

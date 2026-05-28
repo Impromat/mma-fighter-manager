@@ -144,7 +144,7 @@ const FighterGenerator = {
       avatarColor,
       fightCampBonus: null,
       ranking: null,
-      salaryMultiplier: 1.0
+      feeMultiplier: 1.0
     };
   },
 

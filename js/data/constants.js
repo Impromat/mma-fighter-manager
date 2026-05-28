@@ -197,13 +197,27 @@ const FIGHT_PURSES = {
   titleFight: { show: 5000, win: 10000 }
 };
 
-const SALARY_BY_RANK = {
-  unranked: 500,
-  ranked15_11: 600,
-  ranked10_6: 800,
-  ranked5_4: 1000,
-  ranked3_1: 1200,
-  champion: 1500
+// --- Gym Financial Model (MMA Realistic) ---
+
+// Fighters pay the gym weekly training fees (based on OVR bracket)
+const GYM_FEES = {
+  rookie: 300,     // OVR < 60
+  prospect: 500,   // OVR 60-69
+  contender: 750,  // OVR 70-79
+  elite: 1000,     // OVR 80-89
+  champion: 1500   // OVR 90+
+};
+
+// Gym fixed costs
+const GYM_COSTS = {
+  rent: 1500,             // weekly rent/equipment
+  staffPerFighter: 400    // coach cost per fighter
+};
+
+// Gym's cut of fighter purses
+const GYM_CUT = {
+  pursePercent: 0.15,     // 15% of show money
+  winBonusPercent: 0.10   // 10% of win bonus
 };
 
 const EVENT_INTERVAL = 4; // weeks between events
