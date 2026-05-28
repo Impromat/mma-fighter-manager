@@ -273,7 +273,8 @@ const GameState = {
       LeagueEngine.generateFreeAgents(state);
     }
 
-    // 11. Build training report (stat deltas)
+    // 11. Build training report (stat deltas) + collect breakthroughs
+    report.breakthroughs = [];
     state.fighters.forEach(fighter => {
       const before = statsBefore[fighter.id];
       if (!before) return;
@@ -287,6 +288,20 @@ const GameState = {
         }
       });
       const moraleDelta = fighter.morale - moraleBefore[fighter.id];
+
+      // Collect breakthroughs
+      if (fighter._breakthroughs) {
+        fighter._breakthroughs.forEach(bt => {
+          report.breakthroughs.push({
+            fighterName: fighter.fullName,
+            fighterId: fighter.id,
+            stat: bt.stat,
+            gain: bt.gain
+          });
+        });
+        delete fighter._breakthroughs;
+      }
+
       report.trainingReport.push({
         id: fighter.id,
         name: fighter.fullName,
@@ -319,7 +334,15 @@ const GameState = {
 
     // Check for end of season
     if (state.seasonWeek > SEASON_LENGTH) {
+      // Generate end-of-season summary BEFORE resetting
       report.seasonEnd = SeasonEngine.getSeasonSummary(state);
+
+      // Process aging at season end (1 season = 1 year)
+      report.aging = AgingEngine.processAging(state);
+
+      // Start new season (resets stats, generates new objectives)
+      SeasonEngine.initSeason(state);
+      report.newSeason = state.season;
     }
 
     // 14. Process outgoing challenges
@@ -328,10 +351,7 @@ const GameState = {
     // 15. Roll for random event
     report.event = EventEngine.rollEvent(state);
 
-    // 16. Aging: process every season (26 weeks)
-    if (state.week > 0 && state.week % AGING_CONFIG.weeksPerYear === 0) {
-      report.aging = AgingEngine.processAging(state);
-    }
+    // 16. (Aging now handled in season transition above)
 
     // 17. Reputation: inactivity penalty
     const lastFightWeekAll = state.fighters.reduce((max, f) => Math.max(max, f.lastFightWeek || 0), 0);

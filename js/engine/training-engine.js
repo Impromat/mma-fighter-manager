@@ -14,6 +14,7 @@ const TrainingEngine = {
     const ageFactor = AgingEngine.getTrainingEfficiency(fighter);
 
     // Apply stat gains from training
+    const breakthroughs = [];
     STAT_NAMES.forEach(stat => {
       const baseGain = trainingType.statGains[stat.id] || 0;
       if (baseGain <= 0) return;
@@ -33,18 +34,42 @@ const TrainingEngine = {
                            fighter.morale >= 60 ? 1.0 :
                            fighter.morale >= 40 ? 0.85 : 0.65;
 
+      // POTENTIAL GAP BONUS: fighters far from their ceiling grow faster
+      const maxStat = fighter.potential[stat.id] || 99;
+      const currentStat = fighter.stats[stat.id] || 50;
+      const gap = maxStat - currentStat;
+      const potentialFactor = gap > 20 ? 1.8 :
+                              gap > 15 ? 1.5 :
+                              gap > 10 ? 1.3 :
+                              gap > 5  ? 1.1 : 1.0;
+
+      // YOUTH BONUS: young fighters (< 25) learn faster
+      const age = fighter.age || 25;
+      const youthFactor = age < 23 ? 1.5 :
+                          age < 25 ? 1.3 :
+                          age < 27 ? 1.1 : 1.0;
+
       // Calculate final gain with some randomness
-      let gain = baseGain * ageFactor * profileMultiplier * moraleFactor;
+      let gain = baseGain * ageFactor * profileMultiplier * moraleFactor * potentialFactor * youthFactor;
       gain = gain * (0.8 + Math.random() * 0.4); // ±20% variance
 
       // Round to apply
       const actualGain = Math.max(0, Math.round(gain * 10) / 10);
 
+      // Track breakthrough (gain >= 3 in one stat)
+      if (actualGain >= 3) {
+        breakthroughs.push({ stat: stat.id, gain: actualGain });
+      }
+
       // Apply gain, capped by potential
-      const maxStat = fighter.potential[stat.id];
       fighter.stats[stat.id] = Math.min(maxStat, fighter.stats[stat.id] + actualGain);
       fighter.stats[stat.id] = Math.round(fighter.stats[stat.id]); // Keep as integers
     });
+
+    // Store breakthroughs for notification
+    if (breakthroughs.length > 0) {
+      fighter._breakthroughs = breakthroughs;
+    }
 
     // Apply morale effect
     fighter.morale = Math.max(10, Math.min(100, fighter.morale + trainingType.moralEffect));
