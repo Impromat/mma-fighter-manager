@@ -38,9 +38,9 @@ const RANDOM_EVENTS = [
     choices: [
       {
         label: '💰 Signer le deal sponsoring',
-        description: '+2 000 € mais le fighter devra participer à des événements promo',
+        description: '+$2,000 mais le fighter devra participer à des événements promo',
         effects: { budget: 2000, morale: -5 },
-        toast: '💰 Deal sponsoring signé ! +2 000 € mais le fighter est distrait.'
+        toast: '💰 Deal sponsoring signé ! +$2,000 mais le fighter est distrait.'
       },
       {
         label: '🙅 Décliner l\'offre',
@@ -85,7 +85,7 @@ const RANDOM_EVENTS = [
     requiresFighter: false,
     choices: [
       {
-        label: '💳 Acheter l\'équipement (3 000 €)',
+        label: '💳 Acheter l\'équipement ($3,000)',
         description: 'Tous les fighters gagnent un boost de stats pendant 3 semaines',
         effects: { budget: -3000, globalStatBoost: 2, boostWeeks: 3 },
         toast: '🏋️ Équipement installé ! Boost d\'entraînement pour toute la gym.'
@@ -109,7 +109,7 @@ const RANDOM_EVENTS = [
     choices: [
       {
         label: '🥊 Accepter le sparring',
-        description: 'Gros boost de stats mais coûte 1 500 € et risque de blessure',
+        description: 'Gros boost de stats mais coûte $1,500 et risque de blessure',
         effects: { budget: -1500, statBoost: 4, injuryRisk: 0.10, morale: 8 },
         toast: '🥊 Sparring exceptionnel ! Le fighter a énormément appris.'
       },
@@ -208,13 +208,13 @@ const RANDOM_EVENTS = [
     requiresFighter: false,
     choices: [
       {
-        label: '🔧 Réparer immédiatement (2 000 €)',
+        label: '🔧 Réparer immédiatement ($2,000)',
         description: 'L\'entraînement peut continuer normalement',
         effects: { budget: -2000 },
         toast: '🔧 Réparations effectuées. Tout est en ordre.'
       },
       {
-        label: '🩹 Réparer au minimum (500 €)',
+        label: '🩹 Réparer au minimum ($500)',
         description: 'L\'entraînement est un peu moins efficace cette semaine',
         effects: { budget: -500, globalStatPenalty: 1 },
         toast: '🩹 Réparation minimale. L\'entraînement sera moins efficace.'
@@ -231,14 +231,14 @@ const RANDOM_EVENTS = [
     requiresFighter: false,
     choices: [
       {
-        label: '✅ Accepter (3 000 € immédiat)',
+        label: '✅ Accepter ($3,000 immédiat)',
         description: 'Un bon boost pour les finances',
         effects: { budget: 3000 },
-        toast: '💰 Sponsoring signé ! +3 000 € dans les caisses.'
+        toast: '💰 Sponsoring signé ! +$3,000 dans les caisses.'
       },
       {
         label: '🤝 Négocier un meilleur deal',
-        description: '50% de chance d\'obtenir 5 000 €, 50% de perdre le deal',
+        description: '50% de chance d\'obtenir $5,000, 50% de perdre le deal',
         effects: { gamble: { win: 5000, lose: 0, chance: 0.5 } },
         toast: null // Set dynamically
       }
@@ -255,7 +255,7 @@ const RANDOM_EVENTS = [
     choices: [
       {
         label: '🎪 Participer à la démo',
-        description: 'Bonne pub locale, +1 000 € et moral global +3',
+        description: 'Bonne pub locale, +$1,000 et moral global +3',
         effects: { budget: 1000, globalMorale: 3 },
         toast: '🎪 Super événement ! La gym gagne en visibilité.'
       },
