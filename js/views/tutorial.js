@@ -1,5 +1,6 @@
 /* ============================================
    MMA Fighter Manager — Tutorial View
+   Refactorisé : 19 onglets → 7 sections
    ============================================ */
 
 const TutorialView = {
@@ -7,91 +8,123 @@ const TutorialView = {
 
   _getSections() {
     return [
+
+      /* ─────────────────────────────────────────
+         1. BIENVENUE — Intro + Tips essentiels
+      ───────────────────────────────────────── */
       {
         icon: '🎯',
-        title: t('tuto.s1Title'),
+        title: 'Bienvenue',
         content: `
           <p>${t('tuto.s1Intro')}</p>
           <div class="tutorial-highlight">
             <span class="tutorial-highlight-icon">💡</span>
             <div>${t('tuto.s1WeekFlow')}</div>
           </div>
+
+          <h5 class="mt-lg mb-sm">📋 Les règles d'or</h5>
+          <div class="tutorial-tips">
+            <div class="tutorial-tip">
+              <span class="tutorial-tip-number">1</span>
+              <div><div class="font-bold">${t('tuto.s9Tip1Title')}</div><p class="text-sm text-secondary">${t('tuto.s9Tip1Desc')}</p></div>
+            </div>
+            <div class="tutorial-tip">
+              <span class="tutorial-tip-number">2</span>
+              <div><div class="font-bold">${t('tuto.s9Tip2Title')}</div><p class="text-sm text-secondary">${t('tuto.s9Tip2Desc')}</p></div>
+            </div>
+            <div class="tutorial-tip">
+              <span class="tutorial-tip-number">3</span>
+              <div><div class="font-bold">${t('tuto.s9Tip3Title')}</div><p class="text-sm text-secondary">${t('tuto.s9Tip3Desc')}</p></div>
+            </div>
+            <div class="tutorial-tip">
+              <span class="tutorial-tip-number">4</span>
+              <div><div class="font-bold">${t('tuto.s9Tip4Title')}</div><p class="text-sm text-secondary">${t('tuto.s9Tip4Desc')}</p></div>
+            </div>
+            <div class="tutorial-tip">
+              <span class="tutorial-tip-number">5</span>
+              <div><div class="font-bold">${t('tuto.s9Tip5Title')}</div><p class="text-sm text-secondary">${t('tuto.s9Tip5Desc')}</p></div>
+            </div>
+            <div class="tutorial-tip">
+              <span class="tutorial-tip-number">6</span>
+              <div><div class="font-bold">${t('tuto.s9Tip6Title')}</div><p class="text-sm text-secondary">${t('tuto.s9Tip6Desc')}</p></div>
+            </div>
+            <div class="tutorial-tip">
+              <span class="tutorial-tip-number">7</span>
+              <div><div class="font-bold">${t('tuto.s9Tip7Title')}</div><p class="text-sm text-secondary">${t('tuto.s9Tip7Desc')}</p></div>
+            </div>
+          </div>
+          <div class="tutorial-highlight mt-lg">
+            <span class="tutorial-highlight-icon">🚀</span>
+            <div>${t('tuto.s9Outro')}</div>
+          </div>
         `
       },
+
+      /* ─────────────────────────────────────────
+         2. TES FIGHTERS — Recrutement + Stats + Vieillissement + Chin
+      ───────────────────────────────────────── */
       {
-        icon: '📋',
-        title: t('tuto.s2Title'),
+        icon: '👥',
+        title: 'Tes Fighters',
         content: `
           <p>${t('tuto.s2Intro')}</p>
           <div class="tutorial-stats-grid">
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🔢</span>
-              <div><strong>${t('tuto.s2MaxFighters')}</strong> — ${t('tuto.s2MaxFightersDesc')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🎨</span>
-              <div><strong>${t('tuto.s2Cost')}</strong> — ${t('tuto.s2CostDesc')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">📊</span>
-              <div><strong>${t('tuto.s2Potential')}</strong> — ${t('tuto.s2PotentialDesc')}</div>
-            </div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🔢</span><div><strong>${t('tuto.s2MaxFighters')}</strong> — ${t('tuto.s2MaxFightersDesc')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🎨</span><div><strong>${t('tuto.s2Cost')}</strong> — ${t('tuto.s2CostDesc')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">📊</span><div><strong>${t('tuto.s2Potential')}</strong> — ${t('tuto.s2PotentialDesc')}</div></div>
           </div>
           <div class="tutorial-highlight mt-md">
             <span class="tutorial-highlight-icon">🔑</span>
             <div>${t('tuto.s2Tip')}</div>
           </div>
-        `
-      },
-      {
-        icon: '🥊',
-        title: t('tuto.s3Title'),
-        content: `
+
+          <h5 class="mt-lg mb-sm">📊 Les stats</h5>
           <p>${t('tuto.s3Intro')}</p>
           <div class="tutorial-stats-grid">
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">👊</span>
-              <div><strong>Striking</strong> — ${t('tuto.s3Striking')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🤼</span>
-              <div><strong>Grappling</strong> — ${t('tuto.s3Grappling')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🔒</span>
-              <div><strong>Submission</strong> — ${t('tuto.s3Submission')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🤸</span>
-              <div><strong>Wrestling</strong> — ${t('tuto.s3Wrestling')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">❤️</span>
-              <div><strong>Cardio</strong> — ${t('tuto.s3Cardio')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🛡️</span>
-              <div><strong>Chin</strong> — ${t('tuto.s3Chin')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">⚡</span>
-              <div><strong>Athleticism</strong> — ${t('tuto.s3Athleticism')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🧠</span>
-              <div><strong>Mental</strong> — ${t('tuto.s3Mental')}</div>
-            </div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">👊</span><div><strong>Striking</strong> — ${t('tuto.s3Striking')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🤼</span><div><strong>Grappling</strong> — ${t('tuto.s3Grappling')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🔒</span><div><strong>Submission</strong> — ${t('tuto.s3Submission')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🤸</span><div><strong>Wrestling</strong> — ${t('tuto.s3Wrestling')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">❤️</span><div><strong>Cardio</strong> — ${t('tuto.s3Cardio')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🛡️</span><div><strong>Chin</strong> — ${t('tuto.s3Chin')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">⚡</span><div><strong>Athleticism</strong> — ${t('tuto.s3Athleticism')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🧠</span><div><strong>Mental</strong> — ${t('tuto.s3Mental')}</div></div>
           </div>
           <div class="tutorial-highlight">
             <span class="tutorial-highlight-icon">🔑</span>
             <div>${t('tuto.s3PotentialTip')}</div>
           </div>
           <p class="mt-md">${t('tuto.s3Styles')}</p>
+
+          <h5 class="mt-lg mb-sm">🧓 Vieillissement & Chin damage</h5>
+          <p>${t('tuto.sAgingIntro')}</p>
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">📈</span><div>${t('tuto.sAgingPeak')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">📉</span><div>${t('tuto.sAgingDecline')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🌅</span><div>${t('tuto.sAgingRetire')}</div></div>
+          </div>
+          <div class="tutorial-highlight mt-md" style="border-color:var(--accent-orange);background:rgba(255,159,28,0.06);">
+            <span class="tutorial-highlight-icon">⚠️</span>
+            <div>${t('tuto.sAgingTip')}</div>
+          </div>
+          <p class="mt-md">${t('tuto.sChinIntro')}</p>
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">💀</span><div>${t('tuto.sChinDamage')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🛑</span><div>${t('tuto.sChinGlass')}</div></div>
+          </div>
+          <div class="tutorial-highlight mt-md" style="border-color:var(--accent-red);background:rgba(230,57,70,0.06);">
+            <span class="tutorial-highlight-icon">🚨</span>
+            <div>${t('tuto.sChinTip')}</div>
+          </div>
         `
       },
+
+      /* ─────────────────────────────────────────
+         3. ENTRAÎNEMENT — Training + Fight Camp + Scouting
+      ───────────────────────────────────────── */
       {
         icon: '🏋️',
-        title: t('tuto.s4Title'),
+        title: 'Entraînement',
         content: `
           <p>${t('tuto.s4Intro')}</p>
 
@@ -107,19 +140,31 @@ const TutorialView = {
 
           <h5 class="mt-lg mb-sm">🏕️ ${t('tuto.s4FightCampTitle')}</h5>
           <p>${t('tuto.s4FightCampDesc')}</p>
-
           <div class="tutorial-highlight mt-md">
             <span class="tutorial-highlight-icon">⚠️</span>
             <div>${t('tuto.s4FightCampWarning')}</div>
           </div>
 
-          <h5 class="mt-lg mb-sm">🔍 ${t('tuto.s4ScoutTitle')}</h5>
+          <h5 class="mt-lg mb-sm">🔍 Scouting adversaires</h5>
           <p>${t('tuto.s4ScoutDesc')}</p>
+          <div class="tutorial-stats-grid mt-sm">
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">👆</span><div>${t('tuto.sAnalyseClick')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">📊</span><div>${t('tuto.sAnalyseStats')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">📍</span><div>${t('tuto.sAnalyseWhere')}</div></div>
+          </div>
+          <div class="tutorial-highlight mt-md">
+            <span class="tutorial-highlight-icon">💡</span>
+            <div>${t('tuto.sAnalyseTip')}</div>
+          </div>
         `
       },
+
+      /* ─────────────────────────────────────────
+         4. LES COMBATS — Offres + Matchmaking + Fight sim + Résultats
+      ───────────────────────────────────────── */
       {
-        icon: '📨',
-        title: t('tuto.s5Title'),
+        icon: '⚔️',
+        title: 'Les Combats',
         content: `
           <p>${t('tuto.s5Intro')}</p>
 
@@ -133,43 +178,30 @@ const TutorialView = {
           <h5 class="mt-lg mb-sm">❌ ${t('tuto.s5DeclineTitle')}</h5>
           <p>${t('tuto.s5DeclineIntro')}</p>
           <div class="tutorial-camps-grid">
-            <div class="tutorial-camp-item">
-              <div class="font-bold">🏥 ${t('decline.notReady')}</div>
-              <div class="text-xs text-muted">${t('decline.notReadyEffect')}</div>
-            </div>
-            <div class="tutorial-camp-item">
-              <div class="font-bold">💰 ${t('decline.lowPurse')}</div>
-              <div class="text-xs text-muted">${t('decline.lowPurseEffect')}</div>
-            </div>
-            <div class="tutorial-camp-item">
-              <div class="font-bold">👎 ${t('decline.tooWeak')}</div>
-              <div class="text-xs text-muted">${t('decline.tooWeakEffect')}</div>
-            </div>
-            <div class="tutorial-camp-item">
-              <div class="font-bold">😰 ${t('decline.tooStrong')}</div>
-              <div class="text-xs text-muted">${t('decline.tooStrongEffect')}</div>
-            </div>
-            <div class="tutorial-camp-item">
-              <div class="font-bold">🚫 ${t('decline.notInterested')}</div>
-              <div class="text-xs text-muted">${t('decline.notInterestedEffect')}</div>
-            </div>
+            <div class="tutorial-camp-item"><div class="font-bold">🏥 ${t('decline.notReady')}</div><div class="text-xs text-muted">${t('decline.notReadyEffect')}</div></div>
+            <div class="tutorial-camp-item"><div class="font-bold">💰 ${t('decline.lowPurse')}</div><div class="text-xs text-muted">${t('decline.lowPurseEffect')}</div></div>
+            <div class="tutorial-camp-item"><div class="font-bold">👎 ${t('decline.tooWeak')}</div><div class="text-xs text-muted">${t('decline.tooWeakEffect')}</div></div>
+            <div class="tutorial-camp-item"><div class="font-bold">😰 ${t('decline.tooStrong')}</div><div class="text-xs text-muted">${t('decline.tooStrongEffect')}</div></div>
+            <div class="tutorial-camp-item"><div class="font-bold">🚫 ${t('decline.notInterested')}</div><div class="text-xs text-muted">${t('decline.notInterestedEffect')}</div></div>
           </div>
-
           <div class="tutorial-highlight mt-md">
             <span class="tutorial-highlight-icon">💡</span>
             <div>${t('tuto.s5DeclineTip')}</div>
           </div>
-          <div class="tutorial-highlight mt-md" style="border-color: var(--accent-red); background: rgba(230, 57, 70, 0.06);">
+          <div class="tutorial-highlight mt-md" style="border-color:var(--accent-red);background:rgba(230,57,70,0.06);">
             <span class="tutorial-highlight-icon">🚨</span>
             <div>${t('tuto.s5IgnoreWarning')}</div>
           </div>
-        `
-      },
-      {
-        icon: '⚔️',
-        title: t('tuto.s6Title'),
-        content: `
-          <p>${t('tuto.s6Intro')}</p>
+
+          <h5 class="mt-lg mb-sm">📋 Proposer un combat</h5>
+          <ul class="tutorial-list">
+            <li>${t('tuto.sMatchHow1')}</li>
+            <li>${t('tuto.sMatchHow2')}</li>
+            <li>${t('tuto.sMatchHow3')}</li>
+            <li>${t('tuto.sMatchHow4')}</li>
+          </ul>
+          <div class="tutorial-highlight mt-md"><span class="tutorial-highlight-icon">📊</span><div>${t('tuto.sMatchAcceptance')}</div></div>
+          <div class="tutorial-highlight mt-md"><span class="tutorial-highlight-icon">⏱️</span><div>${t('tuto.sMatchCooldown')}</div></div>
 
           <h5 class="mt-lg mb-sm">🎬 ${t('tuto.s6FlowTitle')}</h5>
           <ul class="tutorial-list">
@@ -182,47 +214,103 @@ const TutorialView = {
           <h5 class="mt-lg mb-sm">🗣️ ${t('tuto.s6CornerTitle')}</h5>
           <p>${t('tuto.s6CornerDesc')}</p>
           <div class="tutorial-camps-grid">
-            <div class="tutorial-camp-item">
-              <div class="font-bold">🔥 ${t('tuto.s6CornerAggressive')}</div>
-              <div class="text-xs text-muted">${t('tuto.s6CornerAggressiveDesc')}</div>
-            </div>
-            <div class="tutorial-camp-item">
-              <div class="font-bold">🛡️ ${t('tuto.s6CornerDefensive')}</div>
-              <div class="text-xs text-muted">${t('tuto.s6CornerDefensiveDesc')}</div>
-            </div>
-            <div class="tutorial-camp-item">
-              <div class="font-bold">🤼 ${t('tuto.s6CornerTakedowns')}</div>
-              <div class="text-xs text-muted">${t('tuto.s6CornerTakedownsDesc')}</div>
-            </div>
-            <div class="tutorial-camp-item">
-              <div class="font-bold">💪 ${t('tuto.s6CornerMotivate')}</div>
-              <div class="text-xs text-muted">${t('tuto.s6CornerMotivateDesc')}</div>
-            </div>
+            <div class="tutorial-camp-item"><div class="font-bold">🔥 ${t('tuto.s6CornerAggressive')}</div><div class="text-xs text-muted">${t('tuto.s6CornerAggressiveDesc')}</div></div>
+            <div class="tutorial-camp-item"><div class="font-bold">🛡️ ${t('tuto.s6CornerDefensive')}</div><div class="text-xs text-muted">${t('tuto.s6CornerDefensiveDesc')}</div></div>
+            <div class="tutorial-camp-item"><div class="font-bold">🤼 ${t('tuto.s6CornerTakedowns')}</div><div class="text-xs text-muted">${t('tuto.s6CornerTakedownsDesc')}</div></div>
+            <div class="tutorial-camp-item"><div class="font-bold">💪 ${t('tuto.s6CornerMotivate')}</div><div class="text-xs text-muted">${t('tuto.s6CornerMotivateDesc')}</div></div>
           </div>
 
           <h5 class="mt-lg mb-sm">🏁 ${t('tuto.s6ResultsTitle')}</h5>
           <div class="tutorial-results-grid">
-            <div class="tutorial-result-item">
-              <span class="badge badge-loss" style="background: rgba(230, 57, 70, 0.2); color: var(--accent-red);">KO/TKO</span>
-              <span class="text-sm">${t('tuto.s6KO')}</span>
-            </div>
-            <div class="tutorial-result-item">
-              <span class="badge badge-loss" style="background: rgba(52, 152, 219, 0.2); color: var(--color-info);">Submission</span>
-              <span class="text-sm">${t('tuto.s6Sub')}</span>
-            </div>
-            <div class="tutorial-result-item">
-              <span class="badge badge-style">Decision</span>
-              <span class="text-sm">${t('tuto.s6Decision')}</span>
-            </div>
+            <div class="tutorial-result-item"><span class="badge badge-loss" style="background:rgba(230,57,70,0.2);color:var(--accent-red);">KO/TKO</span><span class="text-sm">${t('tuto.s6KO')}</span></div>
+            <div class="tutorial-result-item"><span class="badge badge-loss" style="background:rgba(52,152,219,0.2);color:var(--color-info);">Submission</span><span class="text-sm">${t('tuto.s6Sub')}</span></div>
+            <div class="tutorial-result-item"><span class="badge badge-style">Decision</span><span class="text-sm">${t('tuto.s6Decision')}</span></div>
           </div>
         `
       },
+
+      /* ─────────────────────────────────────────
+         5. LA HYPE — Conférence de presse + Rivalités + Événements
+      ───────────────────────────────────────── */
+      {
+        icon: '🗣️',
+        title: 'La Hype',
+        content: `
+          <p>La semaine avant chaque combat, tu es convoqué en <strong>conférence de presse</strong>. C'est bien plus qu'un show — chaque mot a des conséquences réelles sur le combat.</p>
+
+          <div class="tutorial-highlight mt-md" style="border-color:var(--accent);background:rgba(255,100,50,0.06);">
+            <span class="tutorial-highlight-icon">⚡</span>
+            <div>La conférence dure <strong>1 à 4 rounds</strong> selon l'intensité. Plus ça chauffe, plus les effets sont amplifiés.</div>
+          </div>
+
+          <h5 class="mt-lg mb-sm">✅ Ce qui marche</h5>
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">📊</span><div><strong>Citer des faits réels</strong> — Record, KO losses, mauvaise stat : les chiffres sont imparables</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🎯</span><div><strong>Cibler une vraie faiblesse</strong> — Si l'adversaire a un mauvais chin, parle-lui de ses genoux</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">😤</span><div><strong>Rester crédible</strong> — Un rookie qui parle comme un champion = pathétique</div></div>
+          </div>
+
+          <h5 class="mt-lg mb-sm">❌ Ce qui se retourne contre toi</h5>
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">💢</span><div><strong>Insultes sans contexte</strong> — Tu motives l'adversaire gratuitement. Sa morale monte, la tienne baisse</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🎭</span><div><strong>Trop arrogant pour ton niveau</strong> — Le public ne te croit pas. Hype réduite</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🤞</span><div><strong>Promettre l'impossible</strong> — Le retour de bâton est violent si tu rates</div></div>
+          </div>
+
+          <h5 class="mt-lg mb-sm">🔥 La rivalité change les règles</h5>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(255,255,255,0.03);border-radius:8px;border-left:3px solid rgba(255,255,255,0.1);">
+              <span style="font-size:1.2rem;flex-shrink:0;">🤝</span>
+              <div><div style="font-weight:700;font-size:0.85rem;">Première rencontre</div><div style="font-size:0.75rem;color:var(--text-secondary);">Les faits comptent tout. Insulter sans raison te rend ridicule.</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(255,100,50,0.05);border-radius:8px;border-left:3px solid rgba(255,100,50,0.3);">
+              <span style="font-size:1.2rem;flex-shrink:0;">⚔️</span>
+              <div><div style="font-weight:700;font-size:0.85rem;">Rivalité active</div><div style="font-size:0.75rem;color:var(--text-secondary);">L'agressivité est tolérée si elle fait référence à votre historique.</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(255,50,50,0.08);border-radius:8px;border-left:3px solid rgba(255,50,50,0.5);">
+              <span style="font-size:1.2rem;flex-shrink:0;">🔥</span>
+              <div><div style="font-weight:700;font-size:0.85rem;">Beef total (rivalité max)</div><div style="font-size:0.75rem;color:var(--text-secondary);">Mode McGregor — tout est permis. Un draw spectaculaire booste quand même la hype.</div></div>
+            </div>
+          </div>
+
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">💪</span><div><strong>Morale</strong> ±5 — Impact direct sur les performances</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🧠</span><div><strong>Mental</strong> +1 à 3 — Avantage tactique pendant le fight</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">💰</span><div><strong>Hype +10% à +50%</strong> — Bourse augmentée selon la qualité du show</div></div>
+          </div>
+
+          <div class="tutorial-highlight mt-md" style="border-color:#f5a623;background:rgba(245,166,35,0.06);">
+            <span class="tutorial-highlight-icon">💡</span>
+            <div>Après chaque échange, le verdict te donne un <strong>conseil de coach</strong> personnalisé. Lis-le — c'est la clé pour progresser.</div>
+          </div>
+
+          <h5 class="mt-lg mb-sm">🔥 Rivalités</h5>
+          <p>${t('tuto.sRivalIntro')}</p>
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">⏳</span><div>${t('tuto.sRivalGrow')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🤜</span><div>${t('tuto.sRivalChoice')}</div></div>
+          </div>
+          <div class="tutorial-highlight mt-md"><span class="tutorial-highlight-icon">💡</span><div>${t('tuto.sRivalTip')}</div></div>
+
+          <h5 class="mt-lg mb-sm">🎲 Événements aléatoires</h5>
+          <p>${t('tuto.sEventIntro')}</p>
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🎯</span><div>${t('tuto.sEventChoices')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">⚠️</span><div>${t('tuto.sEventMandatory')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">📂</span><div>${t('tuto.sEventCategories')}</div></div>
+          </div>
+          <div class="tutorial-highlight mt-md"><span class="tutorial-highlight-icon">💡</span><div>${t('tuto.sEventTip')}</div></div>
+        `
+      },
+
+      /* ─────────────────────────────────────────
+         6. PROGRESSION — Rankings + Titre + Saison + Réputation
+      ───────────────────────────────────────── */
       {
         icon: '🏆',
-        title: t('tuto.s7Title'),
+        title: 'Progression',
         content: `
           <p>${t('tuto.s7Intro')}</p>
-
           <h5 class="mt-lg mb-sm">📊 ${t('tuto.s7HowTitle')}</h5>
           <ul class="tutorial-list">
             <li>${t('tuto.s7Rule1')}</li>
@@ -234,508 +322,90 @@ const TutorialView = {
           <div class="tutorial-title-path">
             <div class="tutorial-path-step">
               <div class="tutorial-path-dot"></div>
-              <div>
-                <div class="font-bold">Unranked</div>
-                <div class="text-xs text-muted">${t('tuto.s7PathUnranked')}</div>
-              </div>
+              <div><div class="font-bold">Unranked</div><div class="text-xs text-muted">${t('tuto.s7PathUnranked')}</div></div>
             </div>
             <div class="tutorial-path-arrow">↓</div>
             <div class="tutorial-path-step">
-              <div class="tutorial-path-dot" style="background: var(--text-muted);"></div>
-              <div>
-                <div class="font-bold">Top 15</div>
-                <div class="text-xs text-muted">${t('tuto.s7PathTop15')}</div>
-              </div>
+              <div class="tutorial-path-dot" style="background:var(--text-muted);"></div>
+              <div><div class="font-bold">Top 15</div><div class="text-xs text-muted">${t('tuto.s7PathTop15')}</div></div>
             </div>
             <div class="tutorial-path-arrow">↓</div>
             <div class="tutorial-path-step">
-              <div class="tutorial-path-dot" style="background: var(--accent-orange);"></div>
-              <div>
-                <div class="font-bold text-orange">Top 3</div>
-                <div class="text-xs text-muted">${t('tuto.s7PathTop3')}</div>
-              </div>
+              <div class="tutorial-path-dot" style="background:var(--accent-orange);"></div>
+              <div><div class="font-bold text-orange">Top 3</div><div class="text-xs text-muted">${t('tuto.s7PathTop3')}</div></div>
             </div>
             <div class="tutorial-path-arrow">↓</div>
             <div class="tutorial-path-step">
-              <div class="tutorial-path-dot" style="background: #ffd700;"></div>
-              <div>
-                <div class="font-bold" style="color: #ffd700;">🏆 Champion</div>
-                <div class="text-xs text-muted">${t('tuto.s7PathChamp')}</div>
-              </div>
+              <div class="tutorial-path-dot" style="background:#ffd700;"></div>
+              <div><div class="font-bold" style="color:#ffd700;">🏆 Champion</div><div class="text-xs text-muted">${t('tuto.s7PathChamp')}</div></div>
             </div>
           </div>
+
+          <h5 class="mt-lg mb-sm">📅 Saison</h5>
+          <p>${t('tuto.sSeasonIntro')}</p>
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🎯</span><div>${t('tuto.sSeasonObj')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">📋</span><div>${t('tuto.sSeasonTrack')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🏁</span><div>${t('tuto.sSeasonEnd')}</div></div>
+          </div>
+          <div class="tutorial-highlight mt-md"><span class="tutorial-highlight-icon">💡</span><div>${t('tuto.sSeasonTip')}</div></div>
+
+          <h5 class="mt-lg mb-sm">⭐ Réputation</h5>
+          <p>${t('tuto.sRepIntro')}</p>
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">📈</span><div>${t('tuto.sRepUp')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">📉</span><div>${t('tuto.sRepDown')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🎯</span><div>${t('tuto.sRepImpact')}</div></div>
+          </div>
+          <div class="tutorial-highlight mt-md"><span class="tutorial-highlight-icon">💡</span><div>${t('tuto.sRepTip')}</div></div>
         `
       },
+
+      /* ─────────────────────────────────────────
+         7. BUSINESS — Finances + Marché
+      ───────────────────────────────────────── */
       {
         icon: '💰',
-        title: t('tuto.s8Title'),
+        title: 'Business',
         content: `
           <p>${t('tuto.s8Intro')}</p>
 
           <h5 class="mt-lg mb-sm">📥 ${t('tuto.s8IncomeTitle')}</h5>
           <p>${t('tuto.s8IncomeDesc')}</p>
           <div class="tutorial-finance-table">
-            <div class="tutorial-finance-row">
-              <span>${t('tuto.s8TrainingFees')}</span>
-              <span class="text-success font-bold">$300 — $1,500/sem</span>
-            </div>
-            <div class="tutorial-finance-row">
-              <span>${t('tuto.s8ShowCut')}</span>
-              <span class="text-success font-bold">20%</span>
-            </div>
-            <div class="tutorial-finance-row">
-              <span>${t('tuto.s8WinCut')}</span>
-              <span class="text-success font-bold">15%</span>
-            </div>
+            <div class="tutorial-finance-row"><span>${t('tuto.s8TrainingFees')}</span><span class="text-success font-bold">$300 — $1,500/sem</span></div>
+            <div class="tutorial-finance-row"><span>${t('tuto.s8ShowCut')}</span><span class="text-success font-bold">20%</span></div>
+            <div class="tutorial-finance-row"><span>${t('tuto.s8WinCut')}</span><span class="text-success font-bold">15%</span></div>
           </div>
           <p class="text-xs text-muted mt-sm">${t('tuto.s8FeeNote')}</p>
 
           <h5 class="mt-lg mb-sm">📤 ${t('tuto.s8ExpenseTitle')}</h5>
           <div class="tutorial-finance-table">
-            <div class="tutorial-finance-row">
-              <span>${t('tuto.s8Rent')}</span>
-              <span class="text-danger font-bold">$800/sem</span>
-            </div>
-            <div class="tutorial-finance-row">
-              <span>${t('tuto.s8Staff')}</span>
-              <span class="text-danger font-bold">$250/fighter/sem</span>
-            </div>
+            <div class="tutorial-finance-row"><span>${t('tuto.s8Rent')}</span><span class="text-danger font-bold">$800/sem</span></div>
+            <div class="tutorial-finance-row"><span>${t('tuto.s8Staff')}</span><span class="text-danger font-bold">$250/fighter/sem</span></div>
           </div>
 
           <h5 class="mt-lg mb-sm">📊 ${t('tuto.s8FeeTitle')}</h5>
           <p>${t('tuto.s8FeeDesc')}</p>
-
           <h5 class="mt-lg mb-sm">💱 ${t('tuto.s8CommTitle')}</h5>
           <p>${t('tuto.s8CommDesc')}</p>
 
-          <div class="tutorial-highlight mt-md">
-            <span class="tutorial-highlight-icon">💡</span>
-            <div>${t('tuto.s8Tip')}</div>
-          </div>
+          <div class="tutorial-highlight mt-md"><span class="tutorial-highlight-icon">💡</span><div>${t('tuto.s8Tip')}</div></div>
+          <div class="tutorial-highlight mt-md"><span class="tutorial-highlight-icon">💀</span><div>${t('tuto.s8GameOver')}</div></div>
 
-          <div class="tutorial-highlight mt-lg">
-            <span class="tutorial-highlight-icon">💀</span>
-            <div>${t('tuto.s8GameOver')}</div>
-          </div>
-        `
-      },
-      {
-        icon: '💱',
-        title: t('tuto.s10Title'),
-        content: `
+          <h5 class="mt-lg mb-sm">💱 Marché des agents libres</h5>
           <p>${t('tuto.s10Intro')}</p>
-
-          <h5 class="mt-lg mb-sm">🆓 ${t('tuto.s10FreeAgentsTitle')}</h5>
           <div class="tutorial-stats-grid">
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">👥</span>
-              <div><strong>${t('tuto.s10PoolSize')}</strong> — ${t('tuto.s10PoolSizeDesc')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🔄</span>
-              <div><strong>${t('tuto.s10Refresh')}</strong> — ${t('tuto.s10RefreshDesc')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">✍️</span>
-              <div><strong>${t('tuto.s10Signing')}</strong> — ${t('tuto.s10SigningDesc')}</div>
-            </div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">👥</span><div><strong>${t('tuto.s10PoolSize')}</strong> — ${t('tuto.s10PoolSizeDesc')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">🔄</span><div><strong>${t('tuto.s10Refresh')}</strong> — ${t('tuto.s10RefreshDesc')}</div></div>
+            <div class="tutorial-stat-item"><span class="tutorial-stat-icon">✍️</span><div><strong>${t('tuto.s10Signing')}</strong> — ${t('tuto.s10SigningDesc')}</div></div>
           </div>
-
           <h5 class="mt-lg mb-sm">✂️ ${t('tuto.s10CutTitle')}</h5>
           <p>${t('tuto.s10CutDesc')}</p>
-
-          <h5 class="mt-lg mb-sm">⭐ ${t('tuto.s10RepTitle')}</h5>
-          <p>${t('tuto.s10RepDesc')}</p>
-          <div class="tutorial-stats-grid">
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">💰</span>
-              <div><strong>${t('market.repBudget')}</strong> — ${t('tuto.s10RepBudget')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🏆</span>
-              <div><strong>${t('market.repChampions')}</strong> — ${t('tuto.s10RepChampions')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🥊</span>
-              <div><strong>${t('market.repWins')}</strong> — ${t('tuto.s10RepWins')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">😊</span>
-              <div><strong>${t('market.repMorale')}</strong> — ${t('tuto.s10RepMorale')}</div>
-            </div>
-          </div>
-
-          <div class="tutorial-highlight mt-lg">
-            <span class="tutorial-highlight-icon">🔑</span>
-            <div>${t('tuto.s10Tip')}</div>
-          </div>
-        `
-      },
-      {
-        icon: '🔍',
-        title: t('tuto.sAnalyseTitle'),
-        content: `
-          <p>${t('tuto.sAnalyseIntro')}</p>
-
-          <div class="tutorial-stats-grid">
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">👆</span>
-              <div>${t('tuto.sAnalyseClick')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">📊</span>
-              <div>${t('tuto.sAnalyseStats')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">📍</span>
-              <div>${t('tuto.sAnalyseWhere')}</div>
-            </div>
-          </div>
-
-          <div class="tutorial-highlight mt-md">
-            <span class="tutorial-highlight-icon">💡</span>
-            <div>${t('tuto.sAnalyseTip')}</div>
-          </div>
-        `
-      },
-      {
-        icon: '⚔️',
-        title: t('tuto.sMatchTitle'),
-        content: `
-          <p>${t('tuto.sMatchIntro')}</p>
-
-          <h5 class="mt-lg mb-sm">📋 Comment proposer</h5>
-          <ul class="tutorial-list">
-            <li>${t('tuto.sMatchHow1')}</li>
-            <li>${t('tuto.sMatchHow2')}</li>
-            <li>${t('tuto.sMatchHow3')}</li>
-            <li>${t('tuto.sMatchHow4')}</li>
-          </ul>
-
-          <div class="tutorial-highlight mt-md">
-            <span class="tutorial-highlight-icon">📊</span>
-            <div>${t('tuto.sMatchAcceptance')}</div>
-          </div>
-
-          <div class="tutorial-highlight mt-md">
-            <span class="tutorial-highlight-icon">⏱️</span>
-            <div>${t('tuto.sMatchCooldown')}</div>
-          </div>
-
-          <div class="tutorial-highlight mt-md">
-            <span class="tutorial-highlight-icon">🔑</span>
-            <div>${t('tuto.sMatchTip')}</div>
-          </div>
-        `
-      },
-      {
-        icon: '🏆',
-        title: t('tuto.sSeasonTitle'),
-        content: `
-          <p>${t('tuto.sSeasonIntro')}</p>
-
-          <div class="tutorial-stats-grid">
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🎯</span>
-              <div>${t('tuto.sSeasonObj')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">📋</span>
-              <div>${t('tuto.sSeasonTrack')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🏁</span>
-              <div>${t('tuto.sSeasonEnd')}</div>
-            </div>
-          </div>
-
-          <div class="tutorial-highlight mt-md">
-            <span class="tutorial-highlight-icon">💡</span>
-            <div>${t('tuto.sSeasonTip')}</div>
-          </div>
-        `
-      },
-      {
-        icon: '🎲',
-        title: t('tuto.sEventTitle'),
-        content: `
-          <p>${t('tuto.sEventIntro')}</p>
-
-          <div class="tutorial-stats-grid">
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🎯</span>
-              <div>${t('tuto.sEventChoices')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">⚠️</span>
-              <div>${t('tuto.sEventMandatory')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">📂</span>
-              <div>${t('tuto.sEventCategories')}</div>
-            </div>
-          </div>
-
-          <div class="tutorial-highlight mt-md">
-            <span class="tutorial-highlight-icon">💡</span>
-            <div>${t('tuto.sEventTip')}</div>
-          </div>
-        `
-      },
-      {
-        icon: '🧓',
-        title: t('tuto.sAgingTitle'),
-        content: `
-          <p>${t('tuto.sAgingIntro')}</p>
-
-          <div class="tutorial-stats-grid">
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">📈</span>
-              <div>${t('tuto.sAgingPeak')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">📉</span>
-              <div>${t('tuto.sAgingDecline')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🌅</span>
-              <div>${t('tuto.sAgingRetire')}</div>
-            </div>
-          </div>
-
-          <div class="tutorial-highlight mt-md" style="border-color: var(--accent-orange); background: rgba(255, 159, 28, 0.06);">
-            <span class="tutorial-highlight-icon">⚠️</span>
-            <div>${t('tuto.sAgingTip')}</div>
-          </div>
-        `
-      },
-      {
-        icon: '🥊',
-        title: t('tuto.sChinTitle'),
-        content: `
-          <p>${t('tuto.sChinIntro')}</p>
-
-          <div class="tutorial-stats-grid">
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">💀</span>
-              <div>${t('tuto.sChinDamage')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🛑</span>
-              <div>${t('tuto.sChinGlass')}</div>
-            </div>
-          </div>
-
-          <div class="tutorial-highlight mt-md" style="border-color: var(--accent-red); background: rgba(230, 57, 70, 0.06);">
-            <span class="tutorial-highlight-icon">🚨</span>
-            <div>${t('tuto.sChinTip')}</div>
-          </div>
-        `
-      },
-      {
-        icon: '⭐',
-        title: t('tuto.sRepTitle'),
-        content: `
-          <p>${t('tuto.sRepIntro')}</p>
-
-          <div class="tutorial-stats-grid">
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">📈</span>
-              <div>${t('tuto.sRepUp')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">📉</span>
-              <div>${t('tuto.sRepDown')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🎯</span>
-              <div>${t('tuto.sRepImpact')}</div>
-            </div>
-          </div>
-
-          <div class="tutorial-highlight mt-md">
-            <span class="tutorial-highlight-icon">💡</span>
-            <div>${t('tuto.sRepTip')}</div>
-          </div>
-        `
-      },
-      {
-        icon: '🔥',
-        title: t('tuto.sRivalTitle'),
-        content: `
-          <p>${t('tuto.sRivalIntro')}</p>
-
-          <div class="tutorial-stats-grid">
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">⏳</span>
-              <div>${t('tuto.sRivalGrow')}</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🤜</span>
-              <div>${t('tuto.sRivalChoice')}</div>
-            </div>
-          </div>
-
-          <div class="tutorial-highlight mt-md">
-            <span class="tutorial-highlight-icon">💡</span>
-            <div>${t('tuto.sRivalTip')}</div>
-          </div>
-        `
-      },
-      {
-        icon: '🎙️',
-        title: 'La Conférence de Presse',
-        content: `
-          <p>La semaine avant chaque combat, tu es convoqué en conférence de presse avec ton adversaire. C'est bien plus qu'un show — <strong>chaque mot a des conséquences réelles sur le combat.</strong></p>
-
-          <div class="tutorial-highlight mt-md" style="border-color: var(--accent); background: rgba(255,100,50,0.06);">
-            <span class="tutorial-highlight-icon">⚡</span>
-            <div>La conférence de presse peut durer <strong>1 à 4 rounds</strong> d'échanges selon l'intensité. Plus ça chauffe, plus les effets sont amplifiés.</div>
-          </div>
-
-          <h5 class="mt-lg mb-sm">✅ Ce qui marche — Les bases du bon trash talk</h5>
-          <div class="tutorial-stats-grid">
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">📊</span>
-              <div><strong>Citer des faits réels</strong> — Record, KO losses, mauvaise stat : les chiffres sont imparables</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🎯</span>
-              <div><strong>Cibler une vraie faiblesse</strong> — Si l'adversaire a un mauvais chin, parle-lui de ses genoux qui vont trembler</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">😤</span>
-              <div><strong>Rester crédible</strong> — Ton niveau doit appuyer tes dires. Un rookie qui parle comme un champion = pathétique</div>
-            </div>
-          </div>
-
-          <h5 class="mt-lg mb-sm">❌ Ce qui se retourne contre toi</h5>
-          <div class="tutorial-stats-grid">
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">💢</span>
-              <div><strong>Insultes sans contexte</strong> — Tu motives ton adversaire gratuitement. Sa morale monte, la tienne baisse</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🎭</span>
-              <div><strong>Trop arrogant pour ton niveau</strong> — Le public ne te croit pas. Hype réduite, tu perds des points avant même de combattre</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🤞</span>
-              <div><strong>Promettre l'impossible</strong> — "Je le KO au round 1" quand tu fais des décisions. Si tu rates, le retour de bâton est violent</div>
-            </div>
-          </div>
-
-          <h5 class="mt-lg mb-sm">🔥 L'exception : la rivalité change tout</h5>
-          <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 12px;">Les règles évoluent selon l'historique entre les deux fighters :</p>
-
-          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
-            <div style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 3px solid rgba(255,255,255,0.1);">
-              <span style="font-size: 1.2rem; flex-shrink: 0;">🤝</span>
-              <div>
-                <div style="font-weight: 700; font-size: 0.85rem;">Première rencontre</div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary);">Les faits comptent tout. Insulter sans raison te rend ridicule.</div>
-              </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: rgba(255,100,50,0.05); border-radius: 8px; border-left: 3px solid rgba(255,100,50,0.3);">
-              <span style="font-size: 1.2rem; flex-shrink: 0;">⚔️</span>
-              <div>
-                <div style="font-weight: 700; font-size: 0.85rem;">Rivalité active</div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary);">L'agressivité est tolérée si elle fait référence à votre historique.</div>
-              </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: rgba(255,50,50,0.08); border-radius: 8px; border-left: 3px solid rgba(255,50,50,0.5);">
-              <span style="font-size: 1.2rem; flex-shrink: 0;">🔥</span>
-              <div>
-                <div style="font-weight: 700; font-size: 0.85rem;">Beef total (rivalité max)</div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary);">Mode McGregor — tout est permis. Le show compte autant que les arguments. Même un draw spectaculaire booste la hype.</div>
-              </div>
-            </div>
-          </div>
-
-          <h5 class="mt-lg mb-sm">📈 Les effets sur le combat</h5>
-          <div class="tutorial-stats-grid">
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">💪</span>
-              <div><strong>Morale</strong> ±5 — Affecte directement les performances en combat</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">🧠</span>
-              <div><strong>Bonus mental</strong> +1 à 3 — Avantage tactique pendant le fight</div>
-            </div>
-            <div class="tutorial-stat-item">
-              <span class="tutorial-stat-icon">💰</span>
-              <div><strong>Hype +10% à +50%</strong> — Bourse augmentée selon la qualité du show</div>
-            </div>
-          </div>
-
-          <div class="tutorial-highlight mt-md" style="border-color: #f5a623; background: rgba(245,166,35,0.06);">
-            <span class="tutorial-highlight-icon">💡</span>
-            <div>Après chaque échange, le verdict te donne un <strong>conseil de coach</strong> basé sur ce qui s'est passé. Lis-le — c'est la clé pour progresser.</div>
-          </div>
-        `
-      },
-      {
-        icon: '🗺️',
-        title: t('tuto.s9Title'),
-        content: `
-          <div class="tutorial-tips">
-            <div class="tutorial-tip">
-              <span class="tutorial-tip-number">1</span>
-              <div>
-                <div class="font-bold">${t('tuto.s9Tip1Title')}</div>
-                <p class="text-sm text-secondary">${t('tuto.s9Tip1Desc')}</p>
-              </div>
-            </div>
-            <div class="tutorial-tip">
-              <span class="tutorial-tip-number">2</span>
-              <div>
-                <div class="font-bold">${t('tuto.s9Tip2Title')}</div>
-                <p class="text-sm text-secondary">${t('tuto.s9Tip2Desc')}</p>
-              </div>
-            </div>
-            <div class="tutorial-tip">
-              <span class="tutorial-tip-number">3</span>
-              <div>
-                <div class="font-bold">${t('tuto.s9Tip3Title')}</div>
-                <p class="text-sm text-secondary">${t('tuto.s9Tip3Desc')}</p>
-              </div>
-            </div>
-            <div class="tutorial-tip">
-              <span class="tutorial-tip-number">4</span>
-              <div>
-                <div class="font-bold">${t('tuto.s9Tip4Title')}</div>
-                <p class="text-sm text-secondary">${t('tuto.s9Tip4Desc')}</p>
-              </div>
-            </div>
-            <div class="tutorial-tip">
-              <span class="tutorial-tip-number">5</span>
-              <div>
-                <div class="font-bold">${t('tuto.s9Tip5Title')}</div>
-                <p class="text-sm text-secondary">${t('tuto.s9Tip5Desc')}</p>
-              </div>
-            </div>
-            <div class="tutorial-tip">
-              <span class="tutorial-tip-number">6</span>
-              <div>
-                <div class="font-bold">${t('tuto.s9Tip6Title')}</div>
-                <p class="text-sm text-secondary">${t('tuto.s9Tip6Desc')}</p>
-              </div>
-            </div>
-            <div class="tutorial-tip">
-              <span class="tutorial-tip-number">7</span>
-              <div>
-                <div class="font-bold">${t('tuto.s9Tip7Title')}</div>
-                <p class="text-sm text-secondary">${t('tuto.s9Tip7Desc')}</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="tutorial-highlight mt-lg">
-            <span class="tutorial-highlight-icon">🚀</span>
-            <div>${t('tuto.s9Outro')}</div>
-          </div>
+          <div class="tutorial-highlight mt-md"><span class="tutorial-highlight-icon">🔑</span><div>${t('tuto.s10Tip')}</div></div>
         `
       }
+
     ];
   },
 
@@ -799,7 +469,6 @@ const TutorialView = {
   },
 
   _bindEvents(container) {
-    // TOC clicks
     container.querySelectorAll('.tutorial-toc-item').forEach(item => {
       item.addEventListener('click', () => {
         this.currentSection = parseInt(item.dataset.section);
@@ -807,27 +476,12 @@ const TutorialView = {
       });
     });
 
-    // Prev/Next
     const prevBtn = document.getElementById('tutorial-prev');
     const nextBtn = document.getElementById('tutorial-next');
     const dashBtn = document.getElementById('tutorial-dashboard');
 
-    if (prevBtn) {
-      prevBtn.addEventListener('click', () => {
-        this.currentSection = Math.max(0, this.currentSection - 1);
-        this.render(container);
-      });
-    }
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
-        this.currentSection = Math.min(this._getSections().length - 1, this.currentSection + 1);
-        this.render(container);
-      });
-    }
-    if (dashBtn) {
-      dashBtn.addEventListener('click', () => {
-        App.navigateTo('dashboard');
-      });
-    }
+    if (prevBtn) prevBtn.addEventListener('click', () => { this.currentSection = Math.max(0, this.currentSection - 1); this.render(container); });
+    if (nextBtn) nextBtn.addEventListener('click', () => { this.currentSection = Math.min(this._getSections().length - 1, this.currentSection + 1); this.render(container); });
+    if (dashBtn) dashBtn.addEventListener('click', () => { App.navigateTo('dashboard'); });
   }
 };
