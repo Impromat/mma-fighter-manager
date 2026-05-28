@@ -283,10 +283,14 @@ const LeagueEngine = {
         }
       }
       const prepWeeks = isTitle ? OFFER_CONFIG.prepWeeksTitle : OFFER_CONFIG.prepWeeksNormal;
-      const fightWeek = Math.max(
-        state.week + OFFER_CONFIG.decisionWindow + prepWeeks,
-        (fighter.lastFightWeek || 0) + OFFER_CONFIG.fightCooldown + prepWeeks
+      // Add random jitter (0-3 weeks) then snap to nearest event week (multiple of EVENT_INTERVAL)
+      const jitter = Math.floor(Math.random() * 4); // 0 to 3 weeks extra
+      const rawFightWeek = Math.max(
+        state.week + OFFER_CONFIG.decisionWindow + prepWeeks + jitter,
+        (fighter.lastFightWeek || 0) + OFFER_CONFIG.fightCooldown + prepWeeks + jitter
       );
+      // Snap to nearest upcoming event week (multiples of EVENT_INTERVAL)
+      const fightWeek = rawFightWeek + (EVENT_INTERVAL - (rawFightWeek % EVENT_INTERVAL || EVENT_INTERVAL));
       const expiresWeek = state.week + OFFER_CONFIG.decisionWindow;
 
       // Calculate purse adjusted by decline history
@@ -307,7 +311,12 @@ const LeagueEngine = {
         opponentId: opponent.id,
         fightWeek,
         prepWeeks,
-        eventName: `AFC Fight Night ${Math.ceil(fightWeek / EVENT_INTERVAL)}`,
+        eventName: (() => {
+          const eventNum = Math.ceil(fightWeek / EVENT_INTERVAL);
+          const types = ['Fight Night', 'Showdown', 'Championship Series', 'Grand Prix'];
+          const type = types[eventNum % types.length];
+          return `AFC ${type} ${eventNum}`;
+        })(),
         purse,
         isTitle,
         opponentRank,
@@ -705,10 +714,12 @@ const LeagueEngine = {
 
     const isTitle = this.isTitleShot(fighter, state);
     const prepWeeks = isTitle ? OFFER_CONFIG.prepWeeksTitle : OFFER_CONFIG.prepWeeksNormal;
-    const fightWeek = Math.max(
-      state.week + prepWeeks + 1,
-      (fighter.lastFightWeek || 0) + OFFER_CONFIG.fightCooldown + prepWeeks
+    const jitter = Math.floor(Math.random() * 4);
+    const rawFightWeek = Math.max(
+      state.week + prepWeeks + 1 + jitter,
+      (fighter.lastFightWeek || 0) + OFFER_CONFIG.fightCooldown + prepWeeks + jitter
     );
+    const fightWeek = rawFightWeek + (EVENT_INTERVAL - (rawFightWeek % EVENT_INTERVAL || EVENT_INTERVAL));
 
     const purse = FinanceEngine.calculatePurse(fighter, state, isTitle);
     const acceptChance = this.getAcceptanceChance(fighter, opponent, state);
