@@ -250,7 +250,7 @@ const EventEngine = {
               state.schedule.push({
                 id: `fight_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
                 week: state.week + 2,
-                eventName: `AFC Fight Night ${Math.ceil((state.week + 2) / EVENT_INTERVAL)}`,
+                eventName: LeagueEngine.getEventName(state.week + 2),
                 playerFighterId: fighter.id,
                 opponentId: opponent.id,
                 fightCamp: null,

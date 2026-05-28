@@ -254,6 +254,15 @@ const LeagueEngine = {
   /**
    * Generate fight offers for available fighters
    */
+  /**
+   * Generate event name from week number
+   */
+  getEventName(week) {
+    const types = ['Fight Night', 'Showdown', 'Championship Series', 'Grand Prix'];
+    const type = types[week % types.length];
+    return `AFC ${type} ${week}`;
+  },
+
   generateOffers(state) {
     const newOffers = [];
 
@@ -282,16 +291,16 @@ const LeagueEngine = {
           }
         }
       }
-      const prepWeeks = isTitle ? OFFER_CONFIG.prepWeeksTitle : OFFER_CONFIG.prepWeeksNormal;
-      // Add random jitter (0-3 weeks) then snap to nearest event week (multiple of EVENT_INTERVAL)
-      const jitter = Math.floor(Math.random() * 4); // 0 to 3 weeks extra
-      const rawFightWeek = Math.max(
-        state.week + OFFER_CONFIG.decisionWindow + prepWeeks + jitter,
-        (fighter.lastFightWeek || 0) + OFFER_CONFIG.fightCooldown + prepWeeks + jitter
+
+      // Proposed fight week: random within [minPrepWeeks, maxFutureWeeks], respecting cooldown
+      const minWeek = Math.max(
+        state.week + OFFER_CONFIG.minPrepWeeks,
+        (fighter.lastFightWeek || 0) + OFFER_CONFIG.fightCooldown + OFFER_CONFIG.minPrepWeeks
       );
-      // Snap to nearest upcoming event week (multiples of EVENT_INTERVAL)
-      const fightWeek = rawFightWeek + (EVENT_INTERVAL - (rawFightWeek % EVENT_INTERVAL || EVENT_INTERVAL));
-      const expiresWeek = state.week + OFFER_CONFIG.decisionWindow;
+      const maxWeek = state.week + OFFER_CONFIG.maxFutureWeeks;
+      // Random week in range
+      const fightWeek = minWeek + Math.floor(Math.random() * Math.max(1, maxWeek - minWeek));
+      const expiresWeek = state.week + OFFER_CONFIG.offerExpiryWeeks;
 
       // Calculate purse adjusted by decline history
       const basePurse = FinanceEngine.calculatePurse(fighter, state, isTitle);
@@ -310,13 +319,7 @@ const LeagueEngine = {
         fighterId: fighter.id,
         opponentId: opponent.id,
         fightWeek,
-        prepWeeks,
-        eventName: (() => {
-          const eventNum = Math.ceil(fightWeek / EVENT_INTERVAL);
-          const types = ['Fight Night', 'Showdown', 'Championship Series', 'Grand Prix'];
-          const type = types[eventNum % types.length];
-          return `AFC ${type} ${eventNum}`;
-        })(),
+        eventName: this.getEventName(fightWeek),
         purse,
         isTitle,
         opponentRank,
@@ -483,7 +486,7 @@ const LeagueEngine = {
   cleanExpiredOffers(state) {
     const expired = [];
     state.fightOffers.forEach(offer => {
-      if (offer.status === 'pending' && state.week > offer.expiresWeek) {
+      if (offer.status === 'pending' && state.week >= offer.createdWeek + OFFER_CONFIG.offerExpiryWeeks) {
         offer.status = 'expired';
         const fighter = state.fighters.find(f => f.id === offer.fighterId);
         if (fighter) {
@@ -705,7 +708,7 @@ const LeagueEngine = {
   /**
    * Create an outgoing challenge
    */
-  createChallenge(fighterId, opponentId, state) {
+  createChallenge(fighterId, opponentId, state, targetWeek) {
     if (!state.outgoingChallenges) state.outgoingChallenges = [];
 
     const fighter = state.fighters.find(f => f.id === fighterId);
@@ -713,13 +716,15 @@ const LeagueEngine = {
     if (!fighter || !opponent) return null;
 
     const isTitle = this.isTitleShot(fighter, state);
-    const prepWeeks = isTitle ? OFFER_CONFIG.prepWeeksTitle : OFFER_CONFIG.prepWeeksNormal;
-    const jitter = Math.floor(Math.random() * 4);
-    const rawFightWeek = Math.max(
-      state.week + prepWeeks + 1 + jitter,
-      (fighter.lastFightWeek || 0) + OFFER_CONFIG.fightCooldown + prepWeeks + jitter
+    // Use player-chosen week or calculate a default
+    const minWeek = Math.max(
+      state.week + OFFER_CONFIG.minPrepWeeks,
+      (fighter.lastFightWeek || 0) + OFFER_CONFIG.fightCooldown + OFFER_CONFIG.minPrepWeeks
     );
-    const fightWeek = rawFightWeek + (EVENT_INTERVAL - (rawFightWeek % EVENT_INTERVAL || EVENT_INTERVAL));
+    const maxWeek = state.week + OFFER_CONFIG.maxFutureWeeks;
+    const fightWeek = targetWeek 
+      ? Math.max(minWeek, Math.min(maxWeek, targetWeek))
+      : minWeek + Math.floor(Math.random() * Math.max(1, maxWeek - minWeek));
 
     const purse = FinanceEngine.calculatePurse(fighter, state, isTitle);
     const acceptChance = this.getAcceptanceChance(fighter, opponent, state);
@@ -741,6 +746,45 @@ const LeagueEngine = {
     state.outgoingChallenges.push(challenge);
     GameState.save();
     return challenge;
+  },
+
+  /**
+   * Counter-propose a different week for an existing offer
+   * Returns { accepted, offer } or null
+   */
+  counterPropose(offerId, newWeek, state) {
+    const offer = state.fightOffers.find(o => o.id === offerId && o.status === 'pending');
+    if (!offer) return null;
+
+    const fighter = state.fighters.find(f => f.id === offer.fighterId);
+    const opponent = state.aiFighters.find(f => f.id === offer.opponentId);
+    if (!fighter || !opponent) return null;
+
+    // Validate week bounds
+    const minWeek = Math.max(
+      state.week + OFFER_CONFIG.minPrepWeeks,
+      (fighter.lastFightWeek || 0) + OFFER_CONFIG.fightCooldown + OFFER_CONFIG.minPrepWeeks
+    );
+    const maxWeek = state.week + OFFER_CONFIG.maxFutureWeeks;
+    const clampedWeek = Math.max(minWeek, Math.min(maxWeek, newWeek));
+
+    // Calculate acceptance: base chance minus counter penalty
+    const baseChance = this.getAcceptanceChance(fighter, opponent, state);
+    const chance = Math.max(5, baseChance - OFFER_CONFIG.counterProposePenalty);
+
+    const roll = Math.random() * 100;
+    if (roll < chance) {
+      // Accepted — update the offer
+      offer.fightWeek = clampedWeek;
+      offer.eventName = this.getEventName(clampedWeek);
+      offer.status = 'counterAccepted';
+      offer.expiresWeek = state.week + OFFER_CONFIG.offerExpiryWeeks;
+      return { accepted: true, offer, chance: Math.round(chance) };
+    } else {
+      // Rejected — remove offer
+      offer.status = 'counterRejected';
+      return { accepted: false, offer, chance: Math.round(chance) };
+    }
   },
 
   /**
@@ -772,7 +816,7 @@ const LeagueEngine = {
         state.schedule.push({
           id: `fight_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
           week: challenge.fightWeek,
-          eventName: `AFC Fight Night ${Math.ceil(challenge.fightWeek / EVENT_INTERVAL)}`,
+          eventName: LeagueEngine.getEventName(challenge.fightWeek),
           playerFighterId: fighter.id,
           opponentId: opponent.id,
           fightCamp: null,

@@ -561,7 +561,10 @@ const DashboardView = {
 
           <div class="offer-actions">
             <button class="btn btn-primary btn-sm offer-accept-btn" data-offer-id="${offer.id}">
-              ${t('offer.accept')}
+              ✅ ${t('offer.accept')}
+            </button>
+            <button class="btn btn-orange btn-sm offer-counter-btn" data-offer-id="${offer.id}">
+              📅 Contre-proposer
             </button>
             <button class="btn btn-ghost btn-sm offer-decline-btn" data-offer-id="${offer.id}">
               ${t('offer.decline')}
@@ -607,6 +610,15 @@ const DashboardView = {
       });
     });
 
+    // Counter-propose button
+    container.querySelectorAll('.offer-counter-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const offerId = btn.dataset.offerId;
+        this._showCounterProposeModal(offerId);
+      });
+    });
+
     container.querySelectorAll('.offer-decline-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -639,6 +651,109 @@ const DashboardView = {
         const fightId = btn.dataset.fightId;
         App.showWithdrawConfirm(fightId);
       });
+    });
+  },
+
+  _showCounterProposeModal(offerId) {
+    const state = GameState.get();
+    const offer = state.fightOffers.find(o => o.id === offerId);
+    if (!offer) return;
+
+    const fighter = state.fighters.find(f => f.id === offer.fighterId);
+    const opponent = state.aiFighters.find(f => f.id === offer.opponentId);
+    if (!fighter || !opponent) return;
+
+    const minWeek = Math.max(
+      state.week + OFFER_CONFIG.minPrepWeeks,
+      (fighter.lastFightWeek || 0) + OFFER_CONFIG.fightCooldown + OFFER_CONFIG.minPrepWeeks
+    );
+    const maxWeek = state.week + OFFER_CONFIG.maxFutureWeeks;
+
+    // Generate week options
+    const weekOptions = [];
+    for (let w = minWeek; w <= maxWeek; w++) {
+      const prepW = w - state.week;
+      const isCurrent = w === offer.fightWeek;
+      weekOptions.push(`
+        <option value="${w}" ${isCurrent ? 'selected' : ''}>
+          Semaine ${w} — ${LeagueEngine.getEventName(w)} (${prepW} sem. de prépa)${isCurrent ? ' ← actuelle' : ''}
+        </option>
+      `);
+    }
+
+    const modalRoot = document.getElementById('modal-root');
+    modalRoot.innerHTML = `
+      <div class="modal-overlay">
+        <div class="modal" style="max-width: 480px;">
+          <div class="modal-header">
+            <div class="modal-title">📅 Contre-proposer une date</div>
+            <button class="modal-close" id="close-counter-modal">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="flex items-center gap-md mb-lg" style="padding: var(--space-md); background: rgba(255,255,255,0.03); border-radius: var(--radius-md);">
+              <div class="fighter-mini-avatar" style="background: ${fighter.avatarColor}; width: 40px; height: 40px;">
+                ${fighter.firstName[0]}${fighter.lastName[0]}
+              </div>
+              <div>
+                <div class="font-bold">${fighter.fullName} vs ${opponent.fullName}</div>
+                <div class="text-xs text-muted">Proposition actuelle : Semaine ${offer.fightWeek}</div>
+              </div>
+            </div>
+
+            <div class="mb-md">
+              <label class="text-sm font-semibold mb-sm" style="display:block;">Nouvelle semaine souhaitée :</label>
+              <select id="counter-week-select" style="
+                width: 100%; padding: var(--space-sm) var(--space-md);
+                background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+                border-radius: var(--radius-md); color: var(--text-primary);
+                font-size: 0.85rem; cursor: pointer;
+              ">
+                ${weekOptions.join('')}
+              </select>
+            </div>
+
+            <div class="text-xs text-muted mb-lg" style="padding: var(--space-sm); background: rgba(244, 162, 97, 0.08); border-radius: var(--radius-sm);">
+              ⚠️ L'adversaire peut refuser la contre-proposition. Chance réduite de ${OFFER_CONFIG.counterProposePenalty}%.
+            </div>
+
+            <div class="confirm-actions">
+              <button class="btn btn-primary btn-lg btn-block" id="confirm-counter-btn">
+                📅 Envoyer la contre-proposition
+              </button>
+              <button class="btn btn-ghost btn-sm" id="cancel-counter-btn" style="margin-top: var(--space-sm);">
+                Annuler
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Bind events
+    document.getElementById('close-counter-modal').addEventListener('click', () => { modalRoot.innerHTML = ''; });
+    document.getElementById('cancel-counter-btn').addEventListener('click', () => { modalRoot.innerHTML = ''; });
+    modalRoot.querySelector('.modal-overlay').addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-overlay')) modalRoot.innerHTML = '';
+    });
+
+    document.getElementById('confirm-counter-btn').addEventListener('click', () => {
+      const newWeek = parseInt(document.getElementById('counter-week-select').value);
+      const result = GameState.counterProposeOffer(offerId, newWeek);
+
+      modalRoot.innerHTML = '';
+
+      if (!result) {
+        App.showToast('Erreur lors de la contre-proposition', 'error');
+        return;
+      }
+
+      if (result.accepted) {
+        App.showToast(`✅ ${opponent.fullName} accepte ! Combat Semaine ${newWeek} (${result.chance}% de chance)`, 'success');
+      } else {
+        App.showToast(`❌ ${opponent.fullName} refuse la contre-proposition (${result.chance}% de chance)`, 'warning');
+      }
+      App.updateSidebar();
+      App.navigateTo('dashboard');
     });
   },
 

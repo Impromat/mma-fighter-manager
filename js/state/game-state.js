@@ -94,7 +94,7 @@ const GameState = {
         state.schedule.push({
           id: `fight_${Date.now()}_${bookedCount}`,
           week: eventWeek,
-          eventName: `AFC Fight Night ${Math.ceil(eventWeek / EVENT_INTERVAL)}`,
+          eventName: LeagueEngine.getEventName(eventWeek),
           playerFighterId: fighter.id,
           opponentId: opponent.id,
           fightCamp: null,
@@ -259,13 +259,11 @@ const GameState = {
     // 8. Track budget history
     state.budgetHistory.push(state.budget);
 
-    // 9. Generate fight offers if needed + clean expired
+    // 9. Generate fight offers every week + clean expired
     report.expiredOffers = LeagueEngine.cleanExpiredOffers(state);
-    if (state.week - (state.lastOfferWeek || 0) >= OFFER_CONFIG.offerFrequency) {
-      const newOffers = LeagueEngine.generateOffers(state);
-      if (newOffers.length > 0) {
-        state.lastOfferWeek = state.week;
-      }
+    const newOffers = LeagueEngine.generateOffers(state);
+    if (newOffers.length > 0) {
+      state.lastOfferWeek = state.week;
     }
 
     // 10. Refresh free agent market
@@ -553,7 +551,7 @@ const GameState = {
   acceptOffer(offerId) {
     const state = this._state;
     const offer = state.fightOffers.find(o => o.id === offerId);
-    if (!offer || offer.status !== 'pending') return null;
+    if (!offer || (offer.status !== 'pending' && offer.status !== 'counterAccepted')) return null;
 
     const fighter = state.fighters.find(f => f.id === offer.fighterId);
     const opponent = state.aiFighters.find(f => f.id === offer.opponentId);
@@ -581,6 +579,27 @@ const GameState = {
     this.save();
     this._notify('offerAccepted', { offer, fighter, opponent });
     return { fighter, opponent, scheduledFight };
+  },
+
+  /**
+   * Counter-propose a different week for an offer
+   */
+  counterProposeOffer(offerId, newWeek) {
+    const state = this._state;
+    const result = LeagueEngine.counterPropose(offerId, newWeek, state);
+    if (!result) return null;
+
+    if (result.accepted) {
+      // Counter accepted — auto-accept the modified offer
+      const acceptResult = this.acceptOffer(offerId, true); // true = isCounterAccepted
+      if (acceptResult) {
+        return { ...result, scheduledFight: acceptResult.scheduledFight };
+      }
+    }
+
+    this.save();
+    this._notify('counterProposed', { result });
+    return result;
   },
 
   /**

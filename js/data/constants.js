@@ -238,7 +238,7 @@ const COMMISSION_STEPS = {
   moralePerStep: 4   // morale change per step away from 1.0
 };
 
-const EVENT_INTERVAL = 4; // weeks between events
+const EVENT_INTERVAL = 1; // AFC every week
 
 // --- Fight Offer System ---
 const DECLINE_REASONS = {
@@ -275,15 +275,18 @@ const DECLINE_REASONS = {
 };
 
 const OFFER_CONFIG = {
-  offerFrequency: 3,        // generate offers every ~3 weeks
-  decisionWindow: 3,        // 3 weeks to respond
-  prepWeeksNormal: 4,       // standard prep time
-  prepWeeksTitle: 6,        // title fight prep time
-  prepWeeksShort: 3,        // short notice
-  maxConsecutiveDeclines: 3, // before rank penalty kicks in
-  purseBoostOnDecline: 0.2, // +20% purse after lowPurse decline
-  pursePenaltyOnWeak: 0.2,  // -20% purse after tooStrong decline
-  fightCooldown: 4,         // minimum weeks between fights
+  offerFrequency: 1,         // generate offers every week
+  offerExpiryWeeks: 2,       // offers expire after 2 weeks if not answered
+  minPrepWeeks: 4,           // minimum weeks before a fight
+  maxFutureWeeks: 16,        // can't schedule beyond 16 weeks
+  prepWeeksNormal: 4,        // standard prep time for AI offers
+  prepWeeksTitle: 6,         // title fight prep time
+  prepWeeksShort: 3,         // short notice
+  maxConsecutiveDeclines: 3,  // before rank penalty kicks in
+  purseBoostOnDecline: 0.2,  // +20% purse after lowPurse decline
+  pursePenaltyOnWeak: 0.2,   // -20% purse after tooStrong decline
+  fightCooldown: 4,          // minimum weeks between fights
+  counterProposePenalty: 15,  // -15% acceptance chance on counter-propose
 };
 
 const ACTIVE_WEIGHT_CLASSES = ['lightweight', 'welterweight', 'middleweight', 'heavyweight'];

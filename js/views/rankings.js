@@ -408,16 +408,29 @@ const RankingsView = {
     const f2Ovr = TrainingEngine.calculateOverall(opponent);
     const chance = LeagueEngine.getAcceptanceChance(fighter, opponent, state);
     const isTitle = LeagueEngine.isTitleShot(fighter, state);
-    const prepWeeks = isTitle ? OFFER_CONFIG.prepWeeksTitle : OFFER_CONFIG.prepWeeksNormal;
-    const fightWeek = Math.max(
-      state.week + prepWeeks + 1,
-      (fighter.lastFightWeek || 0) + OFFER_CONFIG.fightCooldown + prepWeeks
-    );
     const purse = FinanceEngine.calculatePurse(fighter, state, isTitle);
     const f1Rank = LeagueEngine.getFighterRanking(fighter.id, state);
     const f2Rank = LeagueEngine.getFighterRanking(opponent.id, state);
     const f1RankDisplay = f1Rank === 0 ? 'C' : f1Rank ? `#${f1Rank}` : 'NR';
     const f2RankDisplay = f2Rank === 0 ? 'C' : f2Rank ? `#${f2Rank}` : 'NR';
+
+    // Week selector range
+    const minWeek = Math.max(
+      state.week + OFFER_CONFIG.minPrepWeeks,
+      (fighter.lastFightWeek || 0) + OFFER_CONFIG.fightCooldown + OFFER_CONFIG.minPrepWeeks
+    );
+    const maxWeek = state.week + OFFER_CONFIG.maxFutureWeeks;
+    const defaultWeek = minWeek + Math.floor((maxWeek - minWeek) / 3); // default: ~1/3 into the range
+
+    const weekOptions = [];
+    for (let w = minWeek; w <= maxWeek; w++) {
+      const prepW = w - state.week;
+      weekOptions.push(`
+        <option value="${w}" ${w === defaultWeek ? 'selected' : ''}>
+          Semaine ${w} — ${LeagueEngine.getEventName(w)} (${prepW} sem. de prépa)
+        </option>
+      `);
+    }
 
     modalRoot.innerHTML = `
       <div class="modal-overlay">
@@ -447,7 +460,17 @@ const RankingsView = {
 
             <div class="confirm-details">
               <div class="confirm-detail-row">
-                <span>📅 ${t('match.fightWeek', { n: fightWeek })}</span>
+                <span>📅 Choisir la semaine du combat :</span>
+              </div>
+              <div class="confirm-detail-row">
+                <select id="challenge-week-select" style="
+                  width: 100%; padding: var(--space-sm) var(--space-md);
+                  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+                  border-radius: var(--radius-md); color: var(--text-primary);
+                  font-size: 0.85rem; cursor: pointer;
+                ">
+                  ${weekOptions.join('')}
+                </select>
               </div>
               <div class="confirm-detail-row">
                 <span>💰 ${t('match.estimatedPurse')}</span>
@@ -480,10 +503,11 @@ const RankingsView = {
     });
 
     document.getElementById('confirm-send-btn').addEventListener('click', () => {
-      const challenge = LeagueEngine.createChallenge(fighter.id, opponent.id, GameState.get());
+      const selectedWeek = parseInt(document.getElementById('challenge-week-select').value);
+      const challenge = LeagueEngine.createChallenge(fighter.id, opponent.id, GameState.get(), selectedWeek);
       if (challenge) {
         modalRoot.innerHTML = '';
-        App.showToast(t('match.sent'), 'success');
+        App.showToast(`${t('match.sent')} — Semaine ${selectedWeek}`, 'success');
         App.navigateTo('rankings');
       }
     });

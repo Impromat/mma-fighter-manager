@@ -53,7 +53,7 @@ const AgendaView = {
         <div class="card">
           <div class="empty-state">
             <div class="empty-state-icon">📅</div>
-            <div class="empty-state-text">No upcoming fights scheduled.<br>Events happen every ${EVENT_INTERVAL} weeks.</div>
+            <div class="empty-state-text">Aucun combat planifié.<br>Des AFC ont lieu chaque semaine — accepte une offre ou propose un combat !</div>
           </div>
         </div>
       `;
