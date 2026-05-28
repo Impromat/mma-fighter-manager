@@ -462,6 +462,7 @@ const App = {
   renderApp() {
     const state = GameState.get();
     const app = document.getElementById('app');
+    const badges = this._computeSidebarBadges(state);
 
     app.innerHTML = `
       <div class="app">
@@ -495,21 +496,24 @@ const App = {
             <div class="nav-item active" data-view="dashboard">
               <span class="nav-item-icon">🏠</span>
               <span>${t('sidebar.dashboard')}</span>
+              ${badges.urgentTotal > 0 ? `<span class="nav-item-badge" style="background:var(--accent-red);">${badges.urgentTotal}</span>` : ''}
             </div>
             <div class="nav-item" data-view="fighters">
               <span class="nav-item-icon">🥊</span>
               <span>${t('sidebar.fighters')}</span>
+              ${badges.injured > 0 ? `<span class="nav-item-badge" style="background:#f59e0b;">${badges.injured}</span>` : ''}
             </div>
             <div class="nav-item" data-view="training">
               <span class="nav-item-icon">🏋️</span>
               <span>${t('sidebar.training')}</span>
+              ${badges.noTraining > 0 ? `<span class="nav-item-badge" style="background:#63b3ed;">${badges.noTraining}</span>` : ''}
             </div>
 
             <div class="nav-section-label">Competition</div>
             <div class="nav-item" data-view="agenda">
               <span class="nav-item-icon">📅</span>
               <span>${t('sidebar.agenda')}</span>
-              ${this._getUpcomingFightsCount(state) > 0 ? `<span class="nav-item-badge">${this._getUpcomingFightsCount(state)}</span>` : ''}
+              ${(this._getUpcomingFightsCount(state) > 0 || badges.pendingOffers > 0) ? `<span class="nav-item-badge">${this._getUpcomingFightsCount(state) + badges.pendingOffers}</span>` : ''}
             </div>
             <div class="nav-item" data-view="rankings">
               <span class="nav-item-icon">🏆</span>
@@ -2272,6 +2276,25 @@ const App = {
         setTimeout(() => toast.remove(), 300);
       }
     }, 4000);
+  },
+
+  /**
+   * Compute badge counts for the sidebar nav items
+   */
+  _computeSidebarBadges(state) {
+    const pendingOffers = (state.fightOffers || []).filter(o => o.status === 'pending').length;
+    const injured = state.fighters.filter(f => f.status === 'injured').length;
+    const noTraining = state.fighters.filter(f =>
+      f.status === 'available' && !f.trainingFocus && !f.fightCamp
+    ).length;
+    // Urgent = press conference due + budget negative
+    const pressConferenceDue = state.schedule.some(f =>
+      !f.completed && !f.pressConferenceDone && f.week - state.week === 1
+    );
+    const budgetNegative = state.budget < 0;
+    const urgentTotal = (pressConferenceDue ? 1 : 0) + (budgetNegative ? 1 : 0);
+
+    return { pendingOffers, injured, noTraining, urgentTotal };
   },
 
   /**

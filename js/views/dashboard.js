@@ -10,6 +10,8 @@ const DashboardView = {
     const recentResults = state.fightHistory.slice(-3).reverse();
     const injuredCount = state.fighters.filter(f => f.status === 'injured').length;
 
+    const weekActions = this._computeWeeklyActions(state);
+
     container.innerHTML = `
       <div class="view-header">
         <div>
@@ -17,6 +19,9 @@ const DashboardView = {
           <div class="view-subtitle">${t('dash.weekLabel', { n: state.week, gym: state.gymName })}</div>
         </div>
       </div>
+
+      <!-- Weekly Actions Panel -->
+      ${this._renderWeeklyActions(weekActions)}
 
       <!-- Summary Cards -->
       <div class="dashboard-summary-cards">
@@ -232,6 +237,192 @@ const DashboardView = {
         <div style="flex: 1;">
           <div class="text-sm font-semibold">${result.fighter1.name} vs ${result.fighter2.name}</div>
           <div class="text-xs text-muted">${result.method}${result.finishRound ? ` · R${result.finishRound}` : ''}</div>
+        </div>
+      </div>
+    `;
+  },
+
+  // ==============================
+  // Weekly Actions
+  // ==============================
+
+  _computeWeeklyActions(state) {
+    const actions = [];
+    const week = state.week;
+
+    // 🔴 URGENT — Fight dans 1 semaine + presse pas faite
+    const pressConferenceFight = state.schedule.find(f =>
+      !f.completed && !f.pressConferenceDone && f.week - week === 1
+    );
+    if (pressConferenceFight) {
+      const opp = state.aiFighters.find(f => f.id === pressConferenceFight.opponentId);
+      actions.push({
+        priority: 'urgent',
+        icon: '🎙️',
+        label: `Conférence de presse`,
+        detail: opp ? `vs ${opp.fullName} — dans 1 semaine` : 'Combat imminent',
+        action: null  // triggered by advanceWeek
+      });
+    }
+
+    // 🔴 URGENT — Combat cette semaine
+    const fightThisWeek = state.schedule.find(f => !f.completed && f.week === week);
+    if (fightThisWeek) {
+      const opp = state.aiFighters.find(f => f.id === fightThisWeek.opponentId);
+      actions.push({
+        priority: 'urgent',
+        icon: '⚔️',
+        label: `Combat cette semaine !`,
+        detail: opp ? `vs ${opp.fullName} — ${fightThisWeek.eventName}` : '',
+        action: null
+      });
+    }
+
+    // 🔴 URGENT — Budget négatif
+    if (state.budget < 0) {
+      actions.push({
+        priority: 'urgent',
+        icon: '💸',
+        label: 'Budget négatif',
+        detail: `${FinanceEngine.formatMoney(state.budget)} — risque de faillite`,
+        view: 'finances'
+      });
+    }
+
+    // 🟡 IMPORTANT — Offres en attente
+    const pendingOffers = (state.fightOffers || []).filter(o => o.status === 'pending');
+    if (pendingOffers.length > 0) {
+      actions.push({
+        priority: 'warning',
+        icon: '📬',
+        label: `${pendingOffers.length} offre${pendingOffers.length > 1 ? 's' : ''} de combat en attente`,
+        detail: 'Les offres expirent — réponds rapidement',
+        view: 'dashboard'
+      });
+    }
+
+    // 🟡 IMPORTANT — Fighters sans camp / entraînement défini
+    const fightersNoTraining = state.fighters.filter(f =>
+      f.status === 'available' && !f.trainingFocus && !f.fightCamp
+    );
+    if (fightersNoTraining.length > 0) {
+      actions.push({
+        priority: 'warning',
+        icon: '🏋️',
+        label: `${fightersNoTraining.length} fighter${fightersNoTraining.length > 1 ? 's' : ''} sans plan d'entraînement`,
+        detail: fightersNoTraining.map(f => f.firstName).join(', '),
+        view: 'training'
+      });
+    }
+
+    // 🟡 IMPORTANT — Morale basse
+    const lowMorale = state.fighters.filter(f => f.morale < 40);
+    if (lowMorale.length > 0) {
+      actions.push({
+        priority: 'warning',
+        icon: '😔',
+        label: `Morale basse`,
+        detail: lowMorale.map(f => `${f.firstName} (${f.morale}%)`).join(', '),
+        view: 'fighters'
+      });
+    }
+
+    // 🟡 IMPORTANT — Blessure
+    const injured = state.fighters.filter(f => f.status === 'injured');
+    if (injured.length > 0) {
+      actions.push({
+        priority: 'warning',
+        icon: '🤕',
+        label: `${injured.length} fighter${injured.length > 1 ? 's' : ''} blessé${injured.length > 1 ? 's' : ''}`,
+        detail: injured.map(f => `${f.firstName} (${f.injuryWeeksLeft} sem.)`).join(', '),
+        view: 'fighters'
+      });
+    }
+
+    // 🟢 INFO — Agents libres disponibles
+    const freeAgents = (state.freeAgents || []);
+    if (freeAgents.length > 0 && state.fighters.length < 5) {
+      actions.push({
+        priority: 'info',
+        icon: '💱',
+        label: `${freeAgents.length} agent${freeAgents.length > 1 ? 's' : ''} libre${freeAgents.length > 1 ? 's' : ''} disponible${freeAgents.length > 1 ? 's' : ''}`,
+        detail: 'Le marché se renouvelle chaque semaine',
+        view: 'market'
+      });
+    }
+
+    // 🟢 INFO — Aucun combat planifié
+    const hasScheduled = state.schedule.some(f => !f.completed && f.week >= week);
+    if (!hasScheduled && pendingOffers.length === 0) {
+      actions.push({
+        priority: 'info',
+        icon: '📋',
+        label: 'Aucun combat planifié',
+        detail: 'Va dans Classements pour proposer un combat',
+        view: 'rankings'
+      });
+    }
+
+    // 🟢 INFO — Tout va bien
+    if (actions.length === 0) {
+      actions.push({
+        priority: 'ok',
+        icon: '✅',
+        label: 'Tout est en ordre',
+        detail: 'Avance la semaine quand tu es prêt',
+        view: null
+      });
+    }
+
+    return actions;
+  },
+
+  _renderWeeklyActions(actions) {
+    if (actions.length === 0) return '';
+
+    const priorityStyle = {
+      urgent: { border: 'var(--accent-red)', bg: 'rgba(230,57,70,0.06)', dot: '#ef4444', label: 'Urgent' },
+      warning: { border: '#f59e0b', bg: 'rgba(245,158,11,0.06)', dot: '#f59e0b', label: 'À faire' },
+      info: { border: 'rgba(99,179,237,0.5)', bg: 'rgba(99,179,237,0.04)', dot: '#63b3ed', label: 'Info' },
+      ok: { border: 'rgba(72,199,142,0.4)', bg: 'rgba(72,199,142,0.04)', dot: '#48c78e', label: '' }
+    };
+
+    const rows = actions.map(a => {
+      const style = priorityStyle[a.priority];
+      return `
+        <div class="weekly-action-row ${a.view ? 'weekly-action-clickable' : ''}"
+             ${a.view ? `onclick="App.navigateTo('${a.view}')"` : ''}
+             style="display:flex; align-items:center; gap:12px; padding:10px 14px;
+                    border-radius:8px; border-left:3px solid ${style.border};
+                    background:${style.bg}; cursor:${a.view ? 'pointer' : 'default'};
+                    transition:background 0.15s;"
+        >
+          <span style="font-size:1.1rem; flex-shrink:0;">${a.icon}</span>
+          <div style="flex:1; min-width:0;">
+            <div style="font-weight:700; font-size:0.85rem; color:var(--text-primary);">${a.label}</div>
+            ${a.detail ? `<div style="font-size:0.75rem; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${a.detail}</div>` : ''}
+          </div>
+          ${a.view ? `<span style="color:var(--text-muted); font-size:0.8rem; flex-shrink:0;">→</span>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    const urgentCount = actions.filter(a => a.priority === 'urgent').length;
+    const warningCount = actions.filter(a => a.priority === 'warning').length;
+    const headerColor = urgentCount > 0 ? 'var(--accent-red)' : warningCount > 0 ? '#f59e0b' : '#48c78e';
+    const headerIcon = urgentCount > 0 ? '🚨' : warningCount > 0 ? '⚡' : '✅';
+
+    return `
+      <div class="card mb-lg animate-fade-in-up" style="border-left:3px solid ${headerColor};">
+        <div class="card-header" style="padding-bottom:8px;">
+          <div class="card-title">
+            <span class="card-title-icon">${headerIcon}</span>
+            Cette semaine
+          </div>
+          <span style="font-size:0.72rem; color:var(--text-muted);">${actions.length} action${actions.length > 1 ? 's' : ''}</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px; padding:0 var(--space-lg) var(--space-md);">
+          ${rows}
         </div>
       </div>
     `;
