@@ -638,6 +638,18 @@ const App = {
               </div>
             ` : ''}
 
+            ${(report.milestones && report.milestones.length > 0) ? `
+              <div class="summary-section milestone-section animate-slide-in">
+                <div class="summary-section-title milestone-title">🏆 ${t('milestone.unlocked')}</div>
+                ${report.milestones.map((m, i) => `
+                  <div class="milestone-unlock animate-pop" style="animation-delay: ${i * 150 + 300}ms;">
+                    <span class="milestone-icon">${m.icon}</span>
+                    <span class="milestone-label">${t('milestone.' + m.id)}</span>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
             <!-- Next event -->
             <div class="summary-next-event animate-slide-in" style="animation-delay: ${report.trainingReport.length * 80 + 200}ms;">
               📅 ${nextEventInfo}

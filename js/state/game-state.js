@@ -342,7 +342,10 @@ const GameState = {
       });
     }
 
-    // 19. Advance week counter
+    // 20. Check milestones
+    report.milestones = MilestoneEngine.check(state, report);
+
+    // 21. Advance week counter
     state.week++;
 
     this.save();
@@ -369,6 +372,10 @@ const GameState = {
       // Morale boost
       playerFighter.morale = Math.min(100, playerFighter.morale + 15);
 
+      // Win streak tracking
+      playerFighter.winStreak = (playerFighter.winStreak || 0) + 1;
+      playerFighter.bestStreak = Math.max(playerFighter.bestStreak || 0, playerFighter.winStreak);
+
       // Update rankings
       LeagueEngine.updateRankingsAfterFight(playerFighter, opponent, true, state);
 
@@ -386,6 +393,9 @@ const GameState = {
 
       // Morale drop
       playerFighter.morale = Math.max(20, playerFighter.morale - 15);
+
+      // Reset win streak
+      playerFighter.winStreak = 0;
 
       // Update rankings
       LeagueEngine.updateRankingsAfterFight(playerFighter, opponent, false, state);

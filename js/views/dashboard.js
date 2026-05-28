@@ -45,7 +45,15 @@ const DashboardView = {
           <div class="summary-card-value">
             ${state.fighters.reduce((s, f) => s + f.wins, 0)}-${state.fighters.reduce((s, f) => s + f.losses, 0)}
           </div>
-          <div class="summary-card-detail">${t('dash.gymRecord')}</div>
+          <div class="summary-card-detail">
+            ${(() => {
+              const maxStreak = Math.max(...state.fighters.map(f => f.winStreak || 0), 0);
+              const bestStreak = Math.max(...state.fighters.map(f => f.bestStreak || 0), 0);
+              const streakText = maxStreak > 0 ? `🔥 ${maxStreak} ${t('dash.streak')}` : '';
+              const milestoneProgress = MilestoneEngine.getProgress(state);
+              return `${streakText}${streakText && milestoneProgress.unlocked > 0 ? ' · ' : ''}${milestoneProgress.unlocked > 0 ? `🏆 ${milestoneProgress.unlocked}/${milestoneProgress.total}` : t('dash.gymRecord')}`;
+            })()}
+          </div>
         </div>
 
         <div class="card summary-card animate-fade-in-up stagger-4">
