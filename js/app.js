@@ -259,10 +259,15 @@ const App = {
       // Confirm
       document.getElementById('draft-confirm').addEventListener('click', () => {
         if (selected.size !== MAX_PICKS) return;
-        const chosenFighters = [...selected].map(i => candidates[i]);
-        GameState.newGame(this._gymName, chosenFighters);
-        this.renderApp();
-        this.navigateTo('dashboard');
+        try {
+          const chosenFighters = [...selected].map(i => candidates[i]);
+          GameState.newGame(this._gymName, chosenFighters);
+          this.renderApp();
+          this.navigateTo('dashboard');
+        } catch(e) {
+          console.error('Draft confirm error:', e);
+          alert('Error: ' + e.message + '\n\nStack: ' + e.stack?.split('\n').slice(0, 3).join('\n'));
+        }
       });
     };
 
