@@ -583,6 +583,98 @@ const TutorialView = {
         `
       },
       {
+        icon: '🎙️',
+        title: 'La Conférence de Presse',
+        content: `
+          <p>La semaine avant chaque combat, tu es convoqué en conférence de presse avec ton adversaire. C'est bien plus qu'un show — <strong>chaque mot a des conséquences réelles sur le combat.</strong></p>
+
+          <div class="tutorial-highlight mt-md" style="border-color: var(--accent); background: rgba(255,100,50,0.06);">
+            <span class="tutorial-highlight-icon">⚡</span>
+            <div>La conférence de presse peut durer <strong>1 à 4 rounds</strong> d'échanges selon l'intensité. Plus ça chauffe, plus les effets sont amplifiés.</div>
+          </div>
+
+          <h5 class="mt-lg mb-sm">✅ Ce qui marche — Les bases du bon trash talk</h5>
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">📊</span>
+              <div><strong>Citer des faits réels</strong> — Record, KO losses, mauvaise stat : les chiffres sont imparables</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">🎯</span>
+              <div><strong>Cibler une vraie faiblesse</strong> — Si l'adversaire a un mauvais chin, parle-lui de ses genoux qui vont trembler</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">😤</span>
+              <div><strong>Rester crédible</strong> — Ton niveau doit appuyer tes dires. Un rookie qui parle comme un champion = pathétique</div>
+            </div>
+          </div>
+
+          <h5 class="mt-lg mb-sm">❌ Ce qui se retourne contre toi</h5>
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">💢</span>
+              <div><strong>Insultes sans contexte</strong> — Tu motives ton adversaire gratuitement. Sa morale monte, la tienne baisse</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">🎭</span>
+              <div><strong>Trop arrogant pour ton niveau</strong> — Le public ne te croit pas. Hype réduite, tu perds des points avant même de combattre</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">🤞</span>
+              <div><strong>Promettre l'impossible</strong> — "Je le KO au round 1" quand tu fais des décisions. Si tu rates, le retour de bâton est violent</div>
+            </div>
+          </div>
+
+          <h5 class="mt-lg mb-sm">🔥 L'exception : la rivalité change tout</h5>
+          <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 12px;">Les règles évoluent selon l'historique entre les deux fighters :</p>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 3px solid rgba(255,255,255,0.1);">
+              <span style="font-size: 1.2rem; flex-shrink: 0;">🤝</span>
+              <div>
+                <div style="font-weight: 700; font-size: 0.85rem;">Première rencontre</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">Les faits comptent tout. Insulter sans raison te rend ridicule.</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: rgba(255,100,50,0.05); border-radius: 8px; border-left: 3px solid rgba(255,100,50,0.3);">
+              <span style="font-size: 1.2rem; flex-shrink: 0;">⚔️</span>
+              <div>
+                <div style="font-weight: 700; font-size: 0.85rem;">Rivalité active</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">L'agressivité est tolérée si elle fait référence à votre historique.</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: rgba(255,50,50,0.08); border-radius: 8px; border-left: 3px solid rgba(255,50,50,0.5);">
+              <span style="font-size: 1.2rem; flex-shrink: 0;">🔥</span>
+              <div>
+                <div style="font-weight: 700; font-size: 0.85rem;">Beef total (rivalité max)</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">Mode McGregor — tout est permis. Le show compte autant que les arguments. Même un draw spectaculaire booste la hype.</div>
+              </div>
+            </div>
+          </div>
+
+          <h5 class="mt-lg mb-sm">📈 Les effets sur le combat</h5>
+          <div class="tutorial-stats-grid">
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">💪</span>
+              <div><strong>Morale</strong> ±5 — Affecte directement les performances en combat</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">🧠</span>
+              <div><strong>Bonus mental</strong> +1 à 3 — Avantage tactique pendant le fight</div>
+            </div>
+            <div class="tutorial-stat-item">
+              <span class="tutorial-stat-icon">💰</span>
+              <div><strong>Hype +10% à +50%</strong> — Bourse augmentée selon la qualité du show</div>
+            </div>
+          </div>
+
+          <div class="tutorial-highlight mt-md" style="border-color: #f5a623; background: rgba(245,166,35,0.06);">
+            <span class="tutorial-highlight-icon">💡</span>
+            <div>Après chaque échange, le verdict te donne un <strong>conseil de coach</strong> basé sur ce qui s'est passé. Lis-le — c'est la clé pour progresser.</div>
+          </div>
+        `
+      },
+      {
         icon: '🗺️',
         title: t('tuto.s9Title'),
         content: `
