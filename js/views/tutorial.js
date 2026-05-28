@@ -273,32 +273,42 @@ const TutorialView = {
           <p>${t('tuto.s8Intro')}</p>
 
           <h5 class="mt-lg mb-sm">📥 ${t('tuto.s8IncomeTitle')}</h5>
+          <p>${t('tuto.s8IncomeDesc')}</p>
           <div class="tutorial-finance-table">
             <div class="tutorial-finance-row">
-              <span>${t('tuto.s8ShowMoney')}</span>
-              <span class="text-success font-bold">1 000 € — 5 000 €</span>
+              <span>${t('tuto.s8TrainingFees')}</span>
+              <span class="text-success font-bold">$300 — $1,500/sem</span>
             </div>
             <div class="tutorial-finance-row">
-              <span>${t('tuto.s8WinBonus')}</span>
-              <span class="text-success font-bold">2 000 € — 10 000 €</span>
+              <span>${t('tuto.s8ShowCut')}</span>
+              <span class="text-success font-bold">15%</span>
+            </div>
+            <div class="tutorial-finance-row">
+              <span>${t('tuto.s8WinCut')}</span>
+              <span class="text-success font-bold">10%</span>
             </div>
           </div>
-          <p class="text-xs text-muted mt-sm">${t('tuto.s8PurseNote')}</p>
+          <p class="text-xs text-muted mt-sm">${t('tuto.s8FeeNote')}</p>
 
           <h5 class="mt-lg mb-sm">📤 ${t('tuto.s8ExpenseTitle')}</h5>
           <div class="tutorial-finance-table">
             <div class="tutorial-finance-row">
-              <span>${t('tuto.s8Salaries')}</span>
-              <span class="text-danger font-bold">500 € — 1 500 €</span>
+              <span>${t('tuto.s8Rent')}</span>
+              <span class="text-danger font-bold">$1,500/sem</span>
             </div>
             <div class="tutorial-finance-row">
-              <span>${t('tuto.s8FightCamp')}</span>
-              <span class="text-danger font-bold">2 000 €</span>
+              <span>${t('tuto.s8Staff')}</span>
+              <span class="text-danger font-bold">$400/fighter/sem</span>
             </div>
           </div>
 
-          <h5 class="mt-lg mb-sm">📊 ${t('tuto.s8SalaryTitle')}</h5>
-          <p>${t('tuto.s8SalaryDesc')}</p>
+          <h5 class="mt-lg mb-sm">📊 ${t('tuto.s8FeeTitle')}</h5>
+          <p>${t('tuto.s8FeeDesc')}</p>
+
+          <div class="tutorial-highlight mt-md">
+            <span class="tutorial-highlight-icon">💡</span>
+            <div>${t('tuto.s8Tip')}</div>
+          </div>
 
           <div class="tutorial-highlight mt-lg">
             <span class="tutorial-highlight-icon">💀</span>
