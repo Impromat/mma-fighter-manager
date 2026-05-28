@@ -95,22 +95,33 @@ const SeasonEngine = {
   },
 
   /**
-   * Check all objectives and return updated status
+   * Check all objectives — pays rewards immediately on completion
+   * Returns array of newly completed objectives
    */
   checkObjectives(state) {
     if (!state.seasonObjectives) return [];
     
     const pool = SEASON_OBJECTIVES_POOL;
+    const newlyCompleted = [];
     
-    return state.seasonObjectives.map(obj => {
-      if (obj.completed) return obj;
+    state.seasonObjectives.forEach(obj => {
+      if (obj.completed) return;
       
       const def = pool.find(p => p.id === obj.id);
       if (def && def.check(state)) {
         obj.completed = true;
+        
+        // Pay reward immediately
+        const reward = obj.reward || def.reward || 0;
+        if (reward > 0) {
+          FinanceEngine.addTransaction(state, 'income', `🏆 ${def.name}`, reward);
+        }
+        
+        newlyCompleted.push({ ...obj, reward, name: def.name, icon: def.icon });
       }
-      return obj;
     });
+    
+    return newlyCompleted;
   },
 
   /**

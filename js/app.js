@@ -638,6 +638,21 @@ const App = {
               </div>
             ` : ''}
 
+            ${(report.completedObjectives && report.completedObjectives.length > 0) ? `
+              <div class="summary-section milestone-section animate-slide-in">
+                <div class="summary-section-title milestone-title">🎯 ${t('season.objectiveComplete')}</div>
+                ${report.completedObjectives.map((obj, i) => `
+                  <div class="milestone-unlock animate-pop" style="animation-delay: ${i * 150 + 200}ms;">
+                    <span class="milestone-icon">${obj.icon}</span>
+                    <div style="flex:1;">
+                      <div class="milestone-label">${obj.name}</div>
+                      <div class="text-xs" style="color: var(--color-success); font-weight: 700;">+${FinanceEngine.formatMoney(obj.reward)}</div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
             ${(report.milestones && report.milestones.length > 0) ? `
               <div class="summary-section milestone-section animate-slide-in">
                 <div class="summary-section-title milestone-title">🏆 ${t('milestone.unlocked')}</div>
@@ -834,10 +849,7 @@ const App = {
     `;
 
     document.getElementById('season-next-btn').addEventListener('click', () => {
-      // Apply rewards
-      if (summary.totalReward > 0) {
-        state.budget += summary.totalReward;
-      }
+      // Rewards already paid when objectives were completed — no double payment
       // Start new season
       SeasonEngine.initSeason(state);
       GameState.save();

@@ -310,7 +310,7 @@ const GameState = {
     report.fightResults.forEach(result => {
       SeasonEngine.recordFight(state, result);
     });
-    SeasonEngine.checkObjectives(state);
+    report.completedObjectives = SeasonEngine.checkObjectives(state);
     state.seasonWeek = (state.seasonWeek || 1) + 1;
 
     // Check for end of season
