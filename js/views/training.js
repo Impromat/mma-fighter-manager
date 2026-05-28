@@ -117,20 +117,14 @@ const TrainingView = {
             <div class="training-fighter-meta">
               ${fighter.nationality.flag} ${weightClass?.name || ''} · OVR <strong>${overall}</strong>
             </div>
-            <!-- Target Profile inline selector -->
-            <div style="margin-top:6px;">
-              <select class="target-profile-select" data-fighter-id="${fighter.id}"
-                style="font-size:0.72rem; padding:2px 6px; border-radius:6px;
-                       background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15);
-                       color:${(STYLES[fighter.targetProfile] || STYLES.wellRounded).color};
-                       cursor:pointer; outline:none;">
-                ${Object.values(STYLES).map(s => `
-                  <option value="${s.id}" ${fighter.targetProfile === s.id ? 'selected' : ''}
-                          style="background:#1a1a2e; color:${s.color};">
-                    ${s.icon} ${s.name}
-                  </option>
-                `).join('')}
-              </select>
+            <!-- Target Profile — read only -->
+            <div style="margin-top:5px;">
+              <span style="
+                font-size:0.7rem; padding:2px 8px; border-radius:12px;
+                background:rgba(255,255,255,0.05); border:1px solid ${(STYLES[fighter.targetProfile] || STYLES.wellRounded).color}44;
+                color:${(STYLES[fighter.targetProfile] || STYLES.wellRounded).color};
+                font-weight:600; letter-spacing:0.03em;
+              ">${(STYLES[fighter.targetProfile] || STYLES.wellRounded).icon} ${(STYLES[fighter.targetProfile] || STYLES.wellRounded).name}</span>
             </div>
           </div>
         </div>
@@ -483,19 +477,6 @@ const TrainingView = {
   },
 
   _bindEvents(state, container) {
-    // Target profile selects
-    container.querySelectorAll('.target-profile-select').forEach(select => {
-      select.addEventListener('change', () => {
-        const fighterId = select.dataset.fighterId;
-        const styleId = select.value;
-        GameState.setTargetProfile(fighterId, styleId);
-        const style = STYLES[styleId];
-        select.style.color = style.color;
-        const fighter = state.fighters.find(f => f.id === fighterId);
-        App.showToast(`🎯 ${fighter.fullName} → ${style.icon} ${style.name}`, 'success');
-      });
-    });
-
     // Training pill clicks
     container.querySelectorAll('.training-pill:not(.disabled)').forEach(pill => {
       pill.addEventListener('click', () => {

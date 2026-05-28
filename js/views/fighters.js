@@ -168,16 +168,19 @@ const FightersView = {
 
                 <!-- Target Profile -->
                 <div class="card">
-                  <div class="card-title mb-md">🎯 Target Profile</div>
-                  <select id="target-profile-select" class="w-full" style="padding: var(--space-sm);">
-                    ${Object.values(STYLES).map(s => `
-                      <option value="${s.id}" ${fighter.targetProfile === s.id ? 'selected' : ''}>
-                        ${s.icon} ${s.name}
-                      </option>
-                    `).join('')}
-                  </select>
-                  <div class="text-xs text-muted mt-sm">
-                    ${STYLES[fighter.targetProfile]?.description || ''}
+                  <div class="card-title mb-sm">🎯 Target Profile</div>
+                  <div style="display:flex; align-items:center; gap:10px; padding:8px 0;">
+                    <span style="
+                      font-size:1.6rem; line-height:1;
+                    ">${(STYLES[fighter.targetProfile] || STYLES.wellRounded).icon}</span>
+                    <div>
+                      <div style="font-weight:700; color:${(STYLES[fighter.targetProfile] || STYLES.wellRounded).color};">
+                        ${(STYLES[fighter.targetProfile] || STYLES.wellRounded).name}
+                      </div>
+                      <div class="text-xs text-muted mt-xs">
+                        ${(STYLES[fighter.targetProfile] || STYLES.wellRounded).description || ''}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -245,15 +248,7 @@ const FightersView = {
 
     // Bind overlay close
     modalRoot.querySelector('.modal-overlay').addEventListener('click', (e) => {
-      if (e.target.classList.contains('modal-overlay')) {
-        modalRoot.innerHTML = '';
-      }
-    });
-
-    // Bind target profile change
-    document.getElementById('target-profile-select').addEventListener('change', (e) => {
-      GameState.setTargetProfile(fighter.id, e.target.value);
-      App.showToast(`Target profile updated for ${fighter.fullName}`, 'success');
+      if (e.target.classList.contains('modal-overlay')) modalRoot.innerHTML = '';
     });
   }
 };
