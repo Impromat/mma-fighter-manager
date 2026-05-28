@@ -501,7 +501,7 @@ const DashboardView = {
       const rankDisplay = offer.opponentRank !== null ? t('offer.vsRank', { n: offer.opponentRank }) : t('offer.vsUnranked');
       const fighterRank = LeagueEngine.getFighterRanking(fighter.id, state);
       const weeksLeft = offer.expiresWeek - state.week;
-      const prepWeeks = offer.fightWeek - state.week - OFFER_CONFIG.decisionWindow;
+      const prepWeeks = offer.fightWeek - state.week; // real gap: fight week minus current week
       const reasonKey = offer.reason ? `match.reason.${offer.reason}` : 'match.reason.ranking';
 
       return `
@@ -547,7 +547,7 @@ const DashboardView = {
               <span class="offer-detail-icon">📅</span>
               <div>
                 <div class="offer-detail-label">${t('offer.fightWeek', { n: offer.fightWeek })}</div>
-                <div class="offer-detail-value">${t('offer.prepWeeks', { n: prepWeeks > 0 ? prepWeeks : offer.prepWeeks })}</div>
+                <div class="offer-detail-value">${t('offer.prepWeeks', { n: prepWeeks })}</div>
               </div>
             </div>
             <div class="offer-detail-item">
