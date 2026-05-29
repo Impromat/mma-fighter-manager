@@ -23,14 +23,33 @@ Règles:
 - 2-3 phrases max, escalade le ton si la réponse du joueur était bonne
 - Décide si l'échange continue (intensité suffisante) ou s'arrête
 - L'échange continue max 4 rounds total
+
+L'adversaire IA doit être REDOUTABLE au trash talk:
+- Toujours cibler les FAIBLESSES CONCRÈTES du joueur (stats basses, défaites, loss streak)
+- Citer des données réelles: "ton striking à 45, c'est celui d'un amateur"
+- Si le joueur fait des promesses, les retourner contre lui: "tu promets un KO avec 52 en striking?"
+- Être méchant mais PRÉCIS — le public adore les faits qui font mal
+- Si le joueur insulte sans arguments, le ridiculiser calmement avec des faits
 - Réponds UNIQUEMENT en JSON valide, sans markdown`;
 
 const SYSTEM_PROMPT_JUDGE = `Tu es un analyste MMA expert en psychologie du combat et en communication.
-Tu évalues des échanges de conférence de presse avec NUANCE selon le contexte.
+Tu évalues des échanges de conférence de presse avec RIGUEUR et SÉVÉRITÉ.
 Règles générales:
 - Les références aux stats, records et faiblesses réelles sont toujours FORTES
 - Le show et l'entertainment ont une valeur indépendante du "gagnant" technique
 - Un draw spectaculaire peut générer plus de hype qu'une victoire ennuyeuse
+
+RÈGLES DE JUGEMENT STRICTES:
+- Un score de 5 = MÉDIOCRE, pas moyen. 5 n'est PAS un bon score.
+- Des insultes génériques sans référence au record/stats/faiblesse = score 3 max
+- Écrire 1 phrase courte sans substance = score 2-3, winner: opponent
+- Le joueur qui ne répond pas à l'argument de l'adversaire = score 4 max
+- "winner: fighter" DEMANDE un score >= 7 avec des arguments précis et pertinents
+- Par défaut si le joueur n'est pas clairement supérieur: winner = opponent ou draw
+- Être vulgaire ou agressif sans intelligence = MALUS, pas bonus
+- Copier/paraphraser ce que l'adversaire a dit = score 3 max (manque de créativité)
+- Réponse hors sujet qui ignore la provocation = score 3-4
+
 - Réponds UNIQUEMENT en JSON valide, sans markdown`;
 
 function jsonResponse(data, status = 200) {
@@ -57,7 +76,7 @@ async function callOpenAI(env, systemPrompt, userPrompt) {
         { role: 'user', content: userPrompt }
       ],
       max_tokens: 300,
-      temperature: 0.9,
+      temperature: 0.7,
     })
   });
 
@@ -221,13 +240,13 @@ coaching: conseil précis basé sur CE QUI S'EST PASSÉ dans cet échange.`;
     const cleaned = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
     const parsed = JSON.parse(cleaned);
 
-    // Draw = entertaining tie → still give hype boost
+    // Draw = entertaining tie → hype boost only if showFactor is high
     if (parsed.winner === 'draw') {
-      parsed.hypeMultiplier = Math.max(
-        parsed.hypeMultiplier || 1.0,
-        1.0 + (parsed.showFactor || 5) * 0.04
-      );
-      parsed.playerMorale = parsed.playerMorale ?? 1;
+      const sf = parsed.showFactor || 5;
+      if (sf >= 7) {
+        parsed.hypeMultiplier = Math.max(parsed.hypeMultiplier || 1.0, 1.0 + sf * 0.03);
+      }
+      // No free morale for draws — keep what the LLM decided
     }
 
     return jsonResponse(parsed);

@@ -237,19 +237,52 @@ const PressConferenceView = {
         score: Math.min(10, Math.max(1, effects.score || 5)),
         analysis: effects.analysis || '',
         playerMorale: Math.min(5, Math.max(-5, effects.playerMorale || 0)),
-        opponentMorale: Math.min(3, Math.max(-3, effects.opponentMorale || 0)),
-        hypeMultiplier: Math.min(1.6, Math.max(1.0, effects.hypeMultiplier || 1.0)),
-        mentalBonus: Math.min(3, Math.max(0, effects.mentalBonus || 0)),
+        opponentMorale: Math.min(5, Math.max(-5, effects.opponentMorale || 0)),
+        hypeMultiplier: Math.min(1.6, Math.max(0.85, effects.hypeMultiplier || 1.0)),
+        mentalBonus: Math.min(3, Math.max(-2, effects.mentalBonus || 0)),
         showFactor: Math.min(10, Math.max(1, effects.showFactor || 5)),
         playerError: effects.playerError || null,
         coaching: effects.coaching || null
       };
+
+      // ── Rank-based difficulty scaling ──
+      // If opponent is significantly better ranked, it's harder to dominate
+      const playerRank = LeagueEngine.getFighterRanking(fighter.id, state);
+      const opponentRank = LeagueEngine.getFighterRanking(opponent.id, state);
+      const pRank = playerRank === null ? 20 : playerRank;
+      const oRank = opponentRank === null ? 20 : opponentRank;
+      const rankGap = pRank - oRank; // positive = opponent is better ranked
+
+      if (rankGap > 3) {
+        // Opponent much better ranked → penalize player score
+        safeEffects.score = Math.max(1, safeEffects.score - Math.min(3, Math.floor(rankGap / 3)));
+        if (safeEffects.winner === 'fighter' && safeEffects.score < 6) {
+          safeEffects.winner = 'draw';
+        }
+      }
+
+      // ── Defeat penalties — real consequences ──
+      if (safeEffects.winner === 'opponent') {
+        safeEffects.playerMorale = Math.min(-2, safeEffects.playerMorale);
+        safeEffects.mentalBonus = Math.min(-1, safeEffects.mentalBonus);
+        safeEffects.opponentMorale = Math.max(2, safeEffects.opponentMorale);
+        // Bad hype if terrible score
+        if (safeEffects.score <= 3) {
+          safeEffects.hypeMultiplier = Math.min(0.95, safeEffects.hypeMultiplier);
+        }
+      }
+
+      // ── Victory validation — must earn it ──
+      if (safeEffects.winner === 'fighter' && safeEffects.score < 6) {
+        safeEffects.winner = 'draw';
+      }
 
       TrashTalkEngine.applyEffects(safeEffects, fighter, opponent, fight, state);
       fight._trashTalkEffects = safeEffects;
       GameState.save();
 
       this._showVerdict(safeEffects, fighter, opponent, exchangeState.roundNumber, onClose);
+
 
     } catch {
       GameState.save();
@@ -306,8 +339,11 @@ const PressConferenceView = {
           ${effects.playerMorale > 0 ? `<span class="badge badge-win">Morale +${effects.playerMorale}</span>` : ''}
           ${effects.playerMorale < 0 ? `<span class="badge badge-loss">Morale ${effects.playerMorale}</span>` : ''}
           ${effects.mentalBonus > 0 ? `<span class="badge badge-win">🧠 Mental +${effects.mentalBonus}</span>` : ''}
+          ${effects.mentalBonus < 0 ? `<span class="badge badge-loss">🧠 Mental ${effects.mentalBonus}</span>` : ''}
           ${hypeBonus > 0 ? `<span class="badge badge-style">🔥 Hype +${hypeBonus}%</span>` : ''}
+          ${hypeBonus < 0 ? `<span class="badge badge-loss">📉 Hype ${hypeBonus}%</span>` : ''}
           ${effects.opponentMorale < 0 ? `<span class="badge badge-win">😰 ${opponent.firstName} déstabilisé</span>` : ''}
+          ${effects.opponentMorale > 0 ? `<span class="badge badge-loss">💪 ${opponent.firstName} motivé</span>` : ''}
           ${isDraw && showFactor >= 7 ? `<span class="badge badge-style">🎭 Show légendaire</span>` : ''}
         </div>
 

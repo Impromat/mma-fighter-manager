@@ -128,11 +128,13 @@ const TrashTalkEngine = {
       opponentFighter.morale = Math.min(100, Math.max(10, (opponentFighter.morale || 70) + effects.opponentMorale));
     }
 
-    if (scheduledFight && effects.hypeMultiplier > 1.0) {
+    // Hype: can now be < 1.0 (bad performance lowers hype)
+    if (scheduledFight && effects.hypeMultiplier !== 1.0) {
       scheduledFight.hypeMultiplier = effects.hypeMultiplier;
     }
 
-    if (effects.mentalBonus > 0) {
+    // Mental bonus: can now be negative (mentalMalus from defeat)
+    if (effects.mentalBonus !== 0) {
       playerFighter._mentalBonus = effects.mentalBonus;
     }
 
