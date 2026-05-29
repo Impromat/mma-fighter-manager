@@ -297,7 +297,7 @@ const DashboardView = {
         icon: '📬',
         label: `${pendingOffers.length} offre${pendingOffers.length > 1 ? 's' : ''} de combat en attente`,
         detail: 'Les offres expirent — réponds rapidement',
-        view: 'dashboard'
+        scrollTo: 'offers-section'
       });
     }
 
@@ -390,11 +390,11 @@ const DashboardView = {
     const rows = actions.map(a => {
       const style = priorityStyle[a.priority];
       return `
-        <div class="weekly-action-row ${a.view ? 'weekly-action-clickable' : ''}"
-             ${a.view ? `onclick="App.navigateTo('${a.view}')"` : ''}
+        <div class="weekly-action-row ${(a.view || a.scrollTo) ? 'weekly-action-clickable' : ''}"
+             ${a.scrollTo ? `onclick="document.getElementById('${a.scrollTo}')?.scrollIntoView({behavior:'smooth', block:'start'})"` : a.view ? `onclick="App.navigateTo('${a.view}')"` : ''}
              style="display:flex; align-items:center; gap:12px; padding:10px 14px;
                     border-radius:8px; border-left:3px solid ${style.border};
-                    background:${style.bg}; cursor:${a.view ? 'pointer' : 'default'};
+                    background:${style.bg}; cursor:${(a.view || a.scrollTo) ? 'pointer' : 'default'};
                     transition:background 0.15s;"
         >
           <span style="font-size:1.1rem; flex-shrink:0;">${a.icon}</span>
@@ -402,7 +402,7 @@ const DashboardView = {
             <div style="font-weight:700; font-size:0.85rem; color:var(--text-primary);">${a.label}</div>
             ${a.detail ? `<div style="font-size:0.75rem; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${a.detail}</div>` : ''}
           </div>
-          ${a.view ? `<span style="color:var(--text-muted); font-size:0.8rem; flex-shrink:0;">→</span>` : ''}
+          ${(a.view || a.scrollTo) ? `<span style="color:var(--text-muted); font-size:0.8rem; flex-shrink:0;">${a.scrollTo ? '↓' : '→'}</span>` : ''}
         </div>
       `;
     }).join('');
@@ -575,7 +575,7 @@ const DashboardView = {
     }).join('');
 
     return `
-      <div class="offers-section animate-fade-in-up stagger-4">
+      <div class="offers-section animate-fade-in-up stagger-4" id="offers-section">
         <div class="card">
           <div class="card-header">
             <div class="card-title">
